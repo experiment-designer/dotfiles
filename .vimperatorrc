@@ -1,0 +1,2 @@
+nmap <lt> :back<CR>
+nmap > :forward<CR>

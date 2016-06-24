@@ -1,0 +1,10 @@
+"xbacklight -steps 10 -inc 10"
+	m:0x0 + c:233
+"xbacklight -steps 10 -dec 10"
+	m:0x0 + c:232
+"amixer set Master 10%+"
+	m:0x0 + c:123
+"amixer set Master 10%-"
+	m:0x0 + c:122
+"amixer set Master toggle"
+	m:0x0 + c:121
