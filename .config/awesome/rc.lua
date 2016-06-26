@@ -83,7 +83,7 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[3])
 end
 -- }}}
 
@@ -111,6 +111,19 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
+
+-- Create an ACPI widget
+batterywidget = wibox.widget.textbox()
+batterywidget:set_text(" | Battery - Loading... ")
+batterywidgettimer = timer({ timeout = 5 })                                     
+batterywidgettimer:connect_signal("timeout", function()
+        local fh = assert(io.popen("acpi | tr -s ',' ' ' | cut -d ' ' -f 4", "r"))
+        local str1 = fh:read()
+        local str2 = fh:read()
+        fh:close()
+        batterywidget:set_text("| " .. str1 .. " / " .. str2 .. " | ")
+end)                                                              
+batterywidgettimer:start()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -192,6 +205,7 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(mytextclock)
+    right_layout:add(batterywidget)
     right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
