@@ -1,6 +1,21 @@
 # Ignore everything
-*
+/*
 # Except for dotfiles
 !/.*
-
-/.config/VirtualBox/*
+#/.config/VirtualBox/*
+.Xauthority
+.bash_history
+.lesshst
+.viminfo
+.vimperator/
+.vim/bundle/
+.mozilla/
+.npm/
+.pki/
+.sass-cache/
+.test/
+.gem/
+.local/
+.ionic/
+.cache/
+.android/
