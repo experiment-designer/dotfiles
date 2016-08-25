@@ -13,7 +13,6 @@
 .npm/
 .pki/
 .sass-cache/
-.test/
 .gem/
 .local/
 .ionic/

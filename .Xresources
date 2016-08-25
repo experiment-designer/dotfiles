@@ -1,5 +1,5 @@
 URxvt*scrollBar: false
-URxvt*font: xft:Inconsolata:pixelsize=16
+URxvt*font: xft:Inconsolata:size=12
 Xft.dpi: 96
 
 ! --- generated with 4bit Terminal Color Scheme Designer -------------------------
