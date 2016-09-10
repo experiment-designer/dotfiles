@@ -1,5 +1,8 @@
 URxvt*scrollBar: false
 URxvt*font: xft:Inconsolata:size=12
+URxvt.perl-ext-common: tabbed
+URxvt.tabbed.tab-bg: 12
+URxvt.tabbed.tab-fg: 0
 Xft.dpi: 96
 
 ! --- generated with 4bit Terminal Color Scheme Designer -------------------------
