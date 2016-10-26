@@ -10,8 +10,8 @@ Xft.dpi: 96
 ! ! --- http://ciembor.github.com/4bit -------------------------------------------
 ! ! ------------------------------------------------------------------------------
 
-! --- special colors ---
-!
+!! --- special colors ---
+!!
 *background: #0d1926
 *foreground: #d9e6f2
 !
@@ -20,8 +20,8 @@ Xft.dpi: 96
 ! black
 *color0: #000000
 !
-! bright_black
-*color8: #262626
+! bright_white (changed by guy)
+*color8: #ffffff
 !
 ! red
 *color1: #b87a7a

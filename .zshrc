@@ -51,7 +51,7 @@ ZSH_THEME="af-magic"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git command-not-found)
+plugins=(vi-mode git command-not-found)
 
 # Required for command-not-found
 source /usr/share/doc/pkgfile/command-not-found.zsh
@@ -89,6 +89,9 @@ source $ZSH/oh-my-zsh.sh
 #
 # User aliases
 alias hibernate='systemctl hibernate'
+
+# Don't freeze my ass when hitting C-s
+stty -ixon -ixoff
 
 # Android settings
 export ANDROID_HOME=/opt/android/sdk
