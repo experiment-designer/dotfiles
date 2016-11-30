@@ -110,6 +110,7 @@ let g:neocomplete#sources#omni#functions = {
 	\ 'css': ['csscomplete#CompleteCSS', 'syntaxcomplete#Complete'],
 	\ 'html': ['htmlcomplete#CompleteTags', 'syntaxcomplete#Complete'],
 	\ 'javascript': ['javascriptcomplete#CompleteJS', 'syntaxcomplete#Complete'],
+	\ 'java': ['javacomplete#Complete', 'syntaxcomplete#Complete'],
 	\ 'python': ['pythoncomplete#Complete'],
         \ 'xml' : ['xmlcomplete#CompleteTags'],
         \ '_' : ['syntaxcomplete#Complete']
@@ -128,6 +129,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'Shougo/neocomplete.vim'
+Plugin 'artur-shaik/vim-javacomplete2'
+Plugin 'Konfekt/FastFold'
 Plugin 'scrooloose/syntastic'
 Plugin 'burnettk/vim-angular'
 Plugin 'matthewsimo/angular-vim-snippets'
@@ -149,6 +152,6 @@ Plugin 'Shougo/vimfiler.vim'
 Plugin 'wincent/command-t'
 call vundle#end()
 
-" filetype plugin indent on
+filetype plugin indent on
 syntax on
-" set foldmethod=syntax
+set foldmethod=syntax
