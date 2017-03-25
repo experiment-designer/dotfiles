@@ -100,3 +100,5 @@ PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 # Ruby settings
 PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
+# SSH settings
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
