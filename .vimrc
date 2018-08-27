@@ -7,22 +7,19 @@ set shiftwidth=4
 set softtabstop=4
 set ignorecase
 set smartcase
-let python_highlight_all = 1
+
+python3 from powerline.vim import setup as powerline_setup
+python3 powerline_setup()
+python3 del powerline_setup
+
 let g:tex_flavor='latex'
 
-" Syntastic recommended settings
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" Replace all
+noremap <Leader>/ :%s/
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ['jshint', 'eslint']
+" latex
+let g:vimtex_compiler_latexmk = {'callback' : 0}
 
-" used by the javascript libraries plugin
-let g:used_javascript_libs = 'angularjs, angularui, angularuirouter'
 " use ctrl-c/v to copy/paste to/from clipboard
 noremap <Leader>y "+y
 noremap <Leader>p "+p
@@ -43,33 +40,23 @@ filetype off
 " Highlight search results
 set incsearch
 
+" Ignore dist and build folders
+set wildignore+=*/dist*/**,*/target/**,*/build/**
+
+" Ignore libs
+set wildignore+=*/lib/**,*/_3rd_party_/**,*/node_modules/**,*/bower_components/**
+
+" Ignore images, pdfs, and font files
+set wildignore+=*.png,*.PNG,*.jpg,*.jpeg,*.JPG,*.JPEG,*.pdf
+set wildignore+=*.ttf,*.otf,*.woff,*.woff2,*.eot
+
+" Ignore compiled files
+set wildignore+=*.class
+let g:basewildignore=&wildignore
+
 " Command-T settings
 let g:CommandTMaxFiles=200000
-
-" Snipmate default key
-" <Space> closes neocomplete popup, <BS> deletes the new space
-" TODO: less hacky solution?
-imap <C-s> <Space><BS><Plug>snipMateNextOrTrigger
-smap <C-s> <Plug>snipMateNextOrTrigger
-
-" neocomplete settings
-
-" Define dictionary.
-let g:neocomplete#sources#dictionary#dictionaries = {
-            \ 'default' : '',
-            \ 'vimshell' : $HOME.'/.vimshell_hist',
-            \ 'scheme' : $HOME.'/.gosh_completions'
-            \ }
-
-" Define keyword.
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-" Plugin key-mappings.
-inoremap <expr><C-g> neocomplete#undo_completion()
-inoremap <expr><C-l> neocomplete#complete_common_string()
+let g:CommandTTraverseSCM='pwd'
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
@@ -81,75 +68,29 @@ function! s:my_cr_function()
 endfunction
 " <TAB>: completion.
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" Close popup by <Space>.
-"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-
-" AutoComplPop like behavior.
-"let g:neocomplete#enable_auto_select = 1
-
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplete#enable_auto_select = 1
-"let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-" Enable heavy omni completion.
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
-
-"let g:neocomplete#sources#omni#input_patterns.php = '[^.\t]->\h\w*\|\h\w*::'
-"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
 
-" TODO: dynamically append syntaxcomplete#Complete to every value
-let g:neocomplete#sources#omni#functions = {
-	\ 'css': ['csscomplete#CompleteCSS', 'syntaxcomplete#Complete'],
-	\ 'html': ['htmlcomplete#CompleteTags', 'syntaxcomplete#Complete'],
-	\ 'javascript': ['javascriptcomplete#CompleteJS', 'syntaxcomplete#Complete'],
-	\ 'java': ['javacomplete#Complete', 'syntaxcomplete#Complete'],
-	\ 'python': ['pythoncomplete#Complete'],
-        \ 'xml' : ['xmlcomplete#CompleteTags'],
-        \ '_' : ['syntaxcomplete#Complete']
-\ }
+" Pymode
+let g:pymode_python = 'python3'
+let g:pymode_rope = 1
+let g:pymode_rope_lookup_project = 1
+let g:pymode_breakpoint_bind = '<Leader>d'
 
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 3
- 
 call pathogen#infect()
 call pathogen#helptags()
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
-Plugin 'Shougo/neocomplete.vim'
-Plugin 'artur-shaik/vim-javacomplete2'
-Plugin 'Konfekt/FastFold'
-Plugin 'scrooloose/syntastic'
-Plugin 'burnettk/vim-angular'
-Plugin 'matthewsimo/angular-vim-snippets'
-Plugin 'othree/javascript-libraries-syntax.vim'
-Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'rking/ag.vim'
+" Plugin 'Shougo/neocomplete.vim'
+" Plugin 'Konfekt/FastFold'
+" Plugin 'scrooloose/syntastic'
 Plugin 'klen/python-mode'
 Plugin 'tpope/vim-fugitive'
-Plugin 'leafgarland/typescript-vim'
 " Seem to collide with the libraries plugin
-Plugin 'pangloss/vim-javascript'
 Plugin 'tpope/vim-commentary'
-Plugin 'vim-latex/vim-latex'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
-Plugin 'honza/vim-snippets'
-Plugin 'Shougo/unite.vim'
-Plugin 'Shougo/vimfiler.vim'
+" Plugin 'vim-latex/vim-latex'
+Plugin 'lervag/vimtex'
 Plugin 'wincent/command-t'
 call vundle#end()
 

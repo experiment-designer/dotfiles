@@ -1,7 +1,10 @@
 URxvt*scrollBar: false
-URxvt*font: xft:Inconsolata:size=12
+URxvt*font: xft:Input\ Mono:size=13
+URxvt.lineSpace: -2
+URxvt*internalBorder: 2
+URxvt.letterSpace: 0
 URxvt.perl-ext-common: tabbed
-URxvt.tabbed.tab-bg: 12
+URxvt.tabbed.tab-bg: 14
 URxvt.tabbed.tab-fg: 0
 Xft.dpi: 96
 
