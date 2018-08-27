@@ -7,7 +7,10 @@
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="af-magic"
+# ZSH_THEME="af-magic"
+# POWERLEVEL9K_MODE='awesome-fontconfig'
+#POWERLEVEL9K_MODE='awesome-patched'
+ZSH_THEME="powerlevel9k/powerlevel9k"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -89,7 +92,7 @@ source $ZSH/oh-my-zsh.sh
 #
 # User aliases
 alias hibernate='systemctl hibernate'
-
+alias ls='ls -l --color=tty'
 # Don't freeze my ass when hitting C-s
 stty -ixon -ixoff
 
@@ -97,8 +100,45 @@ stty -ixon -ixoff
 export ANDROID_HOME=/opt/android/sdk
 PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
+# Java
+PATH=$PATH:/usr/lib/jvm/java-7-openjdk/bin
+
 # Ruby settings
 PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
+# Matlab
+PATH=$PATH:/usr/local/MATLAB/R2017a/bin
+
+# Anaconda
+con () {
+    source ~/anaconda3/bin/activate ${1:-root}
+}
+
+coff () {
+    typeset -a _path
+    typeset _p
+    for _p in $path
+    do
+        if [[ $_p != $HOME/anaconda3/* ]]
+        then
+            _path+=$_p
+        fi
+    done
+    path=($_path)
+    unset CONDA_DEFAULT_ENV
+}
+# PATH=~/anaconda3/bin:$PATH
+# source ~/anaconda3/etc/profile.d/conda.sh
+
 # SSH settings
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/guy/Downloads/google-cloud-sdk/path.zsh.inc' ]; then source '/home/guy/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/guy/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then source '/home/guy/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
