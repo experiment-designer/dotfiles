@@ -75,6 +75,11 @@ let g:pymode_python = 'python3'
 let g:pymode_rope = 1
 let g:pymode_rope_lookup_project = 1
 let g:pymode_breakpoint_bind = '<Leader>d'
+let g:pymode_folding = 1
+
+" Solves some weird insert mode bug
+set backspace=indent,eol,start
+
 
 call pathogen#infect()
 call pathogen#helptags()
@@ -83,7 +88,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'rking/ag.vim'
 " Plugin 'Shougo/neocomplete.vim'
-" Plugin 'Konfekt/FastFold'
+Plugin 'Konfekt/FastFold'
 " Plugin 'scrooloose/syntastic'
 Plugin 'klen/python-mode'
 Plugin 'tpope/vim-fugitive'
@@ -92,7 +97,16 @@ Plugin 'tpope/vim-commentary'
 " Plugin 'vim-latex/vim-latex'
 Plugin 'lervag/vimtex'
 Plugin 'wincent/command-t'
+Plugin 'francoiscabrol/ranger.vim'
 call vundle#end()
+
+set diffopt+=vertical
+
+" Gdiff highlighting colors
+highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
 
 filetype plugin indent on
 syntax on

@@ -11,6 +11,7 @@
 # POWERLEVEL9K_MODE='awesome-fontconfig'
 #POWERLEVEL9K_MODE='awesome-patched'
 ZSH_THEME="powerlevel9k/powerlevel9k"
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(anaconda status root_indicator background_jobs history)
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -54,7 +55,7 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(vi-mode git command-not-found)
+plugins=(vi-mode git command-not-found history-substring-search)
 
 # Required for command-not-found
 source /usr/share/doc/pkgfile/command-not-found.zsh
@@ -62,6 +63,10 @@ source /usr/share/doc/pkgfile/command-not-found.zsh
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+
+# history search
+# bindkey "^[[A" history-substring-search-up
+# bindkey "^[[B" history-substring-search-down
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -104,7 +109,7 @@ PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 PATH=$PATH:/usr/lib/jvm/java-7-openjdk/bin
 
 # Ruby settings
-PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
+#PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
 # Matlab
 PATH=$PATH:/usr/local/MATLAB/R2017a/bin
@@ -112,6 +117,7 @@ PATH=$PATH:/usr/local/MATLAB/R2017a/bin
 # Anaconda
 con () {
     source ~/anaconda3/bin/activate ${1:-root}
+    PATH=~/anaconda3/bin:$PATH
 }
 
 coff () {
@@ -127,9 +133,8 @@ coff () {
     path=($_path)
     unset CONDA_DEFAULT_ENV
 }
-# PATH=~/anaconda3/bin:$PATH
+con
 # source ~/anaconda3/etc/profile.d/conda.sh
-
 # SSH settings
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 

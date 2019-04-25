@@ -1,11 +1,13 @@
 URxvt*scrollBar: false
-URxvt*font: xft:Input\ Mono:size=13
+URxvt*font: xft:Input\ Mono:size=12
 URxvt.lineSpace: -2
 URxvt*internalBorder: 2
 URxvt.letterSpace: 0
-URxvt.perl-ext-common: tabbed
 URxvt.tabbed.tab-bg: 14
 URxvt.tabbed.tab-fg: 0
+URxvt.perl-ext-common: default,matcher,tabbed
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1
 Xft.dpi: 96
 
 ! --- generated with 4bit Terminal Color Scheme Designer -------------------------
