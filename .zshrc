@@ -98,6 +98,7 @@ source $ZSH/oh-my-zsh.sh
 # User aliases
 alias hibernate='systemctl hibernate'
 alias ls='ls -l --color=tty'
+alias ipython='ipython --TerminalInteractiveShell.editing_mode=vi'
 # Don't freeze my ass when hitting C-s
 stty -ixon -ixoff
 
@@ -117,7 +118,6 @@ PATH=$PATH:/usr/local/MATLAB/R2017a/bin
 # Anaconda
 con () {
     source ~/anaconda3/bin/activate ${1:-root}
-    PATH=~/anaconda3/bin:$PATH
 }
 
 coff () {

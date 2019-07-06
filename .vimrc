@@ -16,6 +16,7 @@ let g:tex_flavor='latex'
 
 " Replace all
 noremap <Leader>/ :%s/
+vnoremap <Leader>/ :s/\%V
 
 " latex
 let g:vimtex_compiler_latexmk = {'callback' : 0}
@@ -58,41 +59,36 @@ let g:basewildignore=&wildignore
 let g:CommandTMaxFiles=200000
 let g:CommandTTraverseSCM='pwd'
 
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-    return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-    For no inserting <CR> key.
-    "return pumvisible() ? "\<C-y>" : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-
-" Pymode
-let g:pymode_python = 'python3'
-let g:pymode_rope = 1
-let g:pymode_rope_lookup_project = 1
-let g:pymode_breakpoint_bind = '<Leader>d'
-let g:pymode_folding = 1
-
 " Solves some weird insert mode bug
 set backspace=indent,eol,start
 
+" YCM
+let g:ycm_confirm_extra_conf=0
+let g:ycm_autoclose_preview_window_after_completion=1
+
+" Pymode
+" let g:pymode_debug = 1
+
+" let g:pymode_python = 'python3'
+let g:pymode_breakpoint_bind = '<Leader>d'
+let g:pymode_folding = 1
+let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe', 'pep257', 'pyflakes']
+let g:pymode_virtualenv = 1
+let g:pymode_rope = 1
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
 
 call pathogen#infect()
 call pathogen#helptags()
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
+Plugin 'klen/python-mode'
 Plugin 'rking/ag.vim'
-" Plugin 'Shougo/neocomplete.vim'
 Plugin 'Konfekt/FastFold'
 " Plugin 'scrooloose/syntastic'
-Plugin 'klen/python-mode'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'tpope/vim-fugitive'
-" Seem to collide with the libraries plugin
 Plugin 'tpope/vim-commentary'
 " Plugin 'vim-latex/vim-latex'
 Plugin 'lervag/vimtex'
@@ -101,6 +97,8 @@ Plugin 'francoiscabrol/ranger.vim'
 call vundle#end()
 
 set diffopt+=vertical
+set completeopt=longest,menuone,preview,noselect
+set foldmethod=syntax
 
 " Gdiff highlighting colors
 highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
@@ -110,4 +108,3 @@ highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Re
 
 filetype plugin indent on
 syntax on
-set foldmethod=syntax
