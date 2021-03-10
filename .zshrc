@@ -60,6 +60,9 @@ plugins=(vi-mode git command-not-found history-substring-search)
 # Required for command-not-found
 source /usr/share/doc/pkgfile/command-not-found.zsh
 
+# fix unknown terminal bugs (has to be before oh-my-zsh.sh)
+export TERMINFO=/usr/lib/terminfo
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -134,6 +137,7 @@ coff () {
     unset CONDA_DEFAULT_ENV
 }
 con
+
 # source ~/anaconda3/etc/profile.d/conda.sh
 # SSH settings
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"

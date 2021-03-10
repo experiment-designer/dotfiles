@@ -11,6 +11,7 @@ set smartcase
 python3 from powerline.vim import setup as powerline_setup
 python3 powerline_setup()
 python3 del powerline_setup
+set laststatus=2
 
 let g:tex_flavor='latex'
 
@@ -56,7 +57,7 @@ set wildignore+=*.class
 let g:basewildignore=&wildignore
 
 " Command-T settings
-let g:CommandTMaxFiles=200000
+let g:CommandTMaxFiles=50000
 let g:CommandTTraverseSCM='pwd'
 
 " Solves some weird insert mode bug
@@ -65,25 +66,43 @@ set backspace=indent,eol,start
 " YCM
 let g:ycm_confirm_extra_conf=0
 let g:ycm_autoclose_preview_window_after_completion=1
+" After 2 chars, autocomplete
+let g:ycm_semantic_triggers = {
+            \   'python': [ 're!\w{2}' ]
+            \ }
+
+
+
+" ALE
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %code%: %s [%severity%]'
 
 " Pymode
 " let g:pymode_debug = 1
 
 " let g:pymode_python = 'python3'
-let g:pymode_breakpoint_bind = '<Leader>d'
-let g:pymode_folding = 1
-let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe', 'pep257', 'pyflakes']
-let g:pymode_virtualenv = 1
-let g:pymode_rope = 1
-let g:pymode_rope_completion = 0
-let g:pymode_rope_complete_on_dot = 0
+" let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
+" let g:pymode_breakpoint_bind = '<Leader>d'
+" let g:pymode_folding = 1
+" let g:pymode_lint_checkers = ['pylint', 'pep8', 'mccabe', 'pep257', 'pyflakes']
+" let g:pymode_virtualenv = 1
+" let g:pymode_rope = 0
+" let g:pymode_rope_completion = 0
+" let g:pymode_rope_complete_on_dot = 0
+
+" Close quickfix windows if only window left
+aug QFClose
+  au!
+  au WinEnter * if winnr('$') == 1 && &buftype == "quickfix"|q|endif
+aug END
 
 call pathogen#infect()
 call pathogen#helptags()
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
-Plugin 'klen/python-mode'
+" Plugin 'klen/python-mode'
 Plugin 'rking/ag.vim'
 Plugin 'Konfekt/FastFold'
 " Plugin 'scrooloose/syntastic'
@@ -93,7 +112,7 @@ Plugin 'tpope/vim-commentary'
 " Plugin 'vim-latex/vim-latex'
 Plugin 'lervag/vimtex'
 Plugin 'wincent/command-t'
-Plugin 'francoiscabrol/ranger.vim'
+Plugin 'dense-analysis/ale'
 call vundle#end()
 
 set diffopt+=vertical

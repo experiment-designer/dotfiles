@@ -1,3 +1,9 @@
 [user]
 	email = camillarhodes@yandex.com
 	name = Camilla Rhodes
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[alias]
+	d = difftool
