@@ -3,69 +3,47 @@ URxvt*font: xft:Input\ Mono:size=12
 URxvt.lineSpace: -2
 URxvt*internalBorder: 2
 URxvt.letterSpace: 0
-URxvt.tabbed.tab-bg: 14
-URxvt.tabbed.tab-fg: 0
-URxvt.perl-ext-common: default,matcher,tabbed
+!!URxvt.tabbed.tab-bg: 14
+!!URxvt.tabbed.tab-fg: 0
+!!URxvt.perl-ext-common: default,matcher,tabbed
+URxvt.perl-ext-common: default,matcher
 URxvt.url-launcher: /usr/bin/xdg-open
 URxvt.matcher.button: 1
 Xft.dpi: 96
 
-! --- generated with 4bit Terminal Color Scheme Designer -------------------------
-! ! ------------------------------------------------------------------------------
-! ! --- http://ciembor.github.com/4bit -------------------------------------------
-! ! ------------------------------------------------------------------------------
-
 !! --- special colors ---
-!!
-*background: #0d1926
-*foreground: #d9e6f2
-!
-! --- standard colors ---
-!
+*.foreground: #93a1a1
+*.background: #141c21
+*.cursorColor: #afbfbf
+
 ! black
-*color0: #000000
-!
-! bright_white (changed by guy)
-*color8: #ffffff
-!
+*.color0: #263640
+*.color8: #4a697d
+
 ! red
-*color1: #b87a7a
-!
-! bright_red
-*color9: #dbbdbd
-!
+*.color1: #d12f2c
+*.color9: #fa3935
+
 ! green
-*color2: #7ab87a
-!
-! bright_green
-*color10: #bddbbd
-!
+*.color2: #819400
+*.color10: #a4bd00
+
 ! yellow
-*color3: #b8b87a
-!
-! bright_yellow
-*color11: #dbdbbd
-!
+*.color3: #b08500
+*.color11: #d9a400
+
 ! blue
-*color4: #7a7ab8
-!
-! bright_blue
-*color12: #bdbddb
-!
+*.color4: #2587cc
+*.color12: #2ca2f5
+
 ! magenta
-*color5: #b87ab8
-!
-! bright_magenta
-*color13: #dbbddb
-!
+*.color5: #696ebf
+*.color13: #8086e8
+
 ! cyan
-*color6: #7ab8b8
-!
-! bright_cyan
-*color14: #bddbdb
-!
+*.color6: #289c93
+*.color14: #33c5ba
+
 ! white
-*color7: #d9d9d9
-!
-! bright_white
-*color15: #ffffff
+*.color7: #bfbaac
+*.color15: #fdf6e3

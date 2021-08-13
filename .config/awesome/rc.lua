@@ -194,7 +194,7 @@ for s = 1, screen.count() do
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s })
+    mywibox[s] = awful.wibox({ position = "top", screen = s, bg = beautiful.bg_normal .. "75"})
 
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
@@ -290,6 +290,9 @@ globalkeys = awful.util.table.join(
 )
 
 clientkeys = awful.util.table.join(
+
+awful.key({ modkey,           }, "a",      function (c) if c.opacity == 0.999 then c.opacity = 1 else c.opacity = 0.999 end 
+  end, nil,{description = "toggle opacity", group = "client"}),
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
@@ -455,6 +458,16 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c)
+    c.border_color = beautiful.border_focus 
+    if c.opacity ~= 0.999 then
+        c.opacity = 1
+    end
+end)
+client.connect_signal("unfocus", function(c)
+    c.border_color = beautiful.border_normal 
+    if c.opacity ~= 0.999 then
+        c.opacity = 0.7
+    end
+end)
 -- }}}
