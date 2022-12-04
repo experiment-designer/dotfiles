@@ -7,6 +7,7 @@ set shiftwidth=4
 set softtabstop=4
 set ignorecase
 set smartcase
+set hlsearch
 
 python3 from powerline.vim import setup as powerline_setup
 python3 powerline_setup()
@@ -36,17 +37,17 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
 
-" Pathogen load
-filetype off
-
 " Highlight search results
 set incsearch
 
 " Ignore dist and build folders
-set wildignore+=*/dist*/**,*/target/**,*/build/**
+set wildignore+=*/dist*/*,*/target/*,*/build/*
 
 " Ignore libs
-set wildignore+=*/lib/**,*/_3rd_party_/**,*/node_modules/**,*/bower_components/**
+set wildignore+=*/lib/*,*/_3rd_party_/*,*/node_modules/*,*/bower_components/*
+
+" Ignore anaconda
+set wildignore+=*/anaconda3/*,
 
 " Ignore images, pdfs, and font files
 set wildignore+=*.png,*.PNG,*.jpg,*.jpeg,*.JPG,*.JPEG,*.pdf
@@ -57,6 +58,7 @@ set wildignore+=*.class
 let g:basewildignore=&wildignore
 
 " Command-T settings
+let g:CommandTPreferredImplementation='ruby'
 let g:CommandTMaxFiles=50000
 let g:CommandTTraverseSCM='pwd'
 
@@ -97,20 +99,19 @@ aug QFClose
   au WinEnter * if winnr('$') == 1 && &buftype == "quickfix"|q|endif
 aug END
 
-call pathogen#infect()
-call pathogen#helptags()
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
+Plugin 'tamarin-prover/editors'
 " Plugin 'klen/python-mode'
 Plugin 'rking/ag.vim'
 Plugin 'Konfekt/FastFold'
 " Plugin 'scrooloose/syntastic'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-commentary'
+" Plugin 'tpope/vim-fugitive'
+" Plugin 'tpope/vim-commentary'
 " Plugin 'vim-latex/vim-latex'
-Plugin 'lervag/vimtex'
+" Plugin 'lervag/vimtex'
 Plugin 'wincent/command-t'
 Plugin 'dense-analysis/ale'
 call vundle#end()
@@ -124,6 +125,10 @@ highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Re
 highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
 highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
 highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
+
+" Disable SignColor highlight
+" highlight clear SignColumn
+set signcolumn=number
 
 filetype plugin indent on
 syntax on

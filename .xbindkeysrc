@@ -1,12 +1,14 @@
-"xbacklight -steps 10 -inc 10"
-	m:0x0 + c:233
-"xbacklight -steps 10 -dec 10"
-	m:0x0 + c:232
-# "pactl set-sink-volume 0 +10%"
-"pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +10%"
+"amixer sset Master 3%+"
 	m:0x0 + c:123
-# "pactl set-sink-volume 0 -10%"
-"pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -10%"
+"amixer sset Master 3%-"
 	m:0x0 + c:122
-"amixer set Master toggle"
+"amixer sset Master toggle"
 	m:0x0 + c:121
+"amixer sset Speaker unmute"
+	m:0x0 + c:121
+"amixer sset Dmic0 toggle"
+	m:0x0 + c:198
+"expr `cat /sys/class/backlight/intel_backlight/brightness` + 500 > /sys/class/backlight/intel_backlight/brightness"
+	m:0x0 + c:233
+"expr `cat /sys/class/backlight/intel_backlight/brightness` - 500 > /sys/class/backlight/intel_backlight/brightness"
+	m:0x0 + c:232

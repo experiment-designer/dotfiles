@@ -49,6 +49,6 @@ fi
 #xterm -geometry 80x20+494-0 &
 #exec xterm -geometry 80x66+0+0 -name login
 
-xcompmgr -c &
 xbindkeys
+xautolock -time 35 -locker "systemctl suspend" -detectsleep &
 exec awesome
