@@ -1,3 +1,4 @@
+
 let mapleader=" " 
 set number
 set autoindent
@@ -9,9 +10,9 @@ set ignorecase
 set smartcase
 set hlsearch
 
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
+"python3 from powerline.vim import setup as powerline_setup
+"python3 powerline_setup()
+"python3 del powerline_setup
 set laststatus=2
 
 let g:tex_flavor='latex'
@@ -80,6 +81,11 @@ let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %code%: %s [%severity%]'
 
+autocmd FileType python nnoremap <leader>. Oimport ipdb; ipdb.set_trace()<Esc>
+
+let g:ale_python_pylint_executable = 'python'  " or 'python3' if you're using Python 3
+let g:ale_python_pylint_use_global = 0
+
 " Pymode
 " let g:pymode_debug = 1
 
@@ -99,27 +105,21 @@ aug QFClose
   au WinEnter * if winnr('$') == 1 && &buftype == "quickfix"|q|endif
 aug END
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-Plugin 'tamarin-prover/editors'
-" Plugin 'klen/python-mode'
-Plugin 'rking/ag.vim'
-Plugin 'Konfekt/FastFold'
-" Plugin 'scrooloose/syntastic'
-Plugin 'Valloric/YouCompleteMe'
-" Plugin 'tpope/vim-fugitive'
-" Plugin 'tpope/vim-commentary'
-" Plugin 'vim-latex/vim-latex'
-" Plugin 'lervag/vimtex'
-Plugin 'wincent/command-t'
-Plugin 'dense-analysis/ale'
-call vundle#end()
+call plug#begin()
+Plug 'rking/ag.vim'
+Plug 'Konfekt/FastFold'
+"Plug 'Valloric/YouCompleteMe'
+Plug 'wincent/command-t'
+"Plug 'dense-analysis/ale'
+"Plug 'morhetz/gruvbox'
+call plug#end()
 
 set diffopt+=vertical
 set completeopt=longest,menuone,preview,noselect
 set foldmethod=syntax
 
+set background=dark
+"colorscheme gruvbox
 " Gdiff highlighting colors
 highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
 highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red

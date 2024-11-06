@@ -1,3 +1,11 @@
+# Solves weird urxvt bug where line starts low after some spacing
+clear
+
+# iHD Driver
+#export LIBVA_DRIVER_NAME=iHD
+#export LIBVA_DRIVER_NAME=i965
+#export LIBVA_DRIVERS_PATH=/usr/lib/dri
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -17,6 +25,9 @@ prompt off
 # Fix shell bugs
 export TERMINFO=/usr/share/terminfo 
 
+# AI
+export ANTHROPIC_API_KEY="YOUR_KEY_HERE"
+
 # Powerline stuff
 powerline-daemon -q
 . /home/guy/.local/lib/python3.10/site-packages/powerline/bindings/zsh/powerline.zsh
@@ -24,12 +35,20 @@ powerline-daemon -q
 # Yank to the system clipboard
 function vi-yank-xclip {
     zle vi-yank
-   echo -n "$CUTBUFFER" | xclip -sel clip
+    echo -n "$CUTBUFFER" | xclip -sel clip
+}
+
+# Paste from system clipboard
+function vi-put-xclip {
+    CUTBUFFER="$(xclip -sel clip -o)"
+    zle vi-put-after
 }
 
 zle -N vi-yank-xclip
-bindkey -M vicmd 'y' vi-yank-xclip
+zle -N vi-put-xclip
 
+bindkey -M vicmd 'y' vi-yank-xclip
+bindkey -M vicmd 'p' vi-put-xclip   # paste with p in normal mode
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -49,8 +68,11 @@ unset __conda_setup
 
 # Search plugin (arrow keys)
 source /home/guy/.zsh_repos/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+# bindkey '^[[A' history-substring-search-up
+# bindkey '^[[B' history-substring-search-down
+
         
 #export PATH="/usr/local/bin:$PATH"
 #alias python=python3
