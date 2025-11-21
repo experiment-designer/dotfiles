@@ -1,6 +1,8 @@
 # Solves weird urxvt bug where line starts low after some spacing
 clear
 
+zmodload zsh/zprof
+
 # iHD Driver
 #export LIBVA_DRIVER_NAME=iHD
 #export LIBVA_DRIVER_NAME=i965
@@ -26,7 +28,11 @@ prompt off
 export TERMINFO=/usr/share/terminfo 
 
 # AI
-export ANTHROPIC_API_KEY=mykey
+#export ANTHROPIC_API_KEY=YOUR_KEY_HERE
+#export ANTHROPIC_API_KEY=YOUR_KEY_HERE
+export GEMINI_API_KEY=YOUR_KEY_HERE
+export XAI_API_KEY=YOUR_KEY_HERE
+export OPENAI_API_KEY=YOUR_KEY_HERE
 
 # Powerline stuff
 powerline-daemon -q
@@ -52,7 +58,7 @@ bindkey -M vicmd 'p' vi-put-xclip   # paste with p in normal mode
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/home/guy/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('/home/guy/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
@@ -65,6 +71,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+# For aider
+export PATH="/home/guy/.local/bin:$PATH"
 
 # Search plugin (arrow keys)
 source /home/guy/.zsh_repos/zsh-history-substring-search/zsh-history-substring-search.zsh
@@ -76,3 +84,43 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
         
 #export PATH="/usr/local/bin:$PATH"
 #alias python=python3
+
+# Lazy load nvm to improve shell startup time
+export NVM_DIR="$HOME/.config/nvm"
+
+# Function to lazy load nvm
+load_nvm() {
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+}
+
+# Create wrapper functions that load nvm on first use
+nvm() {
+    unset -f nvm node npm npx
+    load_nvm
+    nvm "$@"
+}
+
+node() {
+    unset -f nvm node npm npx
+    load_nvm
+    node "$@"
+}
+
+npm() {
+    unset -f nvm node npm npx
+    load_nvm
+    npm "$@"
+}
+
+npx() {
+    unset -f nvm node npm npx claude
+    load_nvm
+    npx "$@"
+}
+
+claude() {
+    unset -f nvm node npm npx claude
+    load_nvm
+    claude "$@"
+}

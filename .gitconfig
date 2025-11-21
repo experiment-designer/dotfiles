@@ -1,0 +1,6 @@
+[user]
+	email = guydbg@gmail.com
+[init]
+	defaultBranch = master
+[core]
+	editor = nvim

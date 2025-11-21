@@ -14,6 +14,8 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Basic settings
 vim.opt.number = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 vim.g.mapleader = " "
 
 -- Runtime paths (corrected version)
@@ -25,6 +27,18 @@ vim.opt.packpath = vim.opt.runtimepath._value
 
 -- Initialize lazy.nvim
 require("lazy").setup({
+ {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = {"python", "markdown", "yaml"},
+        highlight = { enable = true },
+        indent = { enable = true },
+        fold = { enable = true },
+      }
+    end
+  },
  -- Status line and theming
  {
    "nvim-lualine/lualine.nvim",
@@ -69,6 +83,7 @@ require("lazy").setup({
  },
 
  -- Fuzzy finding
+ { "junegunn/fzf", build = "./install --bin" },
  {
    "ibhagwan/fzf-lua",
    dependencies = {
@@ -84,60 +99,48 @@ require("lazy").setup({
      })
    end,
  },
-
- -- Avante and its dependencies
- {
-   "yetone/avante.nvim",
-   event = "VeryLazy",
-   lazy = false,
-   version = false,
-   opts = {
-     -- add any opts here
-   },
-   build = "make",
-   dependencies = {
-     "nvim-treesitter/nvim-treesitter",
-     "stevearc/dressing.nvim",
-     "nvim-lua/plenary.nvim",
-     "MunifTanjim/nui.nvim",
-     -- Optional dependencies
-     "nvim-tree/nvim-web-devicons",
-     {
-       "HakonHarnes/img-clip.nvim",
-       event = "VeryLazy",
-       opts = {
-         default = {
-           embed_image_as_base64 = false,
-           prompt_for_file_name = false,
-           drag_and_drop = {
-             insert_mode = true,
-           },
-           use_absolute_path = true,
-         },
-       },
-     },
-     {
-       'MeanderingProgrammer/render-markdown.nvim',
-       opts = {
-         file_types = { "markdown", "Avante" },
-       },
-       ft = { "markdown", "Avante" },
-     },
-   },
- },
+{
+   "nvim-tree/nvim-tree.lua"
+},
+{
+        'kevinhwang91/nvim-ufo',
+        dependencies = {'kevinhwang91/promise-async'},
+        config = function()
+            vim.o.foldcolumn = '1'
+            vim.o.foldlevel = 99 
+            vim.o.foldlevelstart = 99
+            vim.o.foldenable = true
+            
+            vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+            vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+            
+            require('ufo').setup({
+                provider_selector = function()
+                    return {'treesitter', 'indent'}
+                end
+            })
+        end
+},
 })
+
+-- nvim-tree setup
+require('nvim-tree').setup()
 
 -- Key Mappings
 local map = vim.keymap.set
 -- Search and replace
 map('n', '<Leader>/', ':%s/', { noremap = true })
 map('v', '<Leader>/', ':s/\\%V', { noremap = true })
+
 -- Clipboard operations
 map('n', '<Leader>y', '"+y', { noremap = true })
 map('n', '<Leader>p', '"+p', { noremap = true })
+map('v', '<Leader>y', '"+y', { noremap = true })
+map('n', '<leader>.', 'oimport ipdb; ipdb.set_trace()<Esc>', { noremap = true, silent = true })
+
 -- Fuzzy finder
 map('n', '<leader>t', '<cmd>lua require("fzf-lua").files()<CR>', { noremap = true })
 map('n', '<Leader>b', '<cmd>lua require("fzf-lua").buffers()<CR>', { noremap = true })
-
+map('n', '<Leader>fg', '<cmd>lua require("fzf-lua").live_grep()<CR>', { noremap = true })
 -- Set colorscheme
 vim.cmd('colorscheme custom')
