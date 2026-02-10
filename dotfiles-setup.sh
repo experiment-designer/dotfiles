@@ -44,7 +44,7 @@ done
 
 # Copy .config files
 for dir in "${CONFIG_DIRS[@]}"; do
-    sync_file ~/.config/"$dir" ~/dotfiles/.config/"$dir"
+    sync_file ~/.config/"$dir"/ ~/dotfiles/.config/"$dir"/
 done
 
 # Sanitize API keys from .zshrc
