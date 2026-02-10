@@ -515,6 +515,15 @@ client.connect_signal("manage", function (c)
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
+
+    -- Shrink default floating window size to 40% of screen
+    if c.floating or (c.first_tag and c.first_tag.layout == awful.layout.suit.floating) then
+        local sg = c.screen.geometry
+        local w = math.floor(sg.width * 0.4)
+        local h = math.floor(sg.height * 0.4)
+        c:geometry({ width = w, height = h })
+        awful.placement.centered(c)
+    end
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
@@ -568,6 +577,11 @@ client.connect_signal("focus", function(c)
     c.border_color = beautiful.border_focus 
 end)
 client.connect_signal("unfocus", function(c)
-    c.border_color = beautiful.border_normal 
+    c.border_color = beautiful.border_normal
 end)
+-- }}}
+
+-- {{{ Autostart
+awful.spawn.with_shell("xbindkeys")
+awful.spawn.with_shell("setxkbmap -layout us,il,de -option grp:alt_shift_toggle")
 -- }}}

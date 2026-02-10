@@ -22,6 +22,8 @@ zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+autoload -Uz promptinit
+promptinit
 prompt off
 
 # Fix shell bugs
@@ -36,7 +38,7 @@ export OPENAI_API_KEY=YOUR_KEY_HERE
 
 # Powerline stuff
 powerline-daemon -q
-. /home/guy/.local/lib/python3.10/site-packages/powerline/bindings/zsh/powerline.zsh
+. /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
 
 # Yank to the system clipboard
 function vi-yank-xclip {
