@@ -6,7 +6,7 @@
 	m:0x0 + c:121
 "amixer sset Dmic0 toggle"
 	m:0x0 + c:198
-"expr `cat /sys/class/backlight/intel_backlight/brightness` + 500 > /sys/class/backlight/intel_backlight/brightness"
+"brightnessctl set +5%"
 	m:0x0 + c:233
-"expr `cat /sys/class/backlight/intel_backlight/brightness` - 500 > /sys/class/backlight/intel_backlight/brightness"
+"brightnessctl set 5%-"
 	m:0x0 + c:232

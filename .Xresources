@@ -1,7 +1,7 @@
 URxvt*scrollBar: false
 !!URxvt*font: xft:Input\ Mono:size=12
-URxvt.font: xft:Meslo LG M for Powerline:size=11
-URxvt.boldFont: xft:Meslo LG M for Powerline:Bold:size=11
+URxvt.font: xft:Meslo LG M for Powerline:size=10
+URxvt.boldFont: xft:Meslo LG M for Powerline:Bold:size=10
 URxvt.lineSpace: -2
 URxvt*internalBorder: 2
 URxvt.letterSpace: 0
