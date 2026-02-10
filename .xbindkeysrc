@@ -1,10 +1,8 @@
-"amixer sset Master 3%+"
+"pactl set-sink-volume @DEFAULT_SINK@ +3%"
 	m:0x0 + c:123
-"amixer sset Master 3%-"
+"pactl set-sink-volume @DEFAULT_SINK@ -3%"
 	m:0x0 + c:122
-"amixer sset Master toggle"
-	m:0x0 + c:121
-"amixer sset Speaker unmute"
+"pactl set-sink-mute @DEFAULT_SINK@ toggle"
 	m:0x0 + c:121
 "amixer sset Dmic0 toggle"
 	m:0x0 + c:198

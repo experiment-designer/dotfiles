@@ -10,6 +10,7 @@ HOME_DOTFILES=(
     ".xbindkeysrc"
     ".xinitrc"
     ".zshrc"
+    ".zprofile"
     ".Xresources"
     ".gitconfig"
 )
