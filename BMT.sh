@@ -6,13 +6,17 @@ set -o pipefail
 # Device config
 BT_MAC="70:5A:6F:6B:5C:35"
 BT_CARD="bluez_card.70_5A_6F_6B_5C_35"
-BT_SINK_A2DP="bluez_sink.70_5A_6F_6B_5C_35.a2dp_sink"
-BT_SINK_HFP="bluez_sink.70_5A_6F_6B_5C_35.handsfree_head_unit"
-BT_SOURCE_HFP="bluez_source.70_5A_6F_6B_5C_35.handsfree_head_unit"
+BT_SINK="bluez_output.${BT_MAC}"
+BT_SOURCE="bluez_input.${BT_MAC}"
 SPEAKERS="alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink"
 LAPTOP_MIC="alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Mic1__source"
 
 SCAN_TIMEOUT=12
+
+# --- Bluetoothctl wrapper ---
+# Non-interactive bluetoothctl returns empty on some systems because it
+# doesn't wait long enough to connect to bluetoothd. Pipe commands instead.
+btcmd() { echo -e "$1\nquit" | bluetoothctl 2>/dev/null; }
 
 # --- State checks ---
 
@@ -21,11 +25,11 @@ on_bluetooth() { [[ "$(current_sink)" == *bluez* ]]; }
 on_speakers() { [[ "$(current_sink)" == "$SPEAKERS" ]]; }
 has_bt_card() { pactl list cards short 2>/dev/null | grep -q "$BT_CARD"; }
 
-bt_info() { bluetoothctl info "$BT_MAC" 2>/dev/null; }
+bt_info() { btcmd "info $BT_MAC"; }
 bt_connected() { bt_info | grep -q "Connected: yes"; }
 bt_paired() { bt_info | grep -q "Paired: yes"; }
 bt_trusted() { bt_info | grep -q "Trusted: yes"; }
-bt_known() { bluetoothctl devices 2>/dev/null | grep -q "$BT_MAC"; }
+bt_known() { btcmd "devices" | grep -q "$BT_MAC"; }
 
 # --- Bluetooth connection ---
 
@@ -42,35 +46,49 @@ EOF
 bt_scan_and_find() {
     echo "Scanning for EarFun..."
 
-    # Run scan with timeout
-    timeout "$SCAN_TIMEOUT" bluetoothctl --timeout "$SCAN_TIMEOUT" scan on &>/dev/null &
-    local scan_pid=$!
+    # Watch bluetoothctl output stream for [NEW] Device with our MAC
+    # (polling 'devices' in separate sessions doesn't work reliably)
+    expect -c "
+        log_user 0
+        set timeout $SCAN_TIMEOUT
+        spawn bluetoothctl
+        expect -re \".+\"
+        send \"scan on\r\"
+        expect {
+            \"$BT_MAC\" {
+                send \"scan off\r\"
+                expect -re \".+\"
+                send \"quit\r\"
+                expect eof
+                exit 0
+            }
+            timeout {
+                send \"scan off\r\"
+                expect -re \".+\"
+                send \"quit\r\"
+                expect eof
+                exit 1
+            }
+        }
+    " &>/dev/null
 
-    # Poll for device appearance
-    for ((i=0; i<SCAN_TIMEOUT*2; i++)); do
-        if bluetoothctl devices 2>/dev/null | grep -q "$BT_MAC"; then
-            kill $scan_pid 2>/dev/null
-            echo "Found!"
-            return 0
-        fi
-        sleep 0.5
-    done
-
-    kill $scan_pid 2>/dev/null
+    if [[ $? -eq 0 ]]; then
+        echo "Found!"
+        return 0
+    fi
     return 1
 }
 
 bt_pair_interactive() {
     echo "Pairing..."
-    # Use expect to handle authorization prompts
     expect -c "
         set timeout 30
         spawn bluetoothctl
-        expect \"#\"
+        expect -re \".+\"
         send \"agent on\r\"
-        expect \"#\"
+        expect -re \".+\"
         send \"default-agent\r\"
-        expect \"#\"
+        expect -re \".+\"
         send \"pair $BT_MAC\r\"
         expect {
             \"Pairing successful\" { }
@@ -82,7 +100,7 @@ bt_pair_interactive() {
             timeout { exit 1 }
         }
         send \"trust $BT_MAC\r\"
-        expect \"#\"
+        expect -re \".+\"
         send \"quit\r\"
         expect eof
     " 2>&1 | grep -qE "Pairing successful|already exists"
@@ -91,21 +109,33 @@ bt_pair_interactive() {
 bt_connect_simple() {
     # Simple connect - works when device is trusted
     local out
-    out=$(timeout 10 bluetoothctl connect "$BT_MAC" 2>&1)
-    if echo "$out" | grep -q "Connection successful"; then
-        return 0
-    elif echo "$out" | grep -q "org.bluez.Error.AuthenticationFailed\|key-missing"; then
-        return 2  # needs re-pairing
+    out=$(expect -c "
+        log_user 1
+        set timeout 15
+        spawn bluetoothctl
+        expect -re \".+\"
+        send \"connect $BT_MAC\r\"
+        expect {
+            \"Connection successful\" { send \"quit\r\"; expect eof; exit 0 }
+            \"AuthenticationFailed\" { send \"quit\r\"; expect eof; exit 2 }
+            \"key-missing\" { send \"quit\r\"; expect eof; exit 2 }
+            \"not available\" { send \"quit\r\"; expect eof; exit 1 }
+            timeout { send \"quit\r\"; expect eof; exit 1 }
+        }
+    " 2>&1)
+    local ret=$?
+    if [[ $ret -eq 0 ]]; then return 0
+    elif [[ $ret -eq 2 ]]; then return 2
     fi
     return 1
 }
 
 bt_trust() {
-    bluetoothctl trust "$BT_MAC" &>/dev/null
+    btcmd "trust $BT_MAC" &>/dev/null
 }
 
 bt_remove() {
-    bluetoothctl remove "$BT_MAC" &>/dev/null
+    btcmd "remove $BT_MAC" &>/dev/null
     sleep 0.5
 }
 
@@ -196,7 +226,7 @@ wait_for_audio_card() {
 # Reconnect to fix half-connected state
 bt_reconnect() {
     echo "Reconnecting..."
-    bluetoothctl disconnect "$BT_MAC" &>/dev/null
+    btcmd "disconnect $BT_MAC" &>/dev/null
     sleep 1
     bt_connect_simple
 }
@@ -212,11 +242,12 @@ switch_to_speakers() {
 
 get_available_profile() {
     # Return best available profile (prefer A2DP for quality)
+    # PipeWire uses a2dp-sink / headset-head-unit profile names
     local cards
     cards=$(pactl list cards 2>/dev/null)
-    if echo "$cards" | grep -q "a2dp_sink.*available: yes"; then
+    if echo "$cards" | grep -q "a2dp-sink:.*available"; then
         echo "a2dp"
-    elif echo "$cards" | grep -q "handsfree_head_unit.*available: yes"; then
+    elif echo "$cards" | grep -q "headset-head-unit:.*available"; then
         echo "hfp"
     else
         echo "none"
@@ -225,7 +256,7 @@ get_available_profile() {
 
 switch_to_bluetooth() {
     local requested="$1"
-    local available profile sink source
+    local available profile
 
     available=$(get_available_profile)
 
@@ -244,26 +275,24 @@ switch_to_bluetooth() {
     fi
 
     if [[ "$profile" == "hfp" ]]; then
-        pactl set-card-profile "$BT_CARD" handsfree_head_unit 2>/dev/null
+        pactl set-card-profile "$BT_CARD" headset-head-unit 2>/dev/null
         sleep 0.5
-        sink="$BT_SINK_HFP"
-        source="$BT_SOURCE_HFP"
+        pactl set-default-sink "$BT_SINK" 2>/dev/null
+        pactl set-default-source "$BT_SOURCE" 2>/dev/null
     else
-        pactl set-card-profile "$BT_CARD" a2dp_sink 2>/dev/null
+        pactl set-card-profile "$BT_CARD" a2dp-sink 2>/dev/null
         sleep 0.5
-        sink="$BT_SINK_A2DP"
-        source="$LAPTOP_MIC"
+        pactl set-default-sink "$BT_SINK" 2>/dev/null
+        pactl set-default-source "$LAPTOP_MIC" 2>/dev/null
     fi
 
     # Verify sink exists
-    if ! pactl list sinks short 2>/dev/null | grep -q "$sink"; then
-        echo "Error: Sink $sink not available"
+    if ! pactl list sinks short 2>/dev/null | grep -q "$BT_SINK"; then
+        echo "Error: Sink $BT_SINK not available"
         return 1
     fi
 
-    pactl set-default-sink "$sink" 2>/dev/null
-    pactl set-default-source "$source" 2>/dev/null
-    move_streams "$sink"
+    move_streams "$BT_SINK"
 
     if [[ "$profile" == "hfp" ]]; then
         echo "Switched to EarFun (HFP - with mic)"
