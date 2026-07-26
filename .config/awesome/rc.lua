@@ -48,8 +48,33 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/wallpaper.jpg"
 
+-- A small, terminal-inspired palette shared by the bar widgets.
+local palette = {
+    bar       = "#15171c",
+    surface   = "#24272f",
+    surface_2 = "#30343e",
+    foreground = "#e5e9f0",
+    green     = "#87d75f",
+    cyan      = "#87d7ff",
+    violet    = "#c099ff",
+    amber     = "#ffaf00",
+    red       = "#ff6b6b",
+}
+
+beautiful.font = "InputSans Nerd Font 10"
+beautiful.bg_normal = palette.bar
+beautiful.bg_focus = palette.surface_2
+beautiful.bg_urgent = "#d75f00"
+beautiful.fg_normal = palette.foreground
+beautiful.fg_focus = "#ffffff"
+beautiful.fg_urgent = "#ffffff"
+beautiful.border_focus = palette.green
+beautiful.taglist_shape = gears.shape.rounded_rect
+beautiful.tasklist_shape = gears.shape.rounded_rect
+beautiful.tooltip_font = "JetBrains Mono 9"
+
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
+terminal = "wezterm"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -79,6 +104,37 @@ awful.layout.layouts = {
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
 }
+
+-- Keyboard layout configuration (single source of truth).
+local keyboard_layouts = "us,il,de"
+local keyboard_toggle_option = "grp:alt_shift_toggle"
+
+local function apply_keyboard_layout()
+    awful.spawn.with_shell(
+        "setxkbmap -layout " .. keyboard_layouts ..
+        " -option '' -option " .. keyboard_toggle_option
+    )
+end
+
+local function ensure_keyboard_layout()
+    awful.spawn.easy_async_with_shell(
+        "setxkbmap -query | awk '/^layout:/{l=$2} /^options:/{o=$2} END{print l \"|\" o}'",
+        function(stdout)
+            local layout, options = stdout:match("^([^|]+)|([^\n]*)")
+            local has_toggle = options and options:match("(^|,)" .. keyboard_toggle_option .. "(,|$)")
+            if layout ~= keyboard_layouts or not has_toggle then
+                apply_keyboard_layout()
+            end
+        end
+    )
+end
+
+local keyboard_layout_guard = gears.timer({
+    timeout = 10,
+    autostart = true,
+    call_now = false,
+    callback = ensure_keyboard_layout
+})
 -- }}}
 
 -- {{{ Menu
@@ -103,12 +159,417 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
--- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
-
 -- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+local function make_pill(widget, background, left, right)
+    return wibox.widget {
+        {
+            widget,
+            left = left or 10,
+            right = right or 10,
+            top = 3,
+            bottom = 3,
+            widget = wibox.container.margin,
+        },
+        bg = background or palette.surface,
+        shape = gears.shape.rounded_rect,
+        widget = wibox.container.background,
+    }
+end
+
+local function make_labeled_widget(icon, widget)
+    return wibox.widget {
+        {
+            text = icon,
+            font = "InputSans Nerd Font 11",
+            widget = wibox.widget.textbox,
+        },
+        widget,
+        spacing = 6,
+        layout = wibox.layout.fixed.horizontal,
+    }
+end
+
+-- Battery capsule -----------------------------------------------------------
+-- One timer feeds every screen, so multi-monitor setups do not poll sysfs or
+-- emit low-battery notifications more than once.
+local battery_views = {}
+local battery_timer
+local battery_details = "Battery data is loading…"
+local battery_alert_level
+
+local battery_command = [[
+for battery in /sys/class/power_supply/BAT*; do
+    [ -r "$battery/capacity" ] || continue
+    capacity=$(cat "$battery/capacity" 2>/dev/null)
+    battery_state=$(cat "$battery/status" 2>/dev/null)
+    now=$(cat "$battery/energy_now" 2>/dev/null)
+    [ -n "$now" ] || now=$(cat "$battery/charge_now" 2>/dev/null)
+    full=$(cat "$battery/energy_full" 2>/dev/null)
+    [ -n "$full" ] || full=$(cat "$battery/charge_full" 2>/dev/null)
+    rate=$(cat "$battery/power_now" 2>/dev/null)
+    [ -n "$rate" ] || rate=$(cat "$battery/current_now" 2>/dev/null)
+    printf '%s|%s|%s|%s|%s\n' "$capacity" "$battery_state" "$now" "$full" "$rate"
+    break
+done
+]]
+
+local function battery_icon(capacity, status)
+    if status == "Charging" then
+        return "󰂄"
+    end
+
+    local icons = {
+        "󰂎", "󰁺", "󰁻", "󰁼", "󰁽",
+        "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹",
+    }
+    local index = math.min(11, math.max(1, math.floor(capacity / 10) + 1))
+    return icons[index]
+end
+
+local function battery_color(capacity, status)
+    if status == "Charging" then
+        return palette.cyan
+    elseif capacity <= 15 then
+        return palette.red
+    elseif capacity <= 35 then
+        return palette.amber
+    end
+    return palette.green
+end
+
+local function format_duration(minutes)
+    if not minutes or minutes <= 0 then
+        return nil
+    end
+
+    local hours = math.floor(minutes / 60)
+    local mins = minutes % 60
+    if hours > 0 then
+        return string.format("%dh %02dm", hours, mins)
+    end
+    return string.format("%dm", mins)
+end
+
+local function update_battery()
+    awful.spawn.easy_async({ "/bin/sh", "-c", battery_command }, function(stdout)
+        local capacity_s, status, now_s, full_s, rate_s =
+            stdout:match("^(%d+)|([^|]*)|(%d*)|(%d*)|(%d*)")
+        local capacity = tonumber(capacity_s)
+
+        if not capacity then
+            battery_details = "No battery detected"
+            for _, view in ipairs(battery_views) do
+                view.container:set_visible(false)
+            end
+            return
+        end
+
+        local now = tonumber(now_s)
+        local full = tonumber(full_s)
+        local rate = tonumber(rate_s)
+        local remaining_minutes
+
+        if rate and rate > 0 then
+            if status == "Discharging" and now then
+                remaining_minutes = math.floor((now / rate) * 60 + 0.5)
+            elseif status == "Charging" and now and full then
+                remaining_minutes = math.floor(((full - now) / rate) * 60 + 0.5)
+            end
+        end
+
+        local duration = format_duration(remaining_minutes)
+        local suffix = ""
+        if duration then
+            suffix = status == "Charging"
+                and " • " .. duration .. " until full"
+                or " • " .. duration .. " remaining"
+        end
+
+        battery_details = string.format("%s%s", status, suffix)
+        local color = battery_color(capacity, status)
+        local icon = battery_icon(capacity, status)
+
+        for _, view in ipairs(battery_views) do
+            view.container:set_visible(true)
+            view.icon:set_markup(string.format(
+                "<span foreground='%s'>%s</span>",
+                color,
+                icon
+            ))
+            view.percent:set_markup(string.format("<b>%d%%</b>", capacity))
+            view.tooltip:set_text(
+                string.format("Battery %d%%\n%s", capacity, battery_details)
+            )
+            view.container:set_bg(capacity <= 7 and "#402329" or palette.surface)
+        end
+
+        if status == "Discharging" then
+            local alert_level = capacity <= 7 and 7 or capacity <= 15 and 15
+            if alert_level and (not battery_alert_level or alert_level < battery_alert_level) then
+                naughty.notify {
+                    preset = alert_level == 7
+                        and naughty.config.presets.critical
+                        or naughty.config.presets.normal,
+                    title = alert_level == 7 and "Battery critically low" or "Battery running low",
+                    text = string.format("%d%% • %s", capacity, battery_details),
+                    timeout = 8,
+                }
+                battery_alert_level = alert_level
+            elseif capacity > 20 then
+                battery_alert_level = nil
+            end
+        else
+            battery_alert_level = nil
+        end
+    end)
+end
+
+local function make_battery_widget()
+    local icon = wibox.widget {
+        font = "InputSans Nerd Font 12",
+        widget = wibox.widget.textbox,
+    }
+    local percent = wibox.widget {
+        text = "--%",
+        font = "JetBrains Mono SemiBold 9",
+        widget = wibox.widget.textbox,
+    }
+
+    local contents = wibox.widget {
+        icon,
+        percent,
+        spacing = 6,
+        layout = wibox.layout.fixed.horizontal,
+    }
+    local container = make_pill(contents, palette.surface, 10, 10)
+    container:set_visible(false)
+
+    local tooltip = awful.tooltip {
+        objects = { container },
+        text = battery_details,
+        delay_show = 0.25,
+        bg = palette.surface_2,
+        fg = palette.foreground,
+        shape = gears.shape.rounded_rect,
+    }
+
+    container:buttons(gears.table.join(
+        awful.button({}, 1, function()
+            naughty.notify {
+                title = "Battery",
+                text = battery_details,
+                timeout = 5,
+            }
+        end)
+    ))
+
+    table.insert(battery_views, {
+        icon = icon,
+        percent = percent,
+        container = container,
+        tooltip = tooltip,
+    })
+
+    if not battery_timer then
+        battery_timer = gears.timer {
+            timeout = 15,
+            autostart = true,
+            call_now = true,
+            callback = update_battery,
+        }
+    end
+
+    return container
+end
+
+-- CPU + memory capsules -----------------------------------------------------
+-- /proc is cheap to read directly; a single timer updates every screen.
+local system_views = {}
+local system_timer
+local previous_cpu_total
+local previous_cpu_idle
+
+local function read_first_line(path)
+    local file = io.open(path, "r")
+    if not file then
+        return nil
+    end
+
+    local line = file:read("*l")
+    file:close()
+    return line
+end
+
+local function read_all(path)
+    local file = io.open(path, "r")
+    if not file then
+        return nil
+    end
+
+    local contents = file:read("*a")
+    file:close()
+    return contents
+end
+
+local function resource_color(usage, normal, warning_at, critical_at)
+    if usage >= critical_at then
+        return palette.red
+    elseif usage >= warning_at then
+        return palette.amber
+    end
+    return normal
+end
+
+local function update_system_stats()
+    local cpu_line = read_first_line("/proc/stat")
+    local meminfo = read_all("/proc/meminfo")
+    if not cpu_line or not meminfo then
+        return
+    end
+
+    local cpu_values = {}
+    for value in cpu_line:gmatch("%d+") do
+        table.insert(cpu_values, tonumber(value))
+    end
+
+    local cpu_total = 0
+    for index = 1, math.min(8, #cpu_values) do
+        cpu_total = cpu_total + cpu_values[index]
+    end
+    local cpu_idle = (cpu_values[4] or 0) + (cpu_values[5] or 0)
+    local total_delta = previous_cpu_total and cpu_total - previous_cpu_total or cpu_total
+    local idle_delta = previous_cpu_idle and cpu_idle - previous_cpu_idle or cpu_idle
+    previous_cpu_total = cpu_total
+    previous_cpu_idle = cpu_idle
+
+    local cpu_usage = 0
+    if total_delta > 0 then
+        cpu_usage = math.floor(
+            ((total_delta - idle_delta) / total_delta) * 100 + 0.5
+        )
+    end
+    cpu_usage = math.max(0, math.min(100, cpu_usage))
+
+    local mem_total = tonumber(meminfo:match("MemTotal:%s+(%d+)"))
+    local mem_available = tonumber(meminfo:match("MemAvailable:%s+(%d+)"))
+    if not mem_total or not mem_available then
+        return
+    end
+
+    local mem_used = mem_total - mem_available
+    local mem_usage = math.floor((mem_used / mem_total) * 100 + 0.5)
+    local load_line = read_first_line("/proc/loadavg") or ""
+    local load_1, load_5, load_15 =
+        load_line:match("^(%S+)%s+(%S+)%s+(%S+)")
+
+    local cpu_color = resource_color(cpu_usage, palette.cyan, 70, 90)
+    local mem_color = resource_color(mem_usage, palette.violet, 75, 90)
+    local cpu_details = string.format(
+        "CPU %d%%\nLoad  %s  %s  %s\nClick to open htop",
+        cpu_usage,
+        load_1 or "–",
+        load_5 or "–",
+        load_15 or "–"
+    )
+    local mem_details = string.format(
+        "Memory %d%%\n%.1f GiB used  •  %.1f GiB available\n%.1f GiB total\nClick to open htop",
+        mem_usage,
+        mem_used / 1048576,
+        mem_available / 1048576,
+        mem_total / 1048576
+    )
+
+    for _, view in ipairs(system_views) do
+        view.cpu_icon:set_markup(string.format(
+            "<span foreground='%s'></span>",
+            cpu_color
+        ))
+        view.cpu_value:set_markup(string.format("<b>%d%%</b>", cpu_usage))
+        view.cpu_tooltip:set_text(cpu_details)
+
+        view.mem_icon:set_markup(string.format(
+            "<span foreground='%s'>󰍛</span>",
+            mem_color
+        ))
+        view.mem_value:set_markup(string.format("<b>%d%%</b>", mem_usage))
+        view.mem_tooltip:set_text(mem_details)
+    end
+end
+
+local function make_resource_capsule()
+    local icon = wibox.widget {
+        font = "InputSans Nerd Font 11",
+        widget = wibox.widget.textbox,
+    }
+    local value = wibox.widget {
+        text = "--%",
+        font = "JetBrains Mono SemiBold 9",
+        widget = wibox.widget.textbox,
+    }
+    local contents = wibox.widget {
+        icon,
+        value,
+        spacing = 6,
+        layout = wibox.layout.fixed.horizontal,
+    }
+
+    return {
+        icon = icon,
+        value = value,
+        container = make_pill(contents, palette.surface, 9, 9),
+    }
+end
+
+local function make_system_widgets()
+    local cpu = make_resource_capsule()
+    local memory = make_resource_capsule()
+    local cpu_tooltip = awful.tooltip {
+        objects = { cpu.container },
+        text = "CPU data is loading…",
+        delay_show = 0.25,
+        bg = palette.surface_2,
+        fg = palette.foreground,
+        shape = gears.shape.rounded_rect,
+    }
+    local mem_tooltip = awful.tooltip {
+        objects = { memory.container },
+        text = "Memory data is loading…",
+        delay_show = 0.25,
+        bg = palette.surface_2,
+        fg = palette.foreground,
+        shape = gears.shape.rounded_rect,
+    }
+    local open_monitor = function()
+        awful.spawn(terminal .. " -e htop")
+    end
+
+    cpu.container:buttons(gears.table.join(
+        awful.button({}, 1, open_monitor)
+    ))
+    memory.container:buttons(gears.table.join(
+        awful.button({}, 1, open_monitor)
+    ))
+
+    table.insert(system_views, {
+        cpu_icon = cpu.icon,
+        cpu_value = cpu.value,
+        cpu_tooltip = cpu_tooltip,
+        mem_icon = memory.icon,
+        mem_value = memory.value,
+        mem_tooltip = mem_tooltip,
+    })
+
+    if not system_timer then
+        system_timer = gears.timer {
+            timeout = 3,
+            autostart = true,
+            call_now = true,
+            callback = update_system_stats,
+        }
+    end
+
+    return cpu.container, memory.container
+end
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -186,35 +647,107 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
+        buttons = taglist_buttons,
+        style = {
+            shape = gears.shape.rounded_rect,
+            bg_focus = palette.surface_2,
+            fg_focus = palette.cyan,
+        },
+        layout = {
+            spacing = 4,
+            layout = wibox.layout.fixed.horizontal,
+        },
     }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+        buttons = tasklist_buttons,
+        style = {
+            shape = gears.shape.rounded_rect,
+            bg_focus = palette.surface_2,
+        },
+        layout = {
+            spacing = 5,
+            layout = wibox.layout.flex.horizontal,
+        },
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    s.mywibox = awful.wibar {
+        position = "top",
+        screen = s,
+        height = 34,
+        bg = palette.bar,
+        fg = palette.foreground,
+    }
+
+    local keyboard_layout = awful.widget.keyboardlayout()
+    local keyboard = make_pill(
+        make_labeled_widget("󰌌", keyboard_layout),
+        palette.surface
+    )
+    local systray = wibox.widget.systray()
+    systray:set_base_size(18)
+    local tray = make_pill(systray, palette.surface, 8, 8)
+    tray:set_visible(s == screen.primary)
+    local clock = make_pill(
+        wibox.widget.textclock(
+            "<span font_family='InputSans Nerd Font' foreground='" ..
+                palette.cyan ..
+                "'>󰥔</span> " ..
+            "<span font_family='JetBrains Mono' weight='medium' foreground='#aeb6c4'>" ..
+                "%a · %d %b</span>  " ..
+            "<span font_family='JetBrains Mono' weight='bold' foreground='#ffffff'>" ..
+                "%H:%M</span>"
+        ),
+        palette.surface
+    )
+    local layout = make_pill(s.mylayoutbox, palette.surface, 8, 8)
+    s.mycpuwidget, s.mymemorywidget = make_system_widgets()
+    s.mybatterywidget = make_battery_widget()
 
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-            s.mytaglist,
-            s.mypromptbox,
+        {
+            { -- Left widgets
+                layout = wibox.layout.fixed.horizontal,
+                spacing = 7,
+                mylauncher,
+                s.mytaglist,
+                s.mypromptbox,
+            },
+            left = 8,
+            top = 3,
+            bottom = 3,
+            widget = wibox.container.margin,
         },
-        s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
-            wibox.widget.systray(),
-            mytextclock,
-            s.mylayoutbox,
+        {
+            s.mytasklist, -- Middle widget
+            left = 10,
+            right = 10,
+            top = 3,
+            bottom = 3,
+            widget = wibox.container.margin,
+        },
+        {
+            { -- Right widgets
+                layout = wibox.layout.fixed.horizontal,
+                spacing = 6,
+                keyboard,
+                tray,
+                layout,
+                s.mycpuwidget,
+                s.mymemorywidget,
+                clock,
+                s.mybatterywidget,
+            },
+            right = 8,
+            top = 3,
+            bottom = 3,
+            widget = wibox.container.margin,
         },
     }
 end)
@@ -583,5 +1116,6 @@ end)
 
 -- {{{ Autostart
 awful.spawn.with_shell("xbindkeys")
-awful.spawn.with_shell("setxkbmap -layout us,il,de -option grp:alt_shift_toggle")
+apply_keyboard_layout()
+ensure_keyboard_layout()
 -- }}}
