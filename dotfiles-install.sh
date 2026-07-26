@@ -7,48 +7,33 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-HOME_DOTFILES=(
-    ".bashrc"
-    ".vimrc"
-    ".xbindkeysrc"
-    ".xinitrc"
-    ".zshrc"
-    ".zprofile"
-    ".Xresources"
-    ".gitconfig"
-)
+# shellcheck source=dotfiles-manifest.sh
+source "$DOTFILES_DIR/dotfiles-manifest.sh"
 
-CONFIG_DIRS=(
-    "alacritty"
-    "awesome"
-    "nvim"
-    "powerline"
-    "wezterm"
-)
+install_system=true
+if [ "${1:-}" = "--user-only" ]; then
+    install_system=false
+    shift
+fi
+if [ "$#" -ne 0 ]; then
+    echo "Usage: $0 [--user-only]" >&2
+    exit 2
+fi
 
-USER_SCRIPTS=(
-    "BMT.sh"
-    "bin/brightness-step"
-)
-
-XORG_CONFIGS=(
-    "00-keyboard.conf"
-    "30-touchpad.conf"
-)
-
-UDEV_RULES=(
-    "90-battery-threshold.rules"
-)
-
-mkdir -p ~/.config ~/.local/bin
+mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
 link_path() {
     local source="$1"
     local destination="$2"
     local backup
+    local source_real
+    local destination_real
 
+    source_real="$(readlink -f -- "$source")"
+    destination_real="$(readlink -f -- "$destination" 2>/dev/null || true)"
     if [ -L "$destination" ] \
-        && [ "$(readlink -f -- "$destination")" = "$(readlink -f -- "$source")" ]; then
+        && [ -n "$destination_real" ] \
+        && [ "$destination_real" = "$source_real" ]; then
         echo "Already linked $destination"
         return
     fi
@@ -84,22 +69,26 @@ for file in "${USER_SCRIPTS[@]}"; do
     fi
 done
 
-for file in "${XORG_CONFIGS[@]}"; do
-    if [ -f "$DOTFILES_DIR/$file" ]; then
-        sudo install -D -m 0644 \
-            "$DOTFILES_DIR/$file" \
-            "/etc/X11/xorg.conf.d/$file"
-        echo "Installed /etc/X11/xorg.conf.d/$file"
-    fi
-done
+if $install_system; then
+    for file in "${XORG_CONFIGS[@]}"; do
+        if [ -f "$DOTFILES_DIR/$file" ]; then
+            sudo install -D -m 0644 \
+                "$DOTFILES_DIR/$file" \
+                "/etc/X11/xorg.conf.d/$file"
+            echo "Installed /etc/X11/xorg.conf.d/$file"
+        fi
+    done
 
-for file in "${UDEV_RULES[@]}"; do
-    if [ -f "$DOTFILES_DIR/$file" ]; then
-        sudo install -D -m 0644 \
-            "$DOTFILES_DIR/$file" \
-            "/etc/udev/rules.d/$file"
-        echo "Installed /etc/udev/rules.d/$file"
-    fi
-done
+    for file in "${UDEV_RULES[@]}"; do
+        if [ -f "$DOTFILES_DIR/$file" ]; then
+            sudo install -D -m 0644 \
+                "$DOTFILES_DIR/$file" \
+                "/etc/udev/rules.d/$file"
+            echo "Installed /etc/udev/rules.d/$file"
+        fi
+    done
+else
+    echo "Skipped system configuration (--user-only)."
+fi
 
 echo "Done! You may need to fill in API keys in ~/.zshrc"

@@ -76,12 +76,26 @@ unset __conda_setup
 # For aider
 export PATH="/home/guy/.local/bin:$PATH"
 
-# Search plugin (arrow keys)
-source /home/guy/.zsh_repos/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-# bindkey '^[[A' history-substring-search-up
-# bindkey '^[[B' history-substring-search-down
+# Search history for the text already typed at the prompt.
+history_search_plugin="$HOME/.zsh_repos/zsh-history-substring-search/zsh-history-substring-search.zsh"
+if [[ -r "$history_search_plugin" ]]; then
+    source "$history_search_plugin"
+
+    for keymap in emacs viins; do
+        # WezTerm/xterm normal and application cursor modes.
+        bindkey -M "$keymap" '^[[A' history-substring-search-up
+        bindkey -M "$keymap" '^[[B' history-substring-search-down
+        bindkey -M "$keymap" '^[OA' history-substring-search-up
+        bindkey -M "$keymap" '^[OB' history-substring-search-down
+
+        # Use terminfo too when the current terminal provides it.
+        [[ -n "${terminfo[kcuu1]-}" ]] &&
+            bindkey -M "$keymap" "$terminfo[kcuu1]" history-substring-search-up
+        [[ -n "${terminfo[kcud1]-}" ]] &&
+            bindkey -M "$keymap" "$terminfo[kcud1]" history-substring-search-down
+    done
+fi
+unset history_search_plugin keymap
 
         
 #export PATH="/usr/local/bin:$PATH"

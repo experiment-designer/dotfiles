@@ -9,38 +9,11 @@ if ! command -v rsync >/dev/null 2>&1; then
     exit 1
 fi
 
+# shellcheck source=dotfiles-manifest.sh
+source "$DOTFILES_DIR/dotfiles-manifest.sh"
+
 # Create necessary directories
-mkdir -p "$DOTFILES_DIR/.config"
-
-# List of dotfiles from home directory to manage
-HOME_DOTFILES=(
-    ".bashrc"
-    ".vimrc"
-    ".xbindkeysrc"
-    ".xinitrc"
-    ".zshrc"
-    ".zprofile"
-    ".Xresources"
-    ".gitconfig"
-)
-
-# List of .config directories/files to manage
-CONFIG_DIRS=(
-    "alacritty"
-    "awesome"
-    "nvim"
-    "powerline"
-    "wezterm"
-)
-
-XORG_CONFIGS=(
-    "00-keyboard.conf"
-    "30-touchpad.conf"
-)
-
-UDEV_RULES=(
-    "90-battery-threshold.rules"
-)
+mkdir -p "$DOTFILES_DIR/.config" "$DOTFILES_DIR/bin"
 
 # Function to sync files
 sync_file() {
@@ -61,8 +34,9 @@ sync_file() {
         fi
 
         echo "Copying $src to $dest"
-        # Dereference source symlinks so the repository stores real files.
-        rsync -ahL --progress "$src" "$dest"
+        # Dereference source symlinks and preserve useful file metadata, but
+        # never copy system ownership/group into the user-owned repository.
+        rsync -rltpLh --progress "$src" "$dest"
     else
         echo "Warning: $src does not exist, skipping"
     fi
@@ -78,6 +52,11 @@ for dir in "${CONFIG_DIRS[@]}"; do
     sync_file ~/.config/"$dir"/ "$DOTFILES_DIR/.config/$dir/"
 done
 
+# Copy user scripts back to their repository paths.
+for file in "${USER_SCRIPTS[@]}"; do
+    sync_file "$HOME/.local/bin/${file##*/}" "$DOTFILES_DIR/$file"
+done
+
 # Copy system configuration files
 for file in "${XORG_CONFIGS[@]}"; do
     sync_file "/etc/X11/xorg.conf.d/$file" "$DOTFILES_DIR/$file"
@@ -87,14 +66,25 @@ for file in "${UDEV_RULES[@]}"; do
     sync_file "/etc/udev/rules.d/$file" "$DOTFILES_DIR/$file"
 done
 
-# Sanitize API keys from the repository copy.
-echo "Sanitizing API keys from .zshrc..."
-sed -i \
-    -e 's/export ANTHROPIC_API_KEY=.*/export ANTHROPIC_API_KEY=YOUR_KEY_HERE/' \
-    -e 's/export GEMINI_API_KEY=.*/export GEMINI_API_KEY=YOUR_KEY_HERE/' \
-    -e 's/export XAI_API_KEY=.*/export XAI_API_KEY=YOUR_KEY_HERE/' \
-    -e 's/export OPENAI_API_KEY=.*/export OPENAI_API_KEY=YOUR_KEY_HERE/' \
-    "$DOTFILES_DIR/.zshrc"
+# Never rewrite the live shell config behind a symlink. Refuse to continue if
+# a real key was placed in the tracked copy.
+for key in ANTHROPIC_API_KEY GEMINI_API_KEY XAI_API_KEY OPENAI_API_KEY; do
+    assignment="$(grep -E "^export ${key}=" "$DOTFILES_DIR/.zshrc" | tail -n 1 || true)"
+    [ -z "$assignment" ] && continue
+
+    value="${assignment#*=}"
+    value="${value#\"}"
+    value="${value%\"}"
+    value="${value#\'}"
+    value="${value%\'}"
+    if [ -n "$value" ] && [ "$value" != "YOUR_KEY_HERE" ]; then
+        echo "Error: $key contains a non-placeholder value in tracked .zshrc." >&2
+        echo "Move secrets to an untracked file before collecting dotfiles." >&2
+        exit 1
+    fi
+done
+unset assignment value key
+echo "Tracked API key placeholders verified."
 
 echo "Dotfiles sync completed!"
 echo ""
