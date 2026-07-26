@@ -54,6 +54,7 @@ local palette = {
     surface   = "#24272f",
     surface_2 = "#30343e",
     foreground = "#e5e9f0",
+    muted     = "#707887",
     green     = "#87d75f",
     cyan      = "#87d7ff",
     violet    = "#c099ff",
@@ -72,6 +73,10 @@ beautiful.border_focus = palette.green
 beautiful.taglist_shape = gears.shape.rounded_rect
 beautiful.tasklist_shape = gears.shape.rounded_rect
 beautiful.tooltip_font = "JetBrains Mono 9"
+beautiful.taglist_squares_sel = nil
+beautiful.taglist_squares_unsel = nil
+beautiful.taglist_squares_sel_empty = nil
+beautiful.taglist_squares_unsel_empty = nil
 
 -- This is used later as the default terminal and editor to run.
 terminal = "wezterm"
@@ -611,6 +616,145 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
+local function client_glyph(c)
+    local identity = table.concat({
+        c.class or "",
+        c.instance or "",
+        c.name or "",
+    }, " "):lower()
+
+    if identity:find("slack", 1, true) then
+        return ""
+    elseif identity:find("discord", 1, true) then
+        return ""
+    elseif identity:find("spotify", 1, true) then
+        return ""
+    elseif identity:find("firefox", 1, true) then
+        return "󰈹"
+    elseif identity:find("chrom", 1, true) or identity:find("edge", 1, true) then
+        return ""
+    elseif identity:find("nvim", 1, true) or identity:find("code", 1, true) then
+        return ""
+    elseif identity:find("wezterm", 1, true)
+        or identity:find("alacritty", 1, true)
+        or identity:find("kitty", 1, true) then
+        return ""
+    elseif identity:find("thunar", 1, true)
+        or identity:find("nautilus", 1, true)
+        or identity:find("dolphin", 1, true) then
+        return ""
+    elseif identity:find("claude", 1, true) then
+        return "✦"
+    end
+
+    return ""
+end
+
+local function tag_client_summary(t)
+    local clients = t:clients()
+    local glyphs = {}
+    local seen = {}
+
+    for _, c in ipairs(clients) do
+        local glyph = client_glyph(c)
+        if not seen[glyph] and #glyphs < 2 then
+            table.insert(glyphs, glyph)
+            seen[glyph] = true
+        end
+    end
+
+    local suffix = #clients > 1 and " ·" .. #clients or ""
+    return table.concat(glyphs, " ") .. suffix, clients
+end
+
+local function tag_tooltip_text(t, clients)
+    if #clients == 0 then
+        return string.format("Workspace %s • empty", t.name)
+    end
+
+    local lines = {
+        string.format(
+            "Workspace %s • %d window%s",
+            t.name,
+            #clients,
+            #clients == 1 and "" or "s"
+        ),
+    }
+    for index, c in ipairs(clients) do
+        if index > 6 then
+            table.insert(lines, string.format("• …and %d more", #clients - 6))
+            break
+        end
+
+        local title = (c.name or c.class or "Untitled"):gsub("[\r\n]+", " ")
+        local class = c.class and "  [" .. c.class .. "]" or ""
+        table.insert(lines, "• " .. title .. class)
+    end
+    return table.concat(lines, "\n")
+end
+
+local function update_tag_widget(self, t, index)
+    local summary, clients = tag_client_summary(t)
+    local number = self:get_children_by_id("number_role")[1]
+    local apps = self:get_children_by_id("apps_role")[1]
+    local number_color = t.selected and "#ffffff"
+        or #clients > 0 and palette.foreground
+        or palette.muted
+    local apps_color = t.selected and palette.cyan or palette.violet
+
+    number:set_markup(string.format(
+        "<span foreground='%s'><b>%s</b></span>",
+        number_color,
+        gears.string.xml_escape(t.name or tostring(index))
+    ))
+    apps:set_markup(string.format(
+        "<span foreground='%s'>%s</span>",
+        apps_color,
+        summary
+    ))
+
+    if self._tag_tooltip then
+        self._tag_tooltip:set_text(tag_tooltip_text(t, clients))
+    end
+end
+
+local tag_widget_template = {
+    {
+        {
+            {
+                id = "number_role",
+                font = "JetBrains Mono Bold 9",
+                widget = wibox.widget.textbox,
+            },
+            {
+                id = "apps_role",
+                font = "InputSans Nerd Font 9",
+                widget = wibox.widget.textbox,
+            },
+            spacing = 5,
+            layout = wibox.layout.fixed.horizontal,
+        },
+        left = 7,
+        right = 7,
+        widget = wibox.container.margin,
+    },
+    id = "background_role",
+    shape = gears.shape.rounded_rect,
+    widget = wibox.container.background,
+    create_callback = function(self, t, index)
+        self._tag_tooltip = awful.tooltip {
+            objects = { self },
+            text = "Workspace " .. t.name,
+            delay_show = 0.3,
+            bg = palette.surface_2,
+            fg = palette.foreground,
+            shape = gears.shape.rounded_rect,
+        }
+        update_tag_widget(self, t, index)
+    end,
+    update_callback = update_tag_widget,
+}
+
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -651,12 +795,21 @@ awful.screen.connect_for_each_screen(function(s)
         style = {
             shape = gears.shape.rounded_rect,
             bg_focus = palette.surface_2,
-            fg_focus = palette.cyan,
+            fg_focus = "#ffffff",
+            bg_occupied = palette.surface,
+            fg_occupied = palette.foreground,
+            bg_empty = palette.bar,
+            fg_empty = palette.muted,
+            bg_urgent = "#5a2530",
+            fg_urgent = "#ffffff",
+            shape_border_width_focus = 1,
+            shape_border_color_focus = palette.cyan,
         },
         layout = {
             spacing = 4,
             layout = wibox.layout.fixed.horizontal,
         },
+        widget_template = tag_widget_template,
     }
 
     -- Create a tasklist widget
