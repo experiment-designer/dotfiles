@@ -48,7 +48,7 @@ bt_scan_and_find() {
 
     # Watch bluetoothctl output stream for [NEW] Device with our MAC
     # (polling 'devices' in separate sessions doesn't work reliably)
-    expect -c "
+    if expect -c "
         log_user 0
         set timeout $SCAN_TIMEOUT
         spawn bluetoothctl
@@ -70,9 +70,7 @@ bt_scan_and_find() {
                 exit 1
             }
         }
-    " &>/dev/null
-
-    if [[ $? -eq 0 ]]; then
+    " &>/dev/null; then
         echo "Found!"
         return 0
     fi
@@ -108,8 +106,7 @@ bt_pair_interactive() {
 
 bt_connect_simple() {
     # Simple connect - works when device is trusted
-    local out
-    out=$(expect -c "
+    expect -c "
         log_user 1
         set timeout 15
         spawn bluetoothctl
@@ -122,7 +119,7 @@ bt_connect_simple() {
             \"not available\" { send \"quit\r\"; expect eof; exit 1 }
             timeout { send \"quit\r\"; expect eof; exit 1 }
         }
-    " 2>&1)
+    " &>/dev/null
     local ret=$?
     if [[ $ret -eq 0 ]]; then return 0
     elif [[ $ret -eq 2 ]]; then return 2

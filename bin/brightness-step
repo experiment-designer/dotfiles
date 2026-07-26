@@ -1,0 +1,29 @@
+#!/bin/sh
+# Graduated brightness step: 1% of max below 5%, 5% of max above.
+# Usage: brightness-step up|down
+
+dir=$1
+cur=$(brightnessctl g)
+max=$(brightnessctl m)
+threshold=$((max * 5 / 100))
+small=$((max / 100))
+big=$((max * 5 / 100))
+
+case "$dir" in
+    up)
+        if [ "$cur" -lt "$threshold" ]; then step=$small; else step=$big; fi
+        new=$((cur + step))
+        [ "$new" -gt "$max" ] && new=$max
+        ;;
+    down)
+        if [ "$cur" -le "$threshold" ]; then step=$small; else step=$big; fi
+        new=$((cur - step))
+        [ "$new" -lt 0 ] && new=0
+        ;;
+    *)
+        echo "usage: $0 up|down" >&2
+        exit 1
+        ;;
+esac
+
+exec brightnessctl -q set "$new"
