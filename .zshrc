@@ -40,6 +40,31 @@ export OPENAI_API_KEY=YOUR_KEY_HERE
 powerline-daemon -q
 . /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
 
+# Keep the active Powerline prompt rich, but collapse prompts in scrollback to a
+# quiet marker once a command is accepted (Powerlevel10k calls this transient
+# prompt). PS1 is restored before the command runs, so the next prompt is full.
+function powerline-transient-accept-line {
+    emulate -L zsh
+
+    local full_ps1="$PS1"
+    local full_rps1="$RPS1"
+
+    PS1='%F{242}❯%f '
+    RPS1=''
+    zle reset-prompt
+
+    PS1="$full_ps1"
+    RPS1="$full_rps1"
+    zle .accept-line
+}
+
+zle -N powerline-transient-accept-line
+for keymap in emacs viins vicmd; do
+    bindkey -M "$keymap" '^M' powerline-transient-accept-line
+    bindkey -M "$keymap" '^J' powerline-transient-accept-line
+done
+unset keymap
+
 # Yank to the system clipboard
 function vi-yank-xclip {
     zle vi-yank
