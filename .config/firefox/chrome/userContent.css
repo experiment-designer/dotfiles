@@ -1,0 +1,7 @@
+/* Keep selections visible in web-page text fields and editable content. */
+input::selection,
+textarea::selection,
+[contenteditable]::selection {
+    background-color: #0060df !important;
+    color: #ffffff !important;
+}

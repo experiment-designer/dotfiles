@@ -1,0 +1,6 @@
+/* Keep selected address/search text visible with every Firefox theme. */
+.urlbar-input::selection,
+.searchbar-textbox::selection {
+    background-color: #0060df !important;
+    color: #ffffff !important;
+}

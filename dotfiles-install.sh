@@ -63,6 +63,19 @@ for dir in "${CONFIG_DIRS[@]}"; do
     fi
 done
 
+if firefox_profile_dir="$(find_firefox_developer_profile)"; then
+    mkdir -p "$firefox_profile_dir/chrome"
+    for file in "${FIREFOX_PROFILE_FILES[@]}"; do
+        if [ -f "$DOTFILES_DIR/.config/firefox/$file" ]; then
+            link_path \
+                "$DOTFILES_DIR/.config/firefox/$file" \
+                "$firefox_profile_dir/$file"
+        fi
+    done
+else
+    echo "Skipped Firefox Developer Edition config (profile not found)."
+fi
+
 for file in "${USER_SCRIPTS[@]}"; do
     if [ -f "$DOTFILES_DIR/$file" ]; then
         link_path "$DOTFILES_DIR/$file" "$HOME/.local/bin/${file##*/}"
