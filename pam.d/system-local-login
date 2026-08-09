@@ -1,0 +1,10 @@
+#%PAM-1.0
+
+# Try the enrolled fingerprint first on the local console. PAM authentication
+# is serial, so continue to the normal password stack after ten seconds or
+# three failed scans.
+auth      sufficient pam_fprintd.so timeout=10 max-tries=3
+auth      include    system-login
+account   include    system-login
+password  include    system-login
+session   include    system-login
