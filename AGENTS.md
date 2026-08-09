@@ -12,7 +12,8 @@ live instantly. Never copy files between `~` and the repo by hand.
 
 Managed paths are declared in `dotfiles-manifest.sh` (arrays:
 `HOME_DOTFILES`, `CONFIG_DIRS`, `FIREFOX_PROFILE_FILES`, `USER_SCRIPTS`,
-`XORG_CONFIGS`, `UDEV_RULES`, `PAM_CONFIGS`, `SYSTEM_SLEEP_SCRIPTS`). Read it
+`XORG_CONFIGS`, `UDEV_RULES`, `PAM_CONFIGS`, `SYSTEM_SLEEP_SCRIPTS`,
+`SYSTEMD_LOGIND_CONFIGS`). Read it
 before deciding where a change goes.
 
 | Change to…                        | Edit…                                   | Takes effect |
@@ -24,6 +25,7 @@ before deciding where a change goes.
 | X11 / udev system config          | repo file, then rerun `./dotfiles-install.sh` (copies to `/etc`, needs sudo) | after install + device replug/X restart |
 | PAM service config                | `~/dotfiles/pam.d/…`, then rerun `./dotfiles-install.sh` (copies to `/etc`, needs sudo) | after install |
 | system sleep hooks                | `~/dotfiles/system-sleep/…`, then rerun `./dotfiles-install.sh` (copies to `/usr/lib/systemd/system-sleep`, needs sudo) | after install |
+| systemd-logind config             | `~/dotfiles/systemd/logind.conf.d/…`, then rerun `./dotfiles-install.sh` (copies to `/etc/systemd/logind.conf.d`, needs sudo) | after install + logind reload/restart |
 
 System files (`/etc` and the systemd sleep-hook directory under `/usr/lib`) are
 the one exception to the symlink rule: they are installed as **copies**, so
