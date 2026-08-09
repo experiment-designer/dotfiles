@@ -52,6 +52,17 @@ for dir in "${CONFIG_DIRS[@]}"; do
     sync_file ~/.config/"$dir"/ "$DOTFILES_DIR/.config/$dir/"
 done
 
+# Copy the portable pieces of the generated Firefox Developer Edition profile.
+if firefox_profile_dir="$(find_firefox_developer_profile)"; then
+    for file in "${FIREFOX_PROFILE_FILES[@]}"; do
+        sync_file \
+            "$firefox_profile_dir/$file" \
+            "$DOTFILES_DIR/.config/firefox/$file"
+    done
+else
+    echo "Warning: Firefox Developer Edition profile not found, skipping"
+fi
+
 # Copy user scripts back to their repository paths.
 for file in "${USER_SCRIPTS[@]}"; do
     sync_file "$HOME/.local/bin/${file##*/}" "$DOTFILES_DIR/$file"
