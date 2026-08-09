@@ -44,6 +44,7 @@ UDEV_RULES=(
 )
 
 PAM_CONFIGS=(
+    "system-local-login"
     "xsecurelock"
 )
 
