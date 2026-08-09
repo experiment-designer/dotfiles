@@ -45,72 +45,17 @@ UDEV_RULES=(
 
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
-    local profiles_file
-    local section=""
-    local profile_name=""
-    local profile_path=""
-    local is_relative="1"
-    local line
+    local result
+    [ -f "$firefox_root/profiles.ini" ] || return 1
 
-    profiles_file="$firefox_root/profiles.ini"
-    [ -f "$profiles_file" ] || return 1
+    result="$(awk -v root="$firefox_root" '
+        /^\[/ { if (found) exit; name = ""; path = ""; rel = "1" }
+        /^Name=/ { name = substr($0, 6) }
+        /^Path=/ { path = substr($0, 6) }
+        /^IsRelative=/ { rel = substr($0, 12) }
+        name == "dev-edition-default" && path != "" { found = 1 }
+        END { if (found) print (rel == "0") ? path : root "/" path }
+    ' "$firefox_root/profiles.ini")"
 
-    while IFS= read -r line || [ -n "$line" ]; do
-        case "$line" in
-            \[Profile*\])
-                if [ "$section" = "profile" ] \
-                    && [ "$profile_name" = "dev-edition-default" ] \
-                    && [ -n "$profile_path" ]; then
-                    if [ "$is_relative" = "1" ]; then
-                        printf '%s/%s\n' "$firefox_root" "$profile_path"
-                    else
-                        printf '%s\n' "$profile_path"
-                    fi
-                    return 0
-                fi
-                section="profile"
-                profile_name=""
-                profile_path=""
-                is_relative="1"
-                ;;
-            \[*\])
-                if [ "$section" = "profile" ] \
-                    && [ "$profile_name" = "dev-edition-default" ] \
-                    && [ -n "$profile_path" ]; then
-                    if [ "$is_relative" = "1" ]; then
-                        printf '%s/%s\n' "$firefox_root" "$profile_path"
-                    else
-                        printf '%s\n' "$profile_path"
-                    fi
-                    return 0
-                fi
-                section=""
-                ;;
-            Name=*)
-                [ "$section" = "profile" ] \
-                    && profile_name="${line#Name=}"
-                ;;
-            Path=*)
-                [ "$section" = "profile" ] \
-                    && profile_path="${line#Path=}"
-                ;;
-            IsRelative=*)
-                [ "$section" = "profile" ] \
-                    && is_relative="${line#IsRelative=}"
-                ;;
-        esac
-    done < "$profiles_file"
-
-    if [ "$section" = "profile" ] \
-        && [ "$profile_name" = "dev-edition-default" ] \
-        && [ -n "$profile_path" ]; then
-        if [ "$is_relative" = "1" ]; then
-            printf '%s/%s\n' "$firefox_root" "$profile_path"
-        else
-            printf '%s\n' "$profile_path"
-        fi
-        return 0
-    fi
-
-    return 1
+    [ -n "$result" ] && printf '%s\n' "$result"
 }
