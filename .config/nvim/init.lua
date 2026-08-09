@@ -25,16 +25,44 @@ vim.opt.runtimepath:append(vim_path)
 vim.opt.runtimepath:append(vim_after_path)
 vim.opt.packpath = vim.opt.runtimepath._value
 
+local treesitter_parsers = {
+  "bash",
+  "json",
+  "lua",
+  "markdown",
+  "markdown_inline",
+  "python",
+  "yaml",
+}
+
+local treesitter_filetypes = {
+  "json",
+  "jsonc",
+  "lua",
+  "markdown",
+  "python",
+  "sh",
+  "yaml",
+}
+
 -- Initialize lazy.nvim
 require("lazy").setup({
- {
+  {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+    lazy = false,
+    build = function()
+      require("nvim-treesitter").install(treesitter_parsers):wait(300000)
+    end,
     config = function()
-      require('nvim-treesitter').setup {
-        ensure_installed = {"python", "markdown", "yaml"},
-      }
-    end
+      require("nvim-treesitter").setup({})
+      vim.treesitter.language.register("json", "jsonc")
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = treesitter_filetypes,
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+        end,
+      })
+    end,
   },
  -- Status line and theming
  {
@@ -99,25 +127,66 @@ require("lazy").setup({
 {
    "nvim-tree/nvim-tree.lua"
 },
-{
-        'kevinhwang91/nvim-ufo',
-        dependencies = {'kevinhwang91/promise-async'},
-        config = function()
-            vim.o.foldcolumn = '1'
-            vim.o.foldlevel = 99 
-            vim.o.foldlevelstart = 99
-            vim.o.foldenable = true
-            
-            vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-            vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-            
-            require('ufo').setup({
-                provider_selector = function()
-                    return {'treesitter', 'indent'}
-                end
-            })
+  {
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async" },
+    init = function()
+      vim.o.foldcolumn = "1"
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+    end,
+    config = function()
+      local ufo = require("ufo")
+
+      ufo.setup({
+        provider_selector = function(_, _, buftype)
+          if buftype ~= "" then
+            return ""
+          end
+          return { "treesitter", "indent" }
+        end,
+        fold_virt_text_handler = function(virtual_text, start_line, end_line, width, truncate)
+          local suffix = ("  … %d lines"):format(end_line - start_line)
+          local suffix_width = vim.fn.strdisplaywidth(suffix)
+          local target_width = width - suffix_width
+          local result = {}
+          local current_width = 0
+
+          for _, chunk in ipairs(virtual_text) do
+            local text, highlight = chunk[1], chunk[2]
+            local chunk_width = vim.fn.strdisplaywidth(text)
+            if target_width > current_width + chunk_width then
+              table.insert(result, chunk)
+              current_width = current_width + chunk_width
+            else
+              text = truncate(text, target_width - current_width)
+              table.insert(result, { text, highlight })
+              current_width = current_width + vim.fn.strdisplaywidth(text)
+              if current_width < target_width then
+                suffix = suffix .. (" "):rep(target_width - current_width)
+              end
+              break
+            end
+          end
+
+          table.insert(result, { suffix, "MoreMsg" })
+          return result
+        end,
+      })
+
+      vim.keymap.set("n", "zR", ufo.openAllFolds, { desc = "Open all folds" })
+      vim.keymap.set("n", "zM", ufo.closeAllFolds, { desc = "Close all folds" })
+      vim.keymap.set("n", "zr", ufo.openFoldsExceptKinds, { desc = "Open one fold level" })
+      vim.keymap.set("n", "zm", ufo.closeFoldsWith, { desc = "Close one fold level" })
+      vim.keymap.set("n", "zK", function()
+        local preview_window = ufo.peekFoldedLinesUnderCursor()
+        if not preview_window then
+          vim.lsp.buf.hover()
         end
-},
+      end, { desc = "Preview folded lines" })
+    end,
+  },
 })
 
 -- nvim-tree setup
