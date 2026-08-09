@@ -12,6 +12,91 @@ fi
 # shellcheck source=dotfiles-manifest.sh
 source "$DOTFILES_DIR/dotfiles-manifest.sh"
 
+check_only=false
+force=false
+for arg in "$@"; do
+    case "$arg" in
+        --check) check_only=true ;;
+        --force) force=true ;;
+        *) echo "Usage: $0 [--check] [--force]" >&2; exit 2 ;;
+    esac
+done
+
+# Report the state of every managed path plus unmanaged candidates, then exit.
+if $check_only; then
+    issues=0
+
+    report() { # repo path, live path
+        local repo_real live_real
+        repo_real="$(readlink -f -- "$1" 2>/dev/null || true)"
+        live_real="$(readlink -f -- "$2" 2>/dev/null || true)"
+        if [ ! -e "$1" ]; then
+            echo "missing in repo:  $1"
+        elif [ -z "$live_real" ]; then
+            echo "missing in home:  $2"
+        elif [ "$repo_real" = "$live_real" ]; then
+            return 0
+        elif diff -rq -- "$1" "$2" >/dev/null 2>&1; then
+            echo "copy, in sync:    $2 (run dotfiles-install.sh to link)"
+        else
+            echo "copy, DIFFERS:    $2 (unlinked and diverged from repo)"
+        fi
+        issues=$((issues + 1))
+    }
+
+    for file in "${HOME_DOTFILES[@]}"; do report "$DOTFILES_DIR/$file" "$HOME/$file"; done
+    for dir in "${CONFIG_DIRS[@]}"; do report "$DOTFILES_DIR/.config/$dir" "$HOME/.config/$dir"; done
+    if firefox_profile_dir="$(find_firefox_developer_profile)"; then
+        for file in "${FIREFOX_PROFILE_FILES[@]}"; do
+            report "$DOTFILES_DIR/.config/firefox/$file" "$firefox_profile_dir/$file"
+        done
+    fi
+    for file in "${USER_SCRIPTS[@]}"; do report "$DOTFILES_DIR/$file" "$HOME/.local/bin/${file##*/}"; done
+
+    # System files are installed as copies, not symlinks; only divergence matters.
+    report_system() { # repo path, live path
+        if [ ! -e "$2" ]; then
+            echo "missing in /etc:  $2 (run dotfiles-install.sh)"
+        elif ! diff -q -- "$1" "$2" >/dev/null 2>&1; then
+            echo "copy, DIFFERS:    $2 (diverged from repo)"
+        else
+            return 0
+        fi
+        issues=$((issues + 1))
+    }
+    for file in "${XORG_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/$file" "/etc/X11/xorg.conf.d/$file"; done
+    for file in "${UDEV_RULES[@]}"; do report_system "$DOTFILES_DIR/$file" "/etc/udev/rules.d/$file"; done
+
+    echo ""
+    echo "Unmanaged candidates (add to dotfiles-manifest.sh if wanted):"
+    for dir in "$HOME/.config"/*/; do
+        name="$(basename "$dir")"
+        case " ${CONFIG_DIRS[*]} " in *" $name "*) continue ;; esac
+        echo "  ~/.config/$name"
+    done
+    for script in "$HOME/.local/bin"/*; do
+        [ -e "$script" ] || continue
+        name="${script##*/}"
+        managed=false
+        for file in "${USER_SCRIPTS[@]}"; do
+            [ "${file##*/}" = "$name" ] && managed=true && break
+        done
+        $managed || echo "  ~/.local/bin/$name"
+    done
+
+    echo ""
+    echo "$issues managed path(s) need attention."
+    exit 0
+fi
+
+# Collection overwrites repo files with the live versions; refuse to clobber
+# uncommitted repo edits unless explicitly forced.
+if ! $force && [ -n "$(git -C "$DOTFILES_DIR" status --porcelain)" ]; then
+    echo "Error: repository has uncommitted changes that collection could overwrite." >&2
+    echo "Commit or stash them first, or rerun with --force." >&2
+    exit 1
+fi
+
 # Create necessary directories
 mkdir -p "$DOTFILES_DIR/.config" "$DOTFILES_DIR/bin"
 
@@ -30,13 +115,14 @@ sync_file() {
         # Copying such a symlink onto its own target creates a symlink loop.
         if [ -n "$dest_real" ] && [ "$src_real" = "$dest_real" ]; then
             echo "Already linked, skipping $src"
-            return
+            return 0
         fi
 
         echo "Copying $src to $dest"
         # Dereference source symlinks and preserve useful file metadata, but
         # never copy system ownership/group into the user-owned repository.
-        rsync -rltpLh --progress "$src" "$dest"
+        # --delete keeps the repo a true mirror; git history guards against loss.
+        rsync -rltpLh --delete --progress "$src" "$dest"
     else
         echo "Warning: $src does not exist, skipping"
     fi
@@ -100,16 +186,8 @@ echo "Tracked API key placeholders verified."
 echo "Dotfiles sync completed!"
 echo ""
 echo "Next steps:"
-echo "1. Review the copied files"
-echo "2. Commit changes to git:"
-echo "   cd ~/dotfiles"
-echo "   git add ."
-echo "   git commit -m 'Update dotfiles'"
-echo "   git push"
+echo "1. Review with: git -C ~/dotfiles diff"
+echo "2. Commit and push."
 echo ""
-echo "To use these dotfiles on a new system:"
-echo "1. Clone the repo: git clone <your-repo-url> ~/dotfiles"
-echo "2. Create symbolic links manually as needed:"
-echo "   ln -s ~/dotfiles/.bashrc ~/.bashrc"
-echo "   ln -s ~/dotfiles/.config/nvim ~/.config/nvim"
-echo "   etc..."
+echo "On a new system: git clone <repo-url> ~/dotfiles && ~/dotfiles/dotfiles-install.sh"
+echo "To audit what is linked/managed on this machine: $0 --check"
