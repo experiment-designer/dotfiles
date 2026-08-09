@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# XSecureLock does not begin PAM authentication automatically after resume.
+# Queue its documented resume signal while the user slice is still frozen; it
+# will start fprintd as soon as the graphical session is thawed.
+if [ "${1:-}" = "post" ]; then
+    # The hook itself is also named xsecurelock, so exclude our own PID.
+    while IFS= read -r pid; do
+        if [ "$pid" != "$$" ]; then
+            /usr/bin/kill -USR2 "$pid"
+        fi
+    done < <(/usr/bin/pgrep -x xsecurelock)
+fi
+
+exit 0

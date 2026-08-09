@@ -47,6 +47,10 @@ PAM_CONFIGS=(
     "xsecurelock"
 )
 
+SYSTEM_SLEEP_SCRIPTS=(
+    "xsecurelock"
+)
+
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
     local result
