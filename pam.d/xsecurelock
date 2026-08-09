@@ -1,0 +1,7 @@
+#%PAM-1.0
+
+# Prefer the enrolled fingerprint.  If it is unavailable, rejected, or not
+# scanned within ten seconds, continue to the normal password stack.
+auth       sufficient                  pam_fprintd.so timeout=10 max-tries=3
+auth       include                     system-auth
+account    include                     system-auth

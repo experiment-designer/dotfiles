@@ -50,5 +50,15 @@ fi
 #exec xterm -geometry 80x66+0+0 -name login
 
 xbindkeys
-xautolock -time 35 -locker "systemctl suspend" -detectsleep &
+
+# Lock after the X server's existing 10-minute idle timeout.  This only locks
+# and powers off the display; it does not suspend or pause running processes.
+# xss-lock also acquires systemd's delay inhibitor so manual/lid suspend cannot
+# complete before the session is safely locked.
+xset s 600 0
+xset dpms 0 0 0
+XSECURELOCK_PAM_SERVICE=xsecurelock \
+XSECURELOCK_BLANK_TIMEOUT=10 \
+XSECURELOCK_BLANK_DPMS_STATE=off \
+xss-lock --transfer-sleep-lock -- xsecurelock &
 exec awesome
