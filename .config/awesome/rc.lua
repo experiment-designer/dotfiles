@@ -194,6 +194,149 @@ local function make_labeled_widget(icon, widget)
     }
 end
 
+-- Weather capsule -----------------------------------------------------------
+-- ipinfo.io geolocates the public IP to coordinates, Open-Meteo turns those
+-- into a live reading (wttr.in served stale data). One timer updates the
+-- widgets on every screen so multi-monitor setups only make one request.
+local weather_views = {}
+local weather_timer
+local weather_refreshing = false
+local weather_details = "Weather data is loading…"
+
+-- geo lookup then forecast, emitting "temp|wmo_code|city" on one line
+local weather_command = { "/bin/sh", "-c", [[
+    set -e
+    geo=$(curl -sf --max-time 8 https://ipinfo.io/json)
+    loc=$(printf '%s' "$geo" | grep -o '"loc": *"[^"]*"' | cut -d'"' -f4)
+    city=$(printf '%s' "$geo" | grep -o '"city": *"[^"]*"' | cut -d'"' -f4)
+    lat=${loc%,*}; lon=${loc#*,}
+    wx=$(curl -sf --max-time 8 "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,weather_code")
+    temp=$(printf '%s' "$wx" | grep -o '"temperature_2m": *[-0-9.]*' | grep -o '[-0-9.]*$')
+    code=$(printf '%s' "$wx" | grep -o '"weather_code": *[0-9]*' | grep -o '[0-9]*$')
+    printf '%s|%s|%s\n' "$temp" "$code" "$city"
+]] }
+
+-- WMO weather codes → icon + label
+local wmo_conditions = {
+    [0] = { "☀️", "Clear sky" },
+    [1] = { "🌤️", "Mostly clear" },
+    [2] = { "⛅", "Partly cloudy" },
+    [3] = { "☁️", "Overcast" },
+    [45] = { "🌫️", "Fog" }, [48] = { "🌫️", "Rime fog" },
+    [51] = { "🌦️", "Light drizzle" }, [53] = { "🌦️", "Drizzle" }, [55] = { "🌦️", "Heavy drizzle" },
+    [56] = { "🌦️", "Freezing drizzle" }, [57] = { "🌦️", "Freezing drizzle" },
+    [61] = { "🌧️", "Light rain" }, [63] = { "🌧️", "Rain" }, [65] = { "🌧️", "Heavy rain" },
+    [66] = { "🌧️", "Freezing rain" }, [67] = { "🌧️", "Freezing rain" },
+    [71] = { "🌨️", "Light snow" }, [73] = { "🌨️", "Snow" }, [75] = { "🌨️", "Heavy snow" },
+    [77] = { "🌨️", "Snow grains" },
+    [80] = { "🌦️", "Light showers" }, [81] = { "🌦️", "Showers" }, [82] = { "🌦️", "Heavy showers" },
+    [85] = { "🌨️", "Snow showers" }, [86] = { "🌨️", "Snow showers" },
+    [95] = { "⛈️", "Thunderstorm" }, [96] = { "⛈️", "Thunderstorm, hail" }, [99] = { "⛈️", "Thunderstorm, hail" },
+}
+
+local function trim(value)
+    return value and value:match("^%s*(.-)%s*$") or nil
+end
+
+local function update_weather()
+    if weather_refreshing then
+        return
+    end
+    weather_refreshing = true
+
+    awful.spawn.easy_async(weather_command, function(stdout, stderr, _, exit_code)
+        weather_refreshing = false
+        local temp, code, location = stdout:match("^([^|]+)|([^|]+)|([^\r\n]*)")
+
+        temp = tonumber(trim(temp))
+        code = tonumber(trim(code))
+        location = trim(location)
+
+        local wmo = wmo_conditions[code]
+        local icon = wmo and wmo[1]
+        local condition = wmo and wmo[2]
+        local temperature = temp and string.format("%.0f°C", temp)
+
+        if exit_code ~= 0 or not temperature then
+            local error_message = trim(stderr)
+            weather_details = "Weather unavailable"
+            if error_message and error_message ~= "" then
+                weather_details = weather_details .. "\n" .. error_message
+            end
+            weather_details = weather_details .. "\nClick to retry"
+
+            for _, view in ipairs(weather_views) do
+                view.icon:set_text("☁️")
+                view.temperature:set_text("--°")
+                view.tooltip:set_text(weather_details)
+            end
+            return
+        end
+
+        weather_details = string.format(
+            "%s\n%s\nUpdated %s • click to refresh",
+            condition or "Current weather",
+            location or "Automatic location",
+            os.date("%H:%M")
+        )
+
+        for _, view in ipairs(weather_views) do
+            view.icon:set_text(icon or "☁️")
+            view.temperature:set_text(temperature)
+            view.tooltip:set_text(weather_details)
+        end
+    end)
+end
+
+local function make_weather_widget()
+    local icon = wibox.widget {
+        text = "☁️",
+        font = "InputSans Nerd Font 11",
+        widget = wibox.widget.textbox,
+    }
+    local temperature = wibox.widget {
+        text = "--°",
+        font = "JetBrains Mono SemiBold 9",
+        widget = wibox.widget.textbox,
+    }
+    local contents = wibox.widget {
+        icon,
+        temperature,
+        spacing = 5,
+        layout = wibox.layout.fixed.horizontal,
+    }
+    local container = make_pill(contents, palette.surface, 9, 9)
+    local tooltip = awful.tooltip {
+        objects = { container },
+        text = weather_details,
+        delay_show = 0.25,
+        bg = palette.surface_2,
+        fg = palette.foreground,
+        shape = gears.shape.rounded_rect,
+    }
+
+    container:buttons(gears.table.join(
+        awful.button({}, 1, update_weather)
+    ))
+
+    table.insert(weather_views, {
+        icon = icon,
+        temperature = temperature,
+        tooltip = tooltip,
+    })
+
+    if not weather_timer then
+        weather_timer = gears.timer {
+            timeout = 900,
+            autostart = true,
+            call_now = true,
+            callback = update_weather,
+        }
+    end
+
+    return container
+end
+
 -- Battery capsule -----------------------------------------------------------
 -- One timer feeds every screen, so multi-monitor setups do not poll sysfs or
 -- emit low-battery notifications more than once.
@@ -860,6 +1003,7 @@ awful.screen.connect_for_each_screen(function(s)
     )
     local layout = make_pill(s.mylayoutbox, palette.surface, 8, 8)
     s.mycpuwidget, s.mymemorywidget = make_system_widgets()
+    s.myweatherwidget = make_weather_widget()
     s.mybatterywidget = make_battery_widget()
 
     -- Add widgets to the wibox
@@ -896,6 +1040,7 @@ awful.screen.connect_for_each_screen(function(s)
                 s.mycpuwidget,
                 s.mymemorywidget,
                 clock,
+                s.myweatherwidget,
                 s.mybatterywidget,
             },
             right = 8,
