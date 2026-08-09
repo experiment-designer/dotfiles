@@ -118,6 +118,15 @@ if $install_system; then
             echo "Installed /usr/lib/systemd/system-sleep/$file"
         fi
     done
+
+    for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do
+        if [ -f "$DOTFILES_DIR/systemd/logind.conf.d/$file" ]; then
+            sudo install -D -m 0644 \
+                "$DOTFILES_DIR/systemd/logind.conf.d/$file" \
+                "/etc/systemd/logind.conf.d/$file"
+            echo "Installed /etc/systemd/logind.conf.d/$file"
+        fi
+    done
 else
     echo "Skipped system configuration (--user-only)."
 fi

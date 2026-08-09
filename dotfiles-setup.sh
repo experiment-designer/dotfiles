@@ -68,6 +68,7 @@ if $check_only; then
     for file in "${UDEV_RULES[@]}"; do report_system "$DOTFILES_DIR/$file" "/etc/udev/rules.d/$file"; done
     for file in "${PAM_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/pam.d/$file" "/etc/pam.d/$file"; done
     for file in "${SYSTEM_SLEEP_SCRIPTS[@]}"; do report_system "$DOTFILES_DIR/system-sleep/$file" "/usr/lib/systemd/system-sleep/$file"; done
+    for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/systemd/logind.conf.d/$file" "/etc/systemd/logind.conf.d/$file"; done
 
     echo ""
     echo "Unmanaged candidates (add to dotfiles-manifest.sh if wanted):"
@@ -104,7 +105,8 @@ mkdir -p \
     "$DOTFILES_DIR/.config" \
     "$DOTFILES_DIR/bin" \
     "$DOTFILES_DIR/pam.d" \
-    "$DOTFILES_DIR/system-sleep"
+    "$DOTFILES_DIR/system-sleep" \
+    "$DOTFILES_DIR/systemd/logind.conf.d"
 
 # Function to sync files
 sync_file() {
@@ -175,6 +177,10 @@ done
 
 for file in "${SYSTEM_SLEEP_SCRIPTS[@]}"; do
     sync_file "/usr/lib/systemd/system-sleep/$file" "$DOTFILES_DIR/system-sleep/$file"
+done
+
+for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do
+    sync_file "/etc/systemd/logind.conf.d/$file" "$DOTFILES_DIR/systemd/logind.conf.d/$file"
 done
 
 # Never rewrite the live shell config behind a symlink. Refuse to continue if

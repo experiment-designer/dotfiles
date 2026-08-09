@@ -51,6 +51,10 @@ SYSTEM_SLEEP_SCRIPTS=(
     "xsecurelock"
 )
 
+SYSTEMD_LOGIND_CONFIGS=(
+    "60-power-button.conf"
+)
+
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
     local result
