@@ -67,6 +67,7 @@ if $check_only; then
     for file in "${XORG_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/$file" "/etc/X11/xorg.conf.d/$file"; done
     for file in "${UDEV_RULES[@]}"; do report_system "$DOTFILES_DIR/$file" "/etc/udev/rules.d/$file"; done
     for file in "${PAM_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/pam.d/$file" "/etc/pam.d/$file"; done
+    for file in "${SYSTEM_SLEEP_SCRIPTS[@]}"; do report_system "$DOTFILES_DIR/system-sleep/$file" "/usr/lib/systemd/system-sleep/$file"; done
 
     echo ""
     echo "Unmanaged candidates (add to dotfiles-manifest.sh if wanted):"
@@ -99,7 +100,11 @@ if ! $force && [ -n "$(git -C "$DOTFILES_DIR" status --porcelain)" ]; then
 fi
 
 # Create necessary directories
-mkdir -p "$DOTFILES_DIR/.config" "$DOTFILES_DIR/bin" "$DOTFILES_DIR/pam.d"
+mkdir -p \
+    "$DOTFILES_DIR/.config" \
+    "$DOTFILES_DIR/bin" \
+    "$DOTFILES_DIR/pam.d" \
+    "$DOTFILES_DIR/system-sleep"
 
 # Function to sync files
 sync_file() {
@@ -166,6 +171,10 @@ done
 
 for file in "${PAM_CONFIGS[@]}"; do
     sync_file "/etc/pam.d/$file" "$DOTFILES_DIR/pam.d/$file"
+done
+
+for file in "${SYSTEM_SLEEP_SCRIPTS[@]}"; do
+    sync_file "/usr/lib/systemd/system-sleep/$file" "$DOTFILES_DIR/system-sleep/$file"
 done
 
 # Never rewrite the live shell config behind a symlink. Refuse to continue if

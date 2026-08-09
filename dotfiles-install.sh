@@ -109,6 +109,15 @@ if $install_system; then
             echo "Installed /etc/pam.d/$file"
         fi
     done
+
+    for file in "${SYSTEM_SLEEP_SCRIPTS[@]}"; do
+        if [ -f "$DOTFILES_DIR/system-sleep/$file" ]; then
+            sudo install -D -m 0755 \
+                "$DOTFILES_DIR/system-sleep/$file" \
+                "/usr/lib/systemd/system-sleep/$file"
+            echo "Installed /usr/lib/systemd/system-sleep/$file"
+        fi
+    done
 else
     echo "Skipped system configuration (--user-only)."
 fi
