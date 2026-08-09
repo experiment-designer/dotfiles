@@ -100,6 +100,15 @@ if $install_system; then
             echo "Installed /etc/udev/rules.d/$file"
         fi
     done
+
+    for file in "${PAM_CONFIGS[@]}"; do
+        if [ -f "$DOTFILES_DIR/pam.d/$file" ]; then
+            sudo install -D -m 0644 \
+                "$DOTFILES_DIR/pam.d/$file" \
+                "/etc/pam.d/$file"
+            echo "Installed /etc/pam.d/$file"
+        fi
+    done
 else
     echo "Skipped system configuration (--user-only)."
 fi

@@ -43,6 +43,10 @@ UDEV_RULES=(
     "90-battery-threshold.rules"
 )
 
+PAM_CONFIGS=(
+    "xsecurelock"
+)
+
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
     local result
