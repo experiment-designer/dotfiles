@@ -51,11 +51,11 @@ fi
 
 xbindkeys
 
-# Lock after the X server's existing 10-minute idle timeout.  This only locks
+# Lock after the X server's existing 45-minute idle timeout.  This only locks
 # and powers off the display; it does not suspend or pause running processes.
 # xss-lock also acquires systemd's delay inhibitor so manual/lid suspend cannot
 # complete before the session is safely locked.
-xset s 600 0
+xset s 2700 0
 xset dpms 0 0 0
 XSECURELOCK_PAM_SERVICE=xsecurelock \
 XSECURELOCK_BLANK_TIMEOUT=10 \
