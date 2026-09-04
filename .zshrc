@@ -1,7 +1,6 @@
-# Solves weird urxvt bug where line starts low after some spacing
-clear
-
-zmodload zsh/zprof
+# Solves weird urxvt bug where line starts low after some spacing without
+# clearing every new Alacritty/WezTerm window.
+[[ "$TERM" == rxvt* ]] && clear
 
 # iHD Driver
 #export LIBVA_DRIVER_NAME=iHD
@@ -22,9 +21,6 @@ zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
-autoload -Uz promptinit
-promptinit
-prompt off
 
 # Fix shell bugs
 export TERMINFO=/usr/share/terminfo 
@@ -37,8 +33,22 @@ export XAI_API_KEY=YOUR_KEY_HERE
 export OPENAI_API_KEY=YOUR_KEY_HERE
 
 # Powerline stuff
-powerline-daemon -q
-. /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
+# Keep the daemon for fast prompt rendering, but only start it when needed.
+# Powerline's generic binding also starts Python three times to discover this
+# known prompt/tmux setup; answer those checks cheaply and use its compiled
+# daemon client directly. The stock discovery path remains as a fallback.
+if (( $+commands[powerline] )); then
+    if ! pgrep -u "$EUID" -f '[/]powerline-daemon( |$)' >/dev/null; then
+        powerline-daemon -q
+    fi
+
+    POWERLINE_CONFIG_COMMAND=/usr/bin/true
+    POWERLINE_COMMAND=powerline
+    . /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
+    unset POWERLINE_CONFIG_COMMAND
+else
+    . /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
+fi
 
 # Keep the active Powerline prompt rich, but collapse prompts in scrollback to a
 # quiet marker once a command is accepted (Powerlevel10k calls this transient
@@ -83,20 +93,14 @@ zle -N vi-put-xclip
 bindkey -M vicmd 'y' vi-yank-xclip
 bindkey -M vicmd 'p' vi-put-xclip   # paste with p in normal mode
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/guy/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+# Load Conda's static shell integration directly. It is the same code emitted
+# by `conda shell.zsh hook` on this machine, without starting Python for every
+# new terminal.
+if [[ -r /home/guy/anaconda3/etc/profile.d/conda.sh ]]; then
+    . /home/guy/anaconda3/etc/profile.d/conda.sh
 else
-    if [ -f "/home/guy/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/guy/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/guy/anaconda3/bin:$PATH"
-    fi
+    export PATH="/home/guy/anaconda3/bin:$PATH"
 fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 # For aider
 export PATH="/home/guy/.local/bin:$PATH"
