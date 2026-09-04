@@ -80,3 +80,6 @@ user_pref("browser.uitour.enabled", false);
 
 // Use in-content menupopups so userChrome.css can style context menus.
 user_pref("widget.gtk.native-context-menus", false);
+
+// Suppress the ETP panel's illustrated info hero (kept off-palette).
+user_pref("browser.protections_panel.infoMessage.seen", true);

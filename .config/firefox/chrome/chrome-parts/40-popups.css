@@ -525,3 +525,95 @@
         font-size: 11px !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Round 3: Firefox fills popup content from --panel-background /
+     * --menu-background-color, not from background-color on the element. Set
+     * the vars AND kill the native menupopup appearance that paints under CSS. */
+    menupopup,
+    panel,
+    .panel-arrowcontent,
+    menupopup::part(content),
+    menupopup > .menupopup-arrowscrollbox {
+        appearance: none !important;
+        -moz-default-appearance: none !important;
+        --panel-background: var(--ph-bg1) !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --menu-background-color: var(--ph-bg1) !important;
+        --menuitem-hover-background-color: var(--ph-bg2) !important;
+        --panel-color: var(--ph-fg0) !important;
+        background-color: var(--ph-bg1) !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Round 3b: this Fx build keeps painting the native menupopup fill
+     * (#36363a) beneath author CSS regardless of appearance/vars, so idle
+     * rows are transparent and expose it. Fill every row-level surface with
+     * bg1 and zero the popup padding so no native gap shows through. */
+    menupopup {
+        padding: 0 !important;
+    }
+
+    menupopup > menu,
+    menupopup > menuitem,
+    menupopup > menucaption,
+    menupopup .menu-iconic,
+    menupopup .menuitem-iconic,
+    #contentAreaContextMenu > menuitem,
+    #contentAreaContextMenu > menu,
+    #tabContextMenu > menuitem,
+    #tabContextMenu > menu {
+        background-color: var(--ph-bg1) !important;
+    }
+
+    /* keep hover/checked overrides winning over the new idle fill */
+    :is(menu, menuitem):is(:hover, [_moz-menuactive="true"], [open]):not([disabled]) {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    :is(menuitem, menu)[disabled="true"] {
+        background-color: var(--ph-bg1) !important;
+    }
+
+    :is(menuitem)[checked="true"],
+    :is(menuitem)[selected="true"] {
+        background-color: var(--ph-bg1) !important;
+    }
+
+    /* separators sit on their own strip: fill it too */
+    menupopup > menuseparator {
+        background-color: var(--ph-bg1) !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Round 3: the protections panel "Firefox is on guard" hero is a purple
+     * gradient vbox with an illustration; earlier id guesses missed it.
+     * Neutralise every coloured surface in the popup body, drop the art. */
+    #protections-popup panelview vbox,
+    #protections-popup panelview hbox,
+    #protections-popup-mainView,
+    #protections-popup-mainView > vbox,
+    #protections-popup-mainView > hbox,
+    #protections-popup-milestones-content,
+    #protections-popup-messaging-system-message,
+    #protections-popup-messaging-system-message-container {
+        background-image: none !important;
+        background-color: var(--ph-bg1) !important;
+    }
+
+    #protections-popup [class*="illustration"],
+    #protections-popup-message > image,
+    #protections-popup-milestones-content > image,
+    #protections-popup-messaging-system-message image {
+        display: none !important;
+    }
+
+    #protections-popup description,
+    #protections-popup label,
+    #protections-popup .protections-popup-message-title {
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+    }
+}
