@@ -21,6 +21,7 @@ CONFIG_DIRS=(
     "chromium-phosphor-theme"
     "fontconfig"
     "nvim"
+    "tridactyl"
     "wezterm"
 )
 
@@ -39,6 +40,7 @@ USER_SCRIPTS=(
     "bin/rice-shot"
     "bin/term"
     "bin/brightness-step"
+    "bin/btop"
     "bin/htop"
 )
 

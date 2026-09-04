@@ -1,0 +1,136 @@
+:root {
+    /* Generic */
+    --tridactyl-font-family: "InputMono Nerd Font", monospace;
+    --tridactyl-font-family-sans: "InputMono Nerd Font", monospace;
+    --tridactyl-font-size: 12px;
+    --tridactyl-small-font-size: 11px;
+    --tridactyl-bg: #1c1f25;
+    --tridactyl-fg: #e6e9ed;
+    --tridactyl-border: 1px solid #e6e9ed;
+    --tridactyl-border-radius: 0px;
+    --tridactyl-scrollbar-color: #3a404a #16181d;
+
+    /* Status bar / Mode indicator */
+    --tridactyl-status-font-family: "InputMono Nerd Font", monospace;
+    --tridactyl-status-font-size: 11px;
+    --tridactyl-status-bg: #16181d;
+    --tridactyl-status-fg: #b7bec8;
+    --tridactyl-status-border: 1px solid #3a404a;
+    --tridactyl-status-border-radius: 0px;
+
+    /* Hint character tags */
+    --tridactyl-hintspan-font-family: "InputMono Nerd Font", monospace;
+    --tridactyl-hintspan-font-size: 11px;
+    --tridactyl-hintspan-font-weight: bold;
+    --tridactyl-hintspan-fg: #ffb340;
+    --tridactyl-hintspan-bg: #16181d;
+    --tridactyl-hintspan-border-color: #e6e9ed;
+    --tridactyl-hintspan-border-width: 1px;
+    --tridactyl-hintspan-border-style: solid;
+    --tridactyl-hintspan-border-radius: 0px;
+    --tridactyl-hintspan-outline: 1px solid #e6e9ed;
+    --tridactyl-hintspan-js-background: #16181d;
+
+    /* Active hint tags */
+    --tridactyl-hintspan-active-fg: #16181d;
+    --tridactyl-hintspan-active-bg: #ffb340;
+    --tridactyl-hintspan-active-border-color: #ffb340;
+    --tridactyl-hintspan-pressed-fg: #e6e9ed;
+
+    /* Element highlights */
+    --tridactyl-hint-fg: #e6e9ed;
+    --tridactyl-hint-bg: rgba(22, 24, 29, 0.25);
+    --tridactyl-hint-outline: 1px solid #3a404a;
+
+    --tridactyl-hint-active-fg: #16181d;
+    --tridactyl-hint-active-bg: #ffb340;
+    --tridactyl-hint-active-outline: 1px solid #ffb340;
+
+    /* Element highlight overlays */
+    --tridactyl-hint-highlight-fg: var(--tridactyl-hint-fg);
+    --tridactyl-hint-highlight-bg: var(--tridactyl-hint-bg);
+    --tridactyl-hint-highlight-outline: var(--tridactyl-hint-outline);
+    --tridactyl-hint-highlight-active-fg: var(--tridactyl-hint-active-fg);
+    --tridactyl-hint-highlight-active-bg: var(--tridactyl-hint-active-bg);
+    --tridactyl-hint-highlight-active-outline: var(--tridactyl-hint-active-outline);
+    --tridactyl-hint-highlight-opacity: 0.25;
+
+    /* Commandline */
+    --tridactyl-cmdl-bg: #16181d;
+    --tridactyl-cmdl-fg: #e6e9ed;
+    --tridactyl-cmdl-line-height: 1.5;
+    --tridactyl-cmdl-font-family: "InputMono Nerd Font", monospace;
+    --tridactyl-cmdl-font-size: 12px;
+
+    /* Completions */
+    --tridactyl-cmplt-option-height: 1.4em;
+    --tridactyl-cmplt-fg: #e6e9ed;
+    --tridactyl-cmplt-bg: #1c1f25;
+    --tridactyl-cmplt-font-size: 12px;
+    --tridactyl-cmplt-font-family: "InputMono Nerd Font", monospace;
+    --tridactyl-cmplt-border-top: 1px solid #3a404a;
+
+    /* Section Header */
+    --tridactyl-header-first-bg: #1c1f25;
+    --tridactyl-header-second-bg: #1c1f25;
+    --tridactyl-header-third-bg: #1c1f25;
+    --tridactyl-header-font-size: 11px;
+    --tridactyl-header-font-weight: bold;
+    --tridactyl-header-border-bottom: 1px solid #3a404a;
+
+    /* URL style */
+    --tridactyl-url-text-decoration: none;
+    --tridactyl-url-fg: #5ed3f3;
+    --tridactyl-url-bg: transparent;
+    --tridactyl-url-cursor: pointer;
+
+    /* Option focused */
+    --tridactyl-of-fg: #ffb340;
+    --tridactyl-of-bg: #2c313a;
+
+    /* Search highlight */
+    --tridactyl-search-highlight-color: #ffd866;
+    --tridactyl-search-highlight-active-color: #ffb340;
+
+    /* Viewsource */
+    --tridactyl-vs-bg: #16181d;
+    --tridactyl-vs-fg: #e6e9ed;
+    --tridactyl-vs-font-family: "InputMono Nerd Font", monospace;
+}
+
+:root.TridactylOwnNamespace {
+    scrollbar-color: #3a404a #16181d;
+    scrollbar-width: thin;
+}
+
+/* Explicit style overrides for Phosphor aesthetics */
+span.TridactylHint {
+    border: 1px solid #e6e9ed !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+span.TridactylHint.TridactylHintSpanActive {
+    border: 1px solid #ffb340 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+#command-line-holder,
+#tridactyl-input,
+#completions,
+.TridactylStatusIndicator {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#completions .sectionHeader {
+    color: #b7bec8 !important;
+}
+
+.TridactylStatusIndicator {
+    color: #b7bec8 !important;
+    border-radius: 0 !important;
+}
