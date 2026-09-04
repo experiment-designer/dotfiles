@@ -66,7 +66,8 @@ done
 if firefox_profile_dir="$(find_firefox_developer_profile)"; then
     mkdir -p "$firefox_profile_dir/chrome"
     for file in "${FIREFOX_PROFILE_FILES[@]}"; do
-        if [ -f "$DOTFILES_DIR/.config/firefox/$file" ]; then
+        # -e, not -f: entries may be directories (chrome/chrome-parts).
+        if [ -e "$DOTFILES_DIR/.config/firefox/$file" ]; then
             link_path \
                 "$DOTFILES_DIR/.config/firefox/$file" \
                 "$firefox_profile_dir/$file"

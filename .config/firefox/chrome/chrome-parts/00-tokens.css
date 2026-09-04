@@ -1,0 +1,121 @@
+/*
+ * Phosphor browser chrome — near-white hairlines on deep graphite, amber for state.
+ *
+ * The one-line toolbox grid (tabs and navigation sharing a single row) is
+ * adapted from MrOtherGuy/firefox-csshacks (MPL-2.0):
+ * https://github.com/MrOtherGuy/firefox-csshacks
+ * Selectors validated against Firefox Developer Edition 154.0b5.
+ */
+
+
+/*
+ * Design tokens: :root custom properties, font, colour-scheme.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    :root {
+        --ph-bg0: #16181d;
+        --ph-bg1: #1c1f25;
+        --ph-bg2: #23272e;
+        --ph-bg3: #2c313a;
+        --ph-line0: #3a404a;
+        --ph-line1: #e6e9ed;
+        --ph-fg0: #e6e9ed;
+        --ph-fg1: #b7bec8;
+        --ph-fg2: #7b838f;
+        --ph-amber: #ffb340;
+        --ph-amber-hi: #ffc966;
+        --ph-cyan: #5ed3f3;
+        --ph-magenta: #d67cff;
+        --ph-yellow: #ffd866;
+        --ph-red: #ff4d6d;
+
+        --ph-hair: 1px solid var(--ph-line1);
+        --ph-quiet: 1px solid var(--ph-line0);
+        --ph-tab-row: 28px;
+        --ph-nav-row: 30px;
+        --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+        --ph-font-dense: "InputMonoCondensed Nerd Font", "InputMono Nerd Font", monospace;
+
+        /* Native theme channels: keep everything on bg0/bg1. */
+        --lwt-accent-color: var(--ph-bg1) !important;
+        --lwt-accent-color-inactive: var(--ph-bg1) !important;
+        --lwt-text-color: var(--ph-fg0) !important;
+        --lwt-tab-text: var(--ph-fg1) !important;
+        --lwt-selected-tab-background-color: var(--ph-bg0) !important;
+        --toolbar-bgcolor: var(--ph-bg1) !important;
+        --toolbar-color: var(--ph-fg0) !important;
+        --toolbox-non-lwt-bgcolor: var(--ph-bg1) !important;
+        --chrome-content-separator-color: var(--ph-line0) !important;
+
+        --toolbar-field-background-color: var(--ph-bg0) !important;
+        --toolbar-field-color: var(--ph-fg0) !important;
+        --toolbar-field-border-color: var(--ph-line1) !important;
+        --toolbar-field-focus-background-color: var(--ph-bg0) !important;
+        --toolbar-field-focus-color: var(--ph-fg0) !important;
+        --toolbar-field-focus-border-color: var(--ph-line1) !important;
+
+        --toolbarbutton-icon-fill: var(--ph-fg1) !important;
+        --toolbarbutton-icon-fill-attention: var(--ph-amber) !important;
+        --toolbarbutton-hover-background: var(--ph-bg2) !important;
+        --toolbarbutton-active-background: var(--ph-bg3) !important;
+        --toolbarbutton-outer-padding: 0 !important;
+        --toolbarbutton-inner-padding: 4px !important;
+
+        /* Compact geometry. */
+        --tab-min-height: 25px !important;
+        --tab-min-width: 76px !important;
+        --tab-block-margin: 0 !important;
+        --tab-inline-padding: 8px !important;
+        --tab-selected-bgcolor: var(--ph-bg0) !important;
+        --tab-selected-textcolor: var(--ph-fg0) !important;
+        --tab-hover-background-color: var(--ph-bg2) !important;
+        --tab-selected-shadow: none !important;
+        --urlbar-min-height: 24px !important;
+        --urlbar-container-padding: 0 !important;
+        --urlbar-icon-padding: 3px !important;
+        --panel-shadow-margin: 0 !important;
+        --arrowpanel-padding: 4px !important;
+        --arrowpanel-menuitem-padding: 3px 8px !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --panel-separator-color: var(--ph-line0) !important;
+
+        /* Zero radius, everywhere, in every dialect Firefox still speaks. */
+        --tab-border-radius: 0 !important;
+        --toolbarbutton-border-radius: 0 !important;
+        --urlbar-border-radius: 0 !important;
+        --urlbarView-row-border-radius: 0 !important;
+        --urlbarview-border-radius: 0 !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-menuitem-border-radius: 0 !important;
+        --panel-border-radius: 0 !important;
+        --panel-menuitem-border-radius: 0 !important;
+        --button-border-radius: 0 !important;
+        --input-text-border-radius: 0 !important;
+        --border-radius-xsmall: 0 !important;
+        --border-radius-small: 0 !important;
+        --border-radius-medium: 0 !important;
+        --border-radius-large: 0 !important;
+        --identity-box-border-radius: 0 !important;
+
+        --color-accent-primary: var(--ph-amber) !important;
+        --focus-outline-color: var(--ph-amber) !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --focus-outline-offset: -1px !important;
+        --input-text-background-color: var(--ph-bg0) !important;
+        --input-text-border: 1px solid var(--ph-line1) !important;
+        --input-text-color: var(--ph-fg0) !important;
+
+        color-scheme: dark !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+}

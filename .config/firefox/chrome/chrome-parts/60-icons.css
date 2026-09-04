@@ -1,0 +1,573 @@
+/*
+ * All replaced artwork: data-URI icons, extension greyscale, badges, favicons.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ==================================================================== *
+     * Icons — one drawn language: 16x16 viewBox, 1.5 stroke, square caps.  *
+     *                                                                      *
+     * Every replaced glyph is an inline data-URI SVG using                 *
+     * stroke="context-stroke", so the colour comes from the element's own  *
+     * `stroke` property via -moz-context-properties. That keeps the        *
+     * fg1 / fg0-on-hover / amber-when-active language in CSS, not baked    *
+     * into the artwork.                                                    *
+     * ==================================================================== */
+
+    /* 14px art in a 24px square button: 14 + 2 * 5 = 24. */
+    :root {
+        --toolbarbutton-inner-padding: 5px !important;
+        --ph-icon: 14px;
+    }
+
+    /*
+     * Firefox sizes toolbar icons border-box, so a 14px width with 5px of
+     * inner padding collapses the artwork to 4px. Size the 24px BOX and let
+     * the padding leave exactly 14px of art.
+     */
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    #TabsToolbar toolbarbutton:not(.tabbrowser-tab) > .toolbarbutton-icon,
+    #TabsToolbar toolbarbutton:not(.tabbrowser-tab) > .toolbarbutton-badge-stack > .toolbarbutton-icon {
+        box-sizing: border-box !important;
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        min-height: 24px !important;
+        max-width: 24px !important;
+        max-height: 24px !important;
+        padding: 5px !important;
+        margin: 0 !important;
+    }
+
+    #urlbar .urlbar-icon,
+    #page-action-buttons .urlbar-page-action > image {
+        box-sizing: border-box !important;
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        min-height: 20px !important;
+        padding: 3px !important;
+    }
+
+    #star-button,
+    #tracking-protection-icon,
+    #identity-icon {
+        box-sizing: border-box !important;
+        width: var(--ph-icon) !important;
+        height: var(--ph-icon) !important;
+        min-width: var(--ph-icon) !important;
+        min-height: var(--ph-icon) !important;
+        padding: 0 !important;
+    }
+
+    #nav-bar .toolbarbutton-1 .toolbarbutton-icon,
+    #TabsToolbar toolbarbutton .toolbarbutton-icon,
+    #urlbar .urlbar-icon,
+    #star-button,
+    #tracking-protection-icon,
+    #identity-icon {
+        -moz-context-properties: fill, stroke !important;
+        fill: var(--ph-fg1) !important;
+        stroke: var(--ph-fg1) !important;
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    /* Square 24px hit area, square bg2 hover, never a circle. */
+    #nav-bar .toolbarbutton-1,
+    #TabsToolbar toolbarbutton:not(.tabbrowser-tab) {
+        min-width: 24px !important;
+        min-height: 24px !important;
+        border-radius: 0 !important;
+    }
+
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack {
+        border-radius: 0 !important;
+        padding: 0 !important;
+    }
+
+    #nav-bar .toolbarbutton-1:is(:hover, [open]) > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1:is(:hover, [open]) .toolbarbutton-icon,
+    #TabsToolbar toolbarbutton:is(:hover, [open]) .toolbarbutton-icon,
+    #urlbar .urlbar-icon:hover,
+    #star-button-box:hover #star-button,
+    #tracking-protection-icon-container:hover #tracking-protection-icon {
+        stroke: var(--ph-fg0) !important;
+        fill: var(--ph-fg0) !important;
+        /* The replaced art has fg1 baked in, so hover lifts it to fg0. */
+        filter: brightness(1.3) !important;
+        background: var(--ph-bg2) !important;
+        border-radius: 0 !important;
+    }
+
+    #nav-bar .toolbarbutton-1[disabled] .toolbarbutton-icon {
+        stroke: var(--ph-fg2) !important;
+    }
+
+    /*
+     * Disabled back / forward: dimmed, never hidden — the slot has to stay so
+     * the nav line does not reflow when history appears. Reload and stop
+     * already share one slot (#stop-reload-button swaps them on [displaystop]),
+     * so the group is always three squares wide.
+     */
+    #back-button[disabled] > .toolbarbutton-icon,
+    #forward-button[disabled] > .toolbarbutton-icon,
+    #back-button[disabled="true"] > .toolbarbutton-icon,
+    #forward-button[disabled="true"] > .toolbarbutton-icon {
+        opacity: 0.35 !important;
+        stroke: var(--ph-fg2) !important;
+        fill: none !important;
+    }
+
+    #back-button[disabled],
+    #forward-button[disabled] {
+        visibility: visible !important;
+    }
+
+    /* Active / checked / attention: amber, and only amber. */
+    #nav-bar .toolbarbutton-1:is([checked="true"], [open], [attention], [badged="true"][attention]) > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1[checked="true"] .toolbarbutton-icon,
+    #star-button[starred] {
+        stroke: var(--ph-amber) !important;
+        fill: none !important;
+    }
+
+    /* ---- Replaced artwork -------------------------------------------- */
+
+    /* back: chevron-left */
+    #back-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M10.25 2.75 L4.75 8 L10.25 13.25'/%3E%3C/svg%3E") !important;
+    }
+
+    /* forward: chevron-right */
+    #forward-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M5.75 2.75 L11.25 8 L5.75 13.25'/%3E%3C/svg%3E") !important;
+    }
+
+    /* reload: 300deg arc with a corner arrowhead */
+    #reload-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12.6 9.9 A5.2 5.2 0 1 1 13.25 7.6'/%3E%3Cpath d='M13.25 3.9 L13.25 7.6 L9.55 7.6'/%3E%3C/svg%3E") !important;
+    }
+
+    /* stop: the same cross the tabs use */
+    #stop-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square'%3E%3Cpath d='M3.5 3.5 L12.5 12.5 M12.5 3.5 L3.5 12.5'/%3E%3C/svg%3E") !important;
+    }
+
+    /* downloads: arrow down onto a baseline */
+    #downloads-button,
+    #downloads-button > .toolbarbutton-badge-stack > .toolbarbutton-icon {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M8 1.75 L8 9.75 M4.5 6.75 L8 10.25 L11.5 6.75 M2.25 13.75 L13.75 13.75'/%3E%3C/svg%3E") !important;
+    }
+
+    /* unified extensions: four small squares, no puzzle piece */
+    #unified-extensions-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M2.5 2.5 h4 v4 h-4 z M9.5 2.5 h4 v4 h-4 z M2.5 9.5 h4 v4 h-4 z M9.5 9.5 h4 v4 h-4 z'/%3E%3C/svg%3E") !important;
+    }
+
+    /* app menu: three 12px rules */
+    #PanelUI-menu-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square'%3E%3Cpath d='M2 4.25 H14 M2 8 H14 M2 11.75 H14'/%3E%3C/svg%3E") !important;
+    }
+
+    /* developer tools: a drawn %3C/%3E */
+    #developer-button,
+    #appMenu-developer-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M5.5 4 L2.25 8 L5.5 12'/%3E%3Cpath d='M10.5 4 L13.75 8 L10.5 12'/%3E%3Cpath d='M9.2 2.75 L6.8 13.25'/%3E%3C/svg%3E") !important;
+    }
+
+    /* bookmark this page: outline star */
+    #star-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M8 1.6 l2.05 4.16 4.6 .67 -3.33 3.24 .79 4.58 L8 11.89 l-4.11 2.16 .79-4.58 -3.33-3.24 4.6-.67 z'/%3E%3C/svg%3E") !important;
+    }
+
+    /* tracking protection: outline shield */
+    #tracking-protection-icon,
+    #tracking-protection-icon-box,
+    .identity-box-button#trust-icon-container > image {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M8 14.6 c3.55-1.9 5.35-4.15 5.35-6.75 V3.35 L8 1.4 L2.65 3.35 v4.5 c0 2.6 1.8 4.85 5.35 6.75 z'/%3E%3C/svg%3E") !important;
+    }
+
+    /* tab close: two strokes */
+    .tab-close-button,
+    .tab-close-button > .toolbarbutton-icon {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square'%3E%3Cpath d='M3.5 3.5 L12.5 12.5 M12.5 3.5 L3.5 12.5'/%3E%3C/svg%3E") !important;
+        -moz-context-properties: fill, stroke !important;
+        fill: none !important;
+        stroke: var(--ph-fg1) !important;
+    }
+
+    .tab-close-button:hover,
+    .tab-close-button:hover > .toolbarbutton-icon {
+        stroke: var(--ph-red) !important;
+    }
+
+    /* new tab: two strokes */
+    #tabs-newtab-button,
+    #new-tab-button,
+    #tabs-newtab-button > .toolbarbutton-icon,
+    #new-tab-button > .toolbarbutton-icon {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square'%3E%3Cpath d='M8 2.75 L8 13.25 M2.75 8 L13.25 8'/%3E%3C/svg%3E") !important;
+        -moz-context-properties: fill, stroke !important;
+        fill: none !important;
+        stroke: var(--ph-fg1) !important;
+    }
+
+    /* Account button: the rice has no account. */
+    #fxa-toolbar-menu-button,
+    #fxa-avatar-image,
+    #fxa-toolbar-menu-button > .toolbarbutton-badge-stack {
+        display: none !important;
+    }
+
+    /* Bookmarked: the same star, amber. */
+    #star-button[starred] {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23ffb340' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M8 1.6 l2.05 4.16 4.6 .67 -3.33 3.24 .79 4.58 L8 11.89 l-4.11 2.16 .79-4.58 -3.33-3.24 4.6-.67 z'/%3E%3C/svg%3E") !important;
+        filter: none !important;
+    }
+
+    /* Download finished / in progress: the same arrow, amber. */
+    #downloads-button[attention="success"],
+    #downloads-button[attention="success"] > .toolbarbutton-badge-stack > .toolbarbutton-icon {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23ffb340' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M8 1.75 L8 9.75 M4.5 6.75 L8 10.25 L11.5 6.75 M2.25 13.75 L13.75 13.75'/%3E%3C/svg%3E") !important;
+        filter: none !important;
+    }
+
+    /* ---- Extension / browser-action icons ----------------------------- */
+
+    /*
+     * Add-on artwork is somebody else's palette. It cannot be redrawn, so it
+     * is desaturated to sit inside the greyscale instead of shouting over it.
+     */
+/*
+     * FF 154 builds every extension action button the same way, in the bar and
+     * in the panel (ext-browserAction.js `onBuild`/`onCreated`):
+     *
+     *   toolbaritem.unified-extensions-item.toolbaritem-combined-buttons
+     *     > box.unified-extensions-item-row-wrapper
+     *         > toolbarbutton.unified-extensions-item-action-button
+     *                        .webextension-browser-action[badged="true"]
+     *             > stack.toolbarbutton-badge-stack
+     *                 > image.toolbarbutton-icon
+     *                 > label.toolbarbutton-badge
+     *
+     * The button carries no `.toolbarbutton-1` and no `*-browser-action` id,
+     * so every `.toolbarbutton-1`-anchored rule above misses it — which is why
+     * the add-on artwork kept its own colours. Match the two classes the
+     * button really has, in the bar, in #unified-extensions-area and in the
+     * panel view, and desaturate the artwork itself.
+     */
+    #nav-bar toolbarbutton.webextension-browser-action .toolbarbutton-icon,
+    #nav-bar .unified-extensions-item-action-button .toolbarbutton-icon,
+    #nav-bar .unified-extensions-item .toolbarbutton-icon,
+    #nav-bar toolbarbutton[widget-type="view"] .toolbarbutton-icon,
+    #nav-bar toolbaritem[id*="_-browser-action"] .toolbarbutton-icon,
+    #nav-bar toolbarbutton[id$="-browser-action"] .toolbarbutton-icon,
+    #nav-bar toolbarbutton[id$="-browser-action"] > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    #unified-extensions-area toolbarbutton .toolbarbutton-icon,
+    #unified-extensions-area toolbarbutton > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    #unified-extensions-view .unified-extensions-item .toolbarbutton-icon,
+    #unified-extensions-view .webextension-browser-action .toolbarbutton-icon,
+    .unified-extensions-item-action-button .toolbarbutton-icon,
+    .unified-extensions-item-action-button > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    .unified-extensions-item-icon,
+    #unified-extensions-panel image.toolbarbutton-icon {
+        filter: grayscale(1) brightness(1.15) !important;
+        -moz-context-properties: none !important;
+        box-sizing: border-box !important;
+        width: var(--ph-icon) !important;
+        height: var(--ph-icon) !important;
+        min-width: var(--ph-icon) !important;
+        min-height: var(--ph-icon) !important;
+        padding: 0 !important;
+    }
+
+    /* Same 24px square hit area as the drawn buttons, no radius, no dot. */
+    #nav-bar toolbarbutton.webextension-browser-action,
+    #nav-bar .unified-extensions-item-action-button,
+    #nav-bar .unified-extensions-item-menu-button {
+        min-width: 24px !important;
+        min-height: 24px !important;
+        border-radius: 0 !important;
+    }
+
+    #nav-bar .unified-extensions-item-action-button > .toolbarbutton-badge-stack,
+    #nav-bar toolbarbutton.webextension-browser-action > .toolbarbutton-badge-stack {
+        border-radius: 0 !important;
+        padding: 0 !important;
+    }
+
+    #nav-bar :is(.unified-extensions-item-action-button, toolbarbutton.webextension-browser-action):hover > .toolbarbutton-badge-stack {
+        background: var(--ph-bg2) !important;
+        border-radius: 0 !important;
+    }
+
+/*
+     * Badges: bg2 plate, line0 hairline, fg1 digits, square. No red, no pill.
+     *
+     * The badge label inherits its `style` attribute from the button's
+     * `badgeStyle` attribute (toolkit toolbarbutton.js:
+     * `".toolbarbutton-badge": "text=badge,style=badgeStyle"`), which
+     * ext-browserAction.js fills with the add-on's own
+     * `background-color: rgba(...)`. That is an inline declaration, so every
+     * colour here has to be !important — and background-color, not just the
+     * `background` shorthand, or uBlock's red plate survives.
+     */
+    .toolbarbutton-badge,
+    .toolbarbutton-badge-stack > .toolbarbutton-badge,
+    .toolbarbutton-badge[style],
+    .toolbarbutton-badge-stack > .toolbarbutton-badge[style],
+    #nav-bar .toolbarbutton-badge,
+    #unified-extensions-area .toolbarbutton-badge,
+    #unified-extensions-view .toolbarbutton-badge {
+        appearance: none !important;
+        background: var(--ph-bg2) !important;
+        background-color: var(--ph-bg2) !important;
+        background-image: none !important;
+        border: 1px solid var(--ph-line0) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 9px !important;
+        font-weight: 400 !important;
+        line-height: 1 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 0 1px !important;
+        margin: 0 !important;
+        text-shadow: none !important;
+    }
+
+    /* Firefox's own badge tokens, so nothing red leaks in from the theme. */
+    :root {
+        --toolbarbutton-badge-background-color: var(--ph-bg2) !important;
+        --toolbarbutton-badge-font-size: 9px !important;
+        --toolbarbutton-badge-min-width: 0 !important;
+        --toolbarbutton-badge-padding-inline: 1px !important;
+        --toolbarbutton-badge-padding-block-end: 0 !important;
+    }
+
+    /* ---- The urlbar keeps no engine favicon --------------------------- */
+
+    /*
+     * FF 154 puts the default engine's favicon in the unified search button
+     * and in every search row of the dropdown. It is the one piece of colour
+     * in the chrome, so it goes: the magnifier below says "search" instead.
+     */
+    #urlbar-searchmode-switcher-icon,
+    #searchmode-switcher-icon,
+    .urlbar-searchmode-switcher-icon,
+    #urlbar-search-mode-indicator,
+    #urlbar-search-mode-indicator-title,
+    .urlbar-search-mode-indicator,
+    .urlbar-search-mode-indicator-title,
+    #urlbar-engine-icon,
+    #urlbar-searchmode-switcher > image,
+    .searchbar-engine-image,
+    #searchbar .searchbar-search-icon,
+    .search-panel-one-offs-container .searchbar-engine-one-off-item image,
+    .urlbarView-row[type="search"] .urlbarView-favicon,
+    .urlbarView-row[type="searchengine"] .urlbarView-favicon,
+    .urlbarView-row[source="search"] .urlbarView-favicon,
+    .urlbarView-row-inner > .urlbarView-favicon[src*="google"],
+    #urlbar .urlbar-icon[src*="google"] {
+        display: none !important;
+        list-style-image: none !important;
+    }
+
+    #urlbar-searchmode-switcher,
+    #urlbar-searchmode-switcher-dropmarker,
+    .searchmode-switcher-chevron,
+    #searchmode-switcher-chevron,
+    #urlbar-searchmode-switcher-close,
+    #searchmode-switcher-title,
+    #urlbar-searchmode-switcher-label {
+        display: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        border: 0 !important;
+    }
+
+    /* One 12px muted magnifier, drawn like everything else. */
+    #urlbar-search-button {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='6.9' cy='6.9' r='4.4'/%3E%3Cpath d='M10.2 10.2 L14 14'/%3E%3C/svg%3E") !important;
+        -moz-context-properties: fill, stroke !important;
+        fill: none !important;
+        stroke: var(--ph-fg2) !important;
+        width: 16px !important;
+        min-width: 16px !important;
+        padding: 0 !important;
+    }
+
+    #urlbar-search-button > image {
+        width: 12px !important;
+        height: 12px !important;
+        -moz-context-properties: fill, stroke !important;
+        fill: none !important;
+        stroke: var(--ph-fg2) !important;
+    }
+
+    /* Search-mode one-offs stay reachable, but flat: bg1, hairline, fg1. */
+    #urlbar .search-one-offs,
+    .search-panel-one-offs-container {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        padding: 2px !important;
+    }
+
+    .searchbar-engine-one-off-item,
+    .search-panel-one-offs .searchbar-engine-one-off-item {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        fill: var(--ph-fg1) !important;
+        filter: grayscale(1) brightness(1.15) !important;
+        min-width: 24px !important;
+        height: 24px !important;
+    }
+
+    .searchbar-engine-one-off-item:is(:hover, [selected]) {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+        outline: 1px solid var(--ph-line0) !important;
+        outline-offset: -1px !important;
+    }
+
+    /* Zoom level is a number in a text field's clothing: gone. */
+    #urlbar-zoom-button,
+    #urlbar-zoom-button > label {
+        display: none !important;
+    }
+
+    /* Translate stays in the greyscale like every other page action. */
+    #translations-button,
+    #translations-button-icon,
+    #translations-button-circle-arrows,
+    #translations-button-locale {
+        filter: none !important;
+        color: var(--ph-fg1) !important;
+        fill: var(--ph-fg1) !important;
+        stroke: var(--ph-fg1) !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    /*
+     * Typing must not repaint the field. Firefox swaps in the "box" tokens
+     * for the usertyping/open/breakout states, so all of them are pinned to
+     * bg1 and the switcher box is gone in every state, not just at rest.
+     */
+    :root {
+        --urlbar-box-bgcolor: var(--ph-bg1) !important;
+        --urlbar-box-focus-bgcolor: var(--ph-bg1) !important;
+        --urlbar-box-hover-bgcolor: var(--ph-bg2) !important;
+        --urlbar-box-active-bgcolor: var(--ph-bg2) !important;
+        --urlbar-box-text-color: var(--ph-fg0) !important;
+        --toolbar-field-background-color: var(--ph-bg1) !important;
+        --toolbar-field-focus-background-color: var(--ph-bg1) !important;
+    }
+
+    #urlbar .urlbar-background,
+    #urlbar[focused] .urlbar-background,
+    #urlbar[open] .urlbar-background,
+    #urlbar[usertyping] .urlbar-background,
+    #urlbar[breakout] .urlbar-background,
+    #urlbar[breakout-extend] .urlbar-background,
+    #urlbar[suppress-focus-border] .urlbar-background,
+    #urlbar-input-container,
+    #urlbar-background {
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+    }
+
+    #urlbar[usertyping] #urlbar-searchmode-switcher,
+    #urlbar[open] #urlbar-searchmode-switcher,
+    #urlbar[focused] #urlbar-searchmode-switcher,
+    #urlbar-searchmode-switcher[hidden="false"],
+    #urlbar .urlbar-searchmode-switcher,
+    #urlbar-container #urlbar-searchmode-switcher,
+    #urlbar #urlbar-searchmode-switcher-icon,
+    #urlbar #searchmode-switcher-icon,
+    #urlbar-search-mode-indicator-icon {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    /*
+     * FF 154's unified search button is class-based (.searchmode-switcher*)
+     * with id suffixes ...2 — the pre-154 #urlbar-searchmode-switcher id no
+     * longer exists, which is why the engine favicon survived a first pass.
+     */
+    .searchmode-switcher,
+    .searchmode-switcher-content,
+    .searchmode-switcher-icon,
+    .searchmode-switcher-dropmarker,
+    .searchmode-switcher-title,
+    .searchmode-switcher-close,
+    #urlbar-searchmode-default2,
+    #urlbar-searchmode-dropmarker2,
+    #urlbar-searchmode-exit-button2 {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+/*
+     * Result-row favicons stay in FULL COLOUR: in the dropdown the favicon is
+     * the only way to tell one row from another at a glance. Greyscale is for
+     * chrome furniture (toolbar and extension icons) and tab favicons only.
+     */
+    .urlbarView-favicon,
+    .urlbarView-row .urlbarView-favicon,
+    .urlbarView-type-icon,
+    #urlbar-results .urlbarView-favicon,
+    #urlbar-results img {
+        filter: none !important;
+        opacity: 1 !important;
+        width: 14px !important;
+        height: 14px !important;
+        border-radius: 0 !important;
+    }
+
+    /* ---- Tab favicons: monochrome, but still meaningful --------------- */
+
+    .tab-icon-image,
+    .tab-icon-pending {
+        width: 14px !important;
+        height: 14px !important;
+        min-width: 14px !important;
+        min-height: 14px !important;
+        filter: grayscale(1) contrast(1.1) !important;
+        opacity: 0.8 !important;
+    }
+
+    .tabbrowser-tab:hover .tab-icon-image,
+    .tabbrowser-tab[selected] .tab-icon-image {
+        filter: none !important;
+        opacity: 1 !important;
+    }
+}

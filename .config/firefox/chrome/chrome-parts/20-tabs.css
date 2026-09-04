@@ -1,0 +1,192 @@
+/*
+ * Tab strip: tab shapes, states, indicators, clutter removal.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Tabs --------------------------------------------------------- */
+
+    #tabbrowser-tabs {
+        border: 0 !important;
+        padding-inline: 0 !important;
+        font-family: var(--ph-font-dense) !important;
+    }
+
+    /*
+     * Pin the tab box to the row height explicitly. Left to itself the
+     * tab-background stretches past the toolbar and Firefox clips the top
+     * hairline away, so the active tab loses one side of its frame.
+     */
+    .tabbrowser-tab,
+    #tabbrowser-tabs,
+    #tabbrowser-arrowscrollbox,
+    .tabbrowser-tab > .tab-stack {
+        height: var(--ph-tab-row) !important;
+        max-height: var(--ph-tab-row) !important;
+        min-height: 0 !important;
+    }
+
+    .tabbrowser-tab {
+        padding-inline: 0 !important;
+        font-family: var(--ph-font-dense) !important;
+    }
+
+    /* Kill the tab background art: no shadow, no radius, no gradient. */
+    .tabbrowser-tab > .tab-stack > .tab-background,
+    .tab-background {
+        box-sizing: border-box !important;
+        height: var(--ph-tab-row) !important;
+        max-height: var(--ph-tab-row) !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background-image: none !important;
+    }
+
+    .tab-background::before,
+    .tab-background::after,
+    .tab-background > .tab-context-line,
+    #tabbrowser-tabs::before,
+    #tabbrowser-tabs::after {
+        display: none !important;
+    }
+
+    /* Inactive: bg1 with a quiet line0 separator. */
+    .tabbrowser-tab:not([selected], [multiselected]) > .tab-stack > .tab-background {
+        background-color: var(--ph-bg1) !important;
+        border-inline-end: var(--ph-quiet) !important;
+    }
+
+    .tabbrowser-tab:not([selected], [multiselected]):hover > .tab-stack > .tab-background {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    /*
+     * Active: bg0 cut out of the bar, framed in a line1 hairline, marked by a
+     * single 2px amber bottom edge. The amber edge is THE active marker — tab
+     * text stays fg0 so the language never doubles up.
+     */
+    .tabbrowser-tab:is([selected], [multiselected]) > .tab-stack > .tab-background {
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-bottom: 2px solid var(--ph-amber) !important;
+    }
+
+    .tab-content {
+        padding-inline: 7px !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    .tabbrowser-tab:is([selected], [multiselected]) .tab-content {
+        color: var(--ph-fg0) !important;
+    }
+
+    .tab-label {
+        font-size: 11px !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    .tabbrowser-tab:is([selected], [multiselected]) .tab-label {
+        font-weight: 500 !important;
+    }
+
+    .tab-icon-image,
+    .tab-icon-pending {
+        width: 13px !important;
+        height: 13px !important;
+        margin-inline-end: 5px !important;
+        opacity: 0.7 !important;
+    }
+
+    .tabbrowser-tab:is([selected], :hover) .tab-icon-image {
+        opacity: 1 !important;
+    }
+
+    .tab-close-button {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 0 !important;
+        border-radius: 0 !important;
+        padding: 2px !important;
+        margin-inline-start: 2px !important;
+    }
+
+    .tab-close-button > .toolbarbutton-icon {
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    .tabbrowser-tab:not([selected], :hover) .tab-close-button {
+        display: none !important;
+    }
+
+    .tab-close-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-red) !important;
+        fill: var(--ph-red) !important;
+    }
+
+    #tabs-newtab-button,
+    #new-tab-button {
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+    }
+
+    #tabs-newtab-button:hover,
+    #new-tab-button:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    #tabs-newtab-button > .toolbarbutton-icon,
+    #new-tab-button > .toolbarbutton-icon,
+    #alltabs-button > .toolbarbutton-badge-stack,
+    #scrollbutton-up,
+    #scrollbutton-down {
+        border-radius: 0 !important;
+        background: transparent !important;
+    }
+
+    /* Audio/loading indicators keep their meaning, on-palette. */
+    .tab-icon-sound {
+        border-radius: 0 !important;
+        fill: var(--ph-amber) !important;
+    }
+
+    /* ---- Clutter removal --------------------------------------------- */
+
+    /* Firefox View: gone. */
+    #firefox-view-button,
+    #tabbrowser-tabs > .tabbrowser-arrowscrollbox > toolbarbutton#firefox-view-button {
+        display: none !important;
+    }
+
+    /* "List all tabs" only earns space when the strip actually overflows. */
+    #alltabs-button {
+        display: none !important;
+    }
+
+    #tabbrowser-tabs[overflow] ~ #alltabs-button,
+    #tabbrowser-tabs[overflow="true"] ~ #alltabs-button {
+        display: flex !important;
+    }
+
+    /* The urlbar's "Firefox"/switch-to-tab chiclet and identity word-noise. */
+    #urlbar-search-mode-indicator,
+    #urlbar-label-box,
+    #urlbar-label-switchtab,
+    #urlbar-label-extension,
+    #urlbar-label-search-mode,
+    #identity-icon-labels,
+    #identity-icon-label,
+    .identity-box-label {
+        display: none !important;
+    }
+}

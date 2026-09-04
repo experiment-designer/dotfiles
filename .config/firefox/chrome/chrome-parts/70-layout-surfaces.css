@@ -1,0 +1,111 @@
+/*
+ * Two-row grid, tab numbering, and the two-surface background pass.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Two rows, put back on the grid ------------------------------- */
+
+    /* Exactly one line between the tab row and the nav row. */
+    #TabsToolbar {
+        border-bottom: var(--ph-hair) !important;
+    }
+
+    #nav-bar {
+        border-top: 0 !important;
+    }
+
+    /* Tab numbers: 01, 02, 03 — the index is part of the furniture. */
+    #tabbrowser-tabs,
+    #tabbrowser-arrowscrollbox {
+        counter-reset: ph-tab !important;
+    }
+
+    .tabbrowser-tab {
+        counter-increment: ph-tab !important;
+    }
+
+    .tabbrowser-tab .tab-label-container .tab-label::before {
+        content: counter(ph-tab, decimal-leading-zero) " ";
+        color: var(--ph-fg2) !important;
+        font-family: var(--ph-font-dense) !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.04em !important;
+    }
+
+    .tabbrowser-tab[pinned] .tab-label::before {
+        content: none !important;
+    }
+
+    /* Hover reads as a quiet edge; the amber edge stays the active marker. */
+    .tabbrowser-tab:not([selected], [multiselected]):hover > .tab-stack > .tab-background {
+        border-bottom: 2px solid var(--ph-line0) !important;
+    }
+    /* ==================================================================== *
+     * Two surfaces, not five.                                              *
+     *                                                                      *
+     * bg1 is the chrome (tab strip, nav bar, inactive tabs); bg0 is the     *
+     * cut-out tier (urlbar field, active tab, content). Separation is done  *
+     * by hairlines, never by a third fill. Hover is the only exception.     *
+     * ==================================================================== */
+
+    :root {
+        --toolbar-field-background-color: var(--ph-bg0) !important;
+        --toolbar-field-focus-background-color: var(--ph-bg0) !important;
+        --urlbar-box-bgcolor: var(--ph-bg0) !important;
+        --urlbar-box-focus-bgcolor: var(--ph-bg0) !important;
+    }
+
+    #navigator-toolbox,
+    #TabsToolbar,
+    #nav-bar,
+    #navigator-toolbox-background,
+    .tabbrowser-tab:not([selected], [multiselected]) > .tab-stack > .tab-background {
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+    }
+
+    #urlbar .urlbar-background,
+    #urlbar[focused] .urlbar-background,
+    #urlbar[open] .urlbar-background,
+    #urlbar[usertyping] .urlbar-background,
+    #urlbar[breakout] .urlbar-background,
+    #urlbar[breakout-extend] .urlbar-background,
+    #urlbar-input-container,
+    .tabbrowser-tab:is([selected], [multiselected]) > .tab-stack > .tab-background {
+        background: var(--ph-bg0) !important;
+        background-color: var(--ph-bg0) !important;
+        background-image: none !important;
+    }
+
+    /* Bookmarks toolbar: never, not even the "Import bookmarks" strip. */
+    #PersonalToolbar,
+    #navigator-toolbox:hover #PersonalToolbar,
+    #navigator-toolbox:focus-within #PersonalToolbar,
+    #PersonalToolbar #import-button,
+    #personal-bookmarks {
+        visibility: collapse !important;
+        display: none !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        border: 0 !important;
+    }
+
+    /* Exactly two hairlines: tabs|nav, and nav|content. Nothing else. */
+    #TabsToolbar {
+        border-bottom: var(--ph-hair) !important;
+    }
+
+    #nav-bar {
+        border-top: 0 !important;
+        border-bottom: 0 !important;
+    }
+
+    #navigator-toolbox {
+        border-bottom: var(--ph-hair) !important;
+    }
+}

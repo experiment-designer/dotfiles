@@ -1,0 +1,284 @@
+/*
+ * Library / Places windows (places.xhtml, bookmarks & history sidebars).
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+/* ---------------------------------------------------------------------- *
+ * Library / Places — a separate chrome document, so it lives here.       *
+ * ---------------------------------------------------------------------- */
+
+@-moz-document url("chrome://browser/content/places/places.xhtml"),
+               url("chrome://browser/content/places/bookmarksSidebar.xhtml"),
+               url("chrome://browser/content/places/historySidebar.xhtml") {
+    :root {
+        --ph-bg0: #16181d;
+        --ph-bg1: #1c1f25;
+        --ph-bg2: #23272e;
+        --ph-bg3: #2c313a;
+        --ph-line0: #3a404a;
+        --ph-line1: #e6e9ed;
+        --ph-fg0: #e6e9ed;
+        --ph-fg1: #b7bec8;
+        --ph-fg2: #7b838f;
+        --ph-amber: #ffb340;
+        --ph-amber-hi: #ffc966;
+        --ph-hair: 1px solid var(--ph-line1);
+        --ph-quiet: 1px solid var(--ph-line0);
+        --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+
+        --lwt-accent-color: var(--ph-bg1) !important;
+        --lwt-text-color: var(--ph-fg0) !important;
+        --toolbar-bgcolor: var(--ph-bg1) !important;
+        --toolbar-color: var(--ph-fg0) !important;
+        --toolbarbutton-border-radius: 0 !important;
+        --toolbarbutton-hover-background: var(--ph-bg2) !important;
+        --button-border-radius: 0 !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --input-text-background-color: var(--ph-bg0) !important;
+        --input-text-border: 1px solid var(--ph-line1) !important;
+        --input-text-border-radius: 0 !important;
+        --input-text-color: var(--ph-fg0) !important;
+        --input-text-min-height: 22px !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --focus-outline-color: var(--ph-amber) !important;
+        --focus-outline-offset: -1px !important;
+        --icon-color: var(--ph-fg1) !important;
+        --border-radius-small: 0 !important;
+        --border-radius-medium: 0 !important;
+
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        color-scheme: dark !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
+    #places,
+    #placesView,
+    #placesViewsBox,
+    #contentView,
+    #placeContent,
+    #detailsDeck,
+    tree {
+        background: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #placesToolbox,
+    #placesToolbar {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        box-shadow: none !important;
+    }
+
+    #placesToolbar {
+        min-height: 28px !important;
+        max-height: 28px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-hair) !important;
+    }
+
+    #placesMenu > menu,
+    #placesToolbar > toolbarbutton {
+        appearance: none !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 4px 8px !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #placesMenu > menu:is(:hover, [open]),
+    #placesToolbar > toolbarbutton:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #searchFilter {
+        flex: 0 1 300px !important;
+        max-width: 300px !important;
+        margin: 3px 4px !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        --icon-color: var(--ph-fg1) !important;
+    }
+
+    #searchFilter:focus-within {
+        --input-text-border: 1px solid var(--ph-line1) !important;
+    }
+
+    #placesList {
+        min-width: 190px !important;
+        max-width: 320px !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    treecols,
+    treecol,
+    .tree-columnpicker-button {
+        appearance: none !important;
+        min-height: 22px !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+    }
+
+    splitter,
+    .tree-splitter {
+        appearance: none !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+    }
+
+    treechildren::-moz-tree-row {
+        min-height: 20px !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    treechildren::-moz-tree-row(hover) {
+        background: var(--ph-bg2) !important;
+    }
+
+    treechildren::-moz-tree-row(selected),
+    treechildren::-moz-tree-row(selected, focus) {
+        background: var(--ph-bg2) !important;
+    }
+
+    treechildren::-moz-tree-cell-text {
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+    }
+
+    treechildren::-moz-tree-cell-text(primary) {
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Selected row speaks amber in text, consistently with every other list. */
+    treechildren::-moz-tree-cell-text(selected),
+    treechildren::-moz-tree-cell-text(selected, focus),
+    treechildren::-moz-tree-cell-text(primary, selected) {
+        color: var(--ph-amber) !important;
+    }
+
+    #detailsPane {
+        min-height: 130px !important;
+        padding: 8px !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+        color: var(--ph-fg0) !important;
+        font-size: 11px !important;
+    }
+
+    #detailsPane :is(input[type="text"], textarea, menulist, button),
+    :is(input, textarea, menulist, button, search-textbox, moz-input-search) {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+        box-shadow: none !important;
+    }
+
+    :is(input, textarea, menulist, button):focus-visible {
+        border-bottom: 2px solid var(--ph-amber) !important;
+        outline: none !important;
+    }
+
+    button:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    panel,
+    menupopup {
+        --panel-background: var(--ph-bg1) !important;
+        --panel-color: var(--ph-fg0) !important;
+        --panel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --panel-shadow: none !important;
+        --panel-shadow-margin: 0 !important;
+        --menu-background-color: var(--ph-bg1) !important;
+        --menu-color: var(--ph-fg0) !important;
+        --menu-border-color: var(--ph-line1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    panel::part(content),
+    menupopup::part(content) {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    menu,
+    menuitem {
+        appearance: none !important;
+        min-height: 0 !important;
+        padding: 3px 8px !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    :is(menu, menuitem):is(:hover, [_moz-menuactive="true"], [open]) {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :is(menu, menuitem)[checked="true"] {
+        background: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    menuseparator {
+        appearance: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 3px 0 !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+    }
+}
