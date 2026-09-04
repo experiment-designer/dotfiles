@@ -20,7 +20,8 @@ blip_file() {
         subdone)    echo "complete.oga" ;;
         prompt)     echo "message-new-instant.oga" ;;
         tag)        echo "dialog-information.oga" ;;
-        window)     echo "camera-shutter.oga" ;;
+        shot)       echo "camera-shutter.oga" ;;
+        window)     echo "power-plug.oga" ;;
         lowbatt)    echo "suspend-error.oga" ;;
         download)   echo "trash-empty.oga" ;;
         lock)       echo "service-logout.oga" ;;
