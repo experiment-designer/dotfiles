@@ -213,7 +213,7 @@ esac
 # --- blip: audible notification for long-running commands -------------------
 # preexec stores the start time + command name; precmd blips if the command ran
 # for >= $BLIP_MIN_SECONDS and is not an interactive/foreground program.
-BLIP_MIN_SECONDS=${BLIP_MIN_SECONDS:-15}
+BLIP_MIN_SECONDS=${BLIP_MIN_SECONDS:-8}
 BLIP_IGNORE_CMDS=(vim nvim less man htop btop ssh claude codex agy python ipython zsh bash tmux)
 
 _blip_preexec() {
