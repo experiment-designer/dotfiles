@@ -1121,8 +1121,6 @@ awful.screen.connect_for_each_screen(function(s)
                 spacing = 1,
                 spacing_widget = hairline(),
                 keyboard,
-                tray,
-                layout,
                 s.mycpuwidget,
                 s.mymemorywidget,
                 clock,
