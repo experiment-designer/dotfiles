@@ -9,13 +9,14 @@
 @-moz-document url("chrome://browser/content/browser.xhtml") {
     /* ---- Two rows, put back on the grid ------------------------------- */
 
-    /* Exactly one line between the tab row and the nav row. */
+    /* Exactly one line between the tab row and the nav row -- on nav-bar's
+       top edge, so it cannot steal a pixel from the tab strip's height. */
     #TabsToolbar {
-        border-bottom: var(--ph-hair) !important;
+        border-bottom: 0 !important;
     }
 
     #nav-bar {
-        border-top: 0 !important;
+        border-top: var(--ph-hair) !important;
     }
 
     /* Tab numbers: 01, 02, 03 — the index is part of the furniture. */
@@ -26,6 +27,12 @@
 
     .tabbrowser-tab {
         counter-increment: ph-tab !important;
+    }
+
+    /* A pinned tab shows no number, so it must not eat one either -- the
+       first labelled tab has to read 01, not 02. */
+    .tabbrowser-tab[pinned] {
+        counter-increment: none !important;
     }
 
     .tabbrowser-tab .tab-label-container .tab-label::before {
@@ -97,11 +104,11 @@
 
     /* Exactly two hairlines: tabs|nav, and nav|content. Nothing else. */
     #TabsToolbar {
-        border-bottom: var(--ph-hair) !important;
+        border-bottom: 0 !important;
     }
 
     #nav-bar {
-        border-top: 0 !important;
+        border-top: var(--ph-hair) !important;
         border-bottom: 0 !important;
     }
 

@@ -51,14 +51,17 @@
     #urlbar[breakout-extend] {
         --urlbar-height: 26px !important;
         --urlbar-min-height: 26px !important;
-        --toolbar-field-background-color: var(--ph-bg1) !important;
-        --toolbar-field-focus-background-color: var(--ph-bg1) !important;
+        /*
+         * The field's fill is NOT set here. 70-layout-surfaces.css owns the
+         * two-surface split (bg1 chrome / bg0 cut-out) and paints the field
+         * bg0 from :root plus a direct rule on .urlbar-background; the bg1
+         * declarations that used to sit here were overridden by it and only
+         * made the field look like it had two owners.
+         */
         --toolbar-field-color: var(--ph-fg0) !important;
         --toolbar-field-focus-color: var(--ph-fg0) !important;
         --toolbar-field-border-color: var(--ph-line1) !important;
         --toolbar-field-focus-border-color: var(--ph-amber) !important;
-        --urlbar-box-bgcolor: var(--ph-bg1) !important;
-        --urlbar-box-focus-bgcolor: var(--ph-bg1) !important;
         --urlbar-box-hover-bgcolor: var(--ph-bg2) !important;
         --urlbar-box-active-bgcolor: var(--ph-bg3) !important;
         --urlbar-box-text-color: var(--ph-fg0) !important;
@@ -75,8 +78,6 @@
          * border and the focus colour arrives as an *outline*, so both have to
          * be set or the field keeps Firefox's grey edge.
          */
-        --urlbar-background-color: var(--ph-bg1) !important;
-        --urlbar-background-color-focus: var(--ph-bg1) !important;
         --urlbar-background-border: 1px solid var(--ph-line1) !important;
         --urlbar-background-border-focused: 1px solid var(--ph-amber) !important;
         --urlbar-background-border-breakout: 1px solid var(--ph-amber) !important;
@@ -106,9 +107,6 @@
      */
     #urlbar > .urlbar-background {
         appearance: none !important;
-        background: var(--ph-bg1) !important;
-        background-color: var(--ph-bg1) !important;
-        background-image: none !important;
         border: 1px solid var(--ph-line1) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
@@ -146,10 +144,6 @@
         border-radius: 0 !important;
         box-shadow: none !important;
         outline: none !important;
-    }
-
-    #urlbar > .urlbar-background {
-        background-color: var(--ph-bg1) !important;
     }
 
     .urlbar-input-container {

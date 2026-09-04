@@ -566,8 +566,17 @@
     }
 
     .tabbrowser-tab:hover .tab-icon-image,
-    .tabbrowser-tab[selected] .tab-icon-image {
+    .tabbrowser-tab[selected] .tab-icon-image,
+    .tabbrowser-tab[visuallyselected] .tab-icon-image,
+    .tabbrowser-tab:is([selected], [visuallyselected]):-moz-window-inactive .tab-icon-image {
         filter: none !important;
         opacity: 1 !important;
+    }
+
+    /* Unfocused window must not grey the favicons a second time. */
+    .tab-icon-image:-moz-window-inactive,
+    .tab-icon-pending:-moz-window-inactive {
+        filter: grayscale(1) contrast(1.1) !important;
+        opacity: 0.8 !important;
     }
 }

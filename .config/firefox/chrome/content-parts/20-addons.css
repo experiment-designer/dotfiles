@@ -135,4 +135,199 @@
     .addon-icon {
         border-radius: 0 !important;
     }
+
+    /* Sidebar categories are <button class="category"> and the generic button
+     * rule in 00-tokens.css frames each one; kill it with a stronger selector. */
+    #categories .category,
+    categories-box .category {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-inline-start: 2px solid transparent !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.05em !important;
+        margin: 0 !important;
+        min-height: 24px !important;
+        padding: 3px 10px !important;
+        text-transform: uppercase !important;
+    }
+
+    #categories .category:hover,
+    categories-box .category:hover {
+        background-color: var(--ph-bg2) !important;
+        border-color: transparent !important;
+        border-inline-start-color: transparent !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #categories .category[selected],
+    categories-box .category[selected] {
+        background-color: transparent !important;
+        border-inline-start-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    /* --- Card "⋯" menu (panel-list / panel-item) ---------------------- *
+     * The item icon is a background-image on the shadow button, offset by
+     * padding-inline-start. Restate both so the glyph and label never
+     * collide, whatever the shorthand padding upstream resolves to.       */
+    panel-list {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        padding-block: 2px !important;
+    }
+
+    panel-item::part(button) {
+        appearance: none !important;
+        align-items: center !important;
+        background-color: transparent !important;
+        background-position: 7px center !important;
+        background-repeat: no-repeat !important;
+        background-size: 12px 12px !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        display: flex !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        gap: 6px !important;
+        margin: 0 !important;
+        min-height: 22px !important;
+        padding: 3px 12px !important;
+        padding-inline-start: 26px !important;
+    }
+
+    panel-item::part(label) {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    panel-item::part(button):hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    panel-item[disabled]::part(button) {
+        color: var(--ph-fg2) !important;
+        opacity: 1 !important;
+    }
+
+    /* --- Enable/disable switch ---------------------------------------- *
+     * The knob is .toggle-button::before inside the shadow root, not a
+     * ::part(dot) — 00-tokens.css targets ::part(dot), which matches
+     * nothing, so the switch rendered as an empty hairline box.          */
+    moz-toggle::part(button) {
+        appearance: none !important;
+        align-items: center !important;
+        background-color: var(--ph-bg2) !important;
+        border: 1px solid var(--ph-line0) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        height: 14px !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        width: 28px !important;
+    }
+
+    moz-toggle::part(button)::before {
+        background-color: var(--ph-fg1) !important;
+        border-radius: 0 !important;
+        content: "" !important;
+        display: block !important;
+        height: 10px !important;
+        margin: 0 1px !important;
+        translate: 0 !important;
+        width: 10px !important;
+    }
+
+    moz-toggle:hover::part(button) {
+        background-color: var(--ph-bg3) !important;
+        border-color: var(--ph-line1) !important;
+    }
+
+    moz-toggle[pressed]::part(button) {
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-line0) !important;
+    }
+
+    moz-toggle[pressed]::part(button)::before {
+        background-color: var(--ph-amber) !important;
+        translate: 14px !important;
+    }
+
+    moz-toggle[pressed]:hover::part(button) {
+        background-color: var(--ph-bg3) !important;
+        border-color: var(--ph-line1) !important;
+    }
+
+    /* --- Card hover: bg2 lift behind a hard hairline ------------------- */
+    .addon.card:hover,
+    addon-card > .card:hover,
+    recommended-addon-card > .card:hover {
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-line1) !important;
+        box-shadow: none !important;
+    }
+
+    /* --- Searches: header search + "Find more add-ons" ----------------- *
+     * One 24px row; the submit button butts straight onto the field.      */
+    search-textbox,
+    .header-search,
+    input[type="search"],
+    input[type="text"] {
+        appearance: none !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        box-sizing: border-box !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        height: 24px !important;
+        min-height: 24px !important;
+        padding: 2px 6px !important;
+    }
+
+    search-textbox::part(input) {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .main-search,
+    .search-container,
+    form[role="search"] {
+        align-items: center !important;
+        display: flex !important;
+        gap: 0 !important;
+    }
+
+    .main-search button,
+    .search-container button,
+    form[role="search"] button {
+        box-sizing: border-box !important;
+        height: 24px !important;
+        margin: 0 0 0 -1px !important;
+        min-height: 24px !important;
+        padding: 0 !important;
+        width: 24px !important;
+    }
 }

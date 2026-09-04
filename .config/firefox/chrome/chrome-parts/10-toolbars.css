@@ -28,12 +28,17 @@
         border-bottom: var(--ph-hair) !important;
     }
 
+    /*
+     * The tabs|nav hairline lives on #nav-bar's TOP edge, never on
+     * #TabsToolbar's bottom. A border on the toolbar eats 1px out of its
+     * content box, the 28px tab stack overflows, and Firefox clips the
+     * active tab's TOP hairline away -- the frame loses a side.
+     */
     #TabsToolbar {
         min-height: var(--ph-tab-row) !important;
         max-height: var(--ph-tab-row) !important;
         padding: 0 !important;
         border: 0 !important;
-        border-bottom: var(--ph-quiet) !important;
     }
 
     #nav-bar {
@@ -41,6 +46,7 @@
         max-height: var(--ph-nav-row) !important;
         padding: 0 !important;
         border: 0 !important;
+        border-top: var(--ph-hair) !important;
     }
 
     #browser,
