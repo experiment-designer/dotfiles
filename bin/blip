@@ -1,0 +1,81 @@
+#!/bin/bash
+# blip NAME - play a short freedesktop notification sound.
+# Gates: BLIP=0 disables; 2s global rate limit; quiet hours 23:00-08:00 (err exempt).
+# Volume: $BLIP_VOLUME (default 0.35). Never blocks the caller.
+
+SOUND_DIR="/usr/share/sounds/freedesktop/stereo"
+
+blip_file() {
+    case "$1" in
+        done)       echo "message.oga" ;;
+        ask)        echo "window-question.oga" ;;
+        err)        echo "dialog-warning.oga" ;;
+        tick)       echo "audio-volume-change.oga" ;;
+        bell)       echo "bell.oga" ;;
+        attn)       echo "window-attention.oga" ;;
+        done-codex) echo "device-added.oga" ;;
+        start)      echo "service-login.oga" ;;
+        *)          return 1 ;;
+    esac
+}
+
+ALL_NAMES=(done ask err tick bell attn done-codex start)
+
+usage() {
+    echo "usage: blip {${ALL_NAMES[*]}}" >&2
+    echo "       blip --self-test" >&2
+}
+
+if [ "$1" = "--self-test" ]; then
+    rc=0
+    for n in "${ALL_NAMES[@]}"; do
+        f="$SOUND_DIR/$(blip_file "$n")"
+        if [ -r "$f" ]; then
+            echo "ok    $n -> $f"
+        else
+            echo "MISS  $n -> $f"
+            rc=1
+        fi
+    done
+    exit $rc
+fi
+
+NAME="$1"
+[ -n "$NAME" ] || { usage; exit 1; }
+FILE_NAME="$(blip_file "$NAME")" || { usage; exit 1; }
+SOUND="$SOUND_DIR/$FILE_NAME"
+
+# Unknown/missing sound file is a hard error (surfaces typos in themes).
+[ -r "$SOUND" ] || { echo "blip: missing sound file: $SOUND" >&2; exit 1; }
+
+# Kill switch.
+[ "$BLIP" = "0" ] && exit 0
+
+# Quiet hours 23:00-08:00, errors excepted.
+HOUR=$(date +%-H)
+if [ "$NAME" != "err" ] && { [ "$HOUR" -ge 23 ] || [ "$HOUR" -lt 8 ]; }; then
+    exit 0
+fi
+
+# Global rate limit: at most one blip per 2 seconds.
+STAMP="${XDG_RUNTIME_DIR:-/tmp}/blip.last"
+if [ -f "$STAMP" ]; then
+    LAST=$(stat -c %Y "$STAMP" 2>/dev/null || echo 0)
+    NOW=$(date +%s)
+    [ $((NOW - LAST)) -lt 2 ] && exit 0
+fi
+touch "$STAMP" 2>/dev/null
+
+VOL="${BLIP_VOLUME:-0.35}"
+
+if command -v pw-play >/dev/null 2>&1; then
+    pw-play --volume "$VOL" "$SOUND" >/dev/null 2>&1 &
+elif command -v paplay >/dev/null 2>&1; then
+    # paplay volume is 0-65536 linear.
+    PA_VOL=$(awk -v v="$VOL" 'BEGIN { printf "%d", v * 65536 }')
+    paplay --volume "$PA_VOL" "$SOUND" >/dev/null 2>&1 &
+else
+    exit 0
+fi
+
+exit 0

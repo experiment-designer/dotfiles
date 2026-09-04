@@ -92,3 +92,7 @@ x = 10
 y = 8
 
 [keyboard]
+
+[bell]
+duration = 0
+command = { program = "/home/guy/dotfiles/bin/blip", args = ["bell"] }

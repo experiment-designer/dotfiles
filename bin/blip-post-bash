@@ -1,0 +1,41 @@
+#!/bin/bash
+# Claude Code PostToolUse(Bash) hook: blip on a failed command. Always exits 0.
+BLIP_BIN="${BLIP_BIN:-/home/guy/dotfiles/bin/blip}"
+PAYLOAD="$(cat)"
+
+failed=0
+if command -v python3 >/dev/null 2>&1; then
+    failed=$(printf '%s' "$PAYLOAD" | python3 -c '
+import json, re, sys
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    print(0); raise SystemExit
+r = d.get("tool_response", d)
+bad = 0
+if isinstance(r, dict):
+    for k in ("is_error", "interrupted"):
+        if r.get(k) is True:
+            bad = 1
+    ec = r.get("exit_code", r.get("exitCode"))
+    if isinstance(ec, (int, float)) and int(ec) != 0:
+        bad = 1
+text = r if isinstance(r, str) else json.dumps(r)
+if re.search(r"Exit code [1-9]", text):
+    bad = 1
+print(bad)
+' 2>/dev/null) || failed=0
+elif command -v jq >/dev/null 2>&1; then
+    failed=$(printf '%s' "$PAYLOAD" | jq -r '
+        (.tool_response // .) as $r
+        | if ($r | type) == "object" then
+            (if (($r.is_error == true) or ($r.interrupted == true)
+                  or ((($r.exit_code // $r.exitCode // 0) | tonumber?) // 0) != 0
+                  or (($r | tostring) | test("Exit code [1-9]")))
+             then 1 else 0 end)
+          else (if ($r | tostring | test("Exit code [1-9]")) then 1 else 0 end)
+          end' 2>/dev/null) || failed=0
+fi
+
+[ "$failed" = "1" ] && "$BLIP_BIN" err
+exit 0

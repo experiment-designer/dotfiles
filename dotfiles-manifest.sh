@@ -17,6 +17,7 @@ HOME_DOTFILES=(
 CONFIG_DIRS=(
     "alacritty"
     "awesome"
+    "btop"
     "chromium-phosphor-theme"
     "fontconfig"
     "htop"
@@ -34,6 +35,8 @@ FIREFOX_PROFILE_FILES=(
 
 USER_SCRIPTS=(
     "BMT.sh"
+    "bin/blip"
+    "bin/blip-post-bash"
     "bin/rice-shot"
     "bin/brightness-step"
     "bin/htop"
