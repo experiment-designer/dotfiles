@@ -176,19 +176,30 @@
         --radio-indicator-background-color: var(--ph-amber) !important;
         --radio-indicator-border-color: var(--ph-line1) !important;
         --radio-indicator-border-color-checked: var(--ph-amber) !important;
-        --toggle-background-color: var(--ph-bg0) !important;
+        /* moz-toggle lives in a shadow root; ::part() rules from this
+         * user-origin sheet do NOT match it. The switch is driven entirely
+         * through these inherited custom properties. Track 28x14 bg2 inside a
+         * line0 hairline (amber when on); 8x8 knob fg1 -> amber, shifted 14px. */
+        --toggle-background-color: var(--ph-bg2) !important;
         --toggle-background-color-hover: var(--ph-bg2) !important;
-        --toggle-background-color-pressed: var(--ph-amber) !important;
-        --toggle-background-color-pressed-hover: var(--ph-amber) !important;
-        --toggle-border-color: var(--ph-line1) !important;
+        --toggle-background-color-active: var(--ph-bg3) !important;
+        --toggle-background-color-pressed: var(--ph-bg2) !important;
+        --toggle-background-color-pressed-hover: var(--ph-bg2) !important;
+        --toggle-background-color-pressed-active: var(--ph-bg3) !important;
+        --toggle-border-color: var(--ph-line0) !important;
+        --toggle-border-color-hover: var(--ph-line1) !important;
+        --toggle-border-color-active: var(--ph-amber) !important;
         --toggle-border-color-pressed: var(--ph-amber) !important;
-        --toggle-track-border-color: var(--ph-line1) !important;
+        --toggle-track-border-color: var(--ph-line0) !important;
         --toggle-dot-background-color: var(--ph-fg1) !important;
-        --toggle-dot-background-color-on-pressed: var(--ph-bg0) !important;
+        --toggle-dot-background-color-hover: var(--ph-fg0) !important;
+        --toggle-dot-background-color-active: var(--ph-fg0) !important;
+        --toggle-dot-background-color-on-pressed: var(--ph-amber) !important;
         --toggle-border-width: 1px !important;
-        --toggle-dot-margin: 1px !important;
-        --toggle-dot-height: 10px !important;
-        --toggle-dot-width: 10px !important;
+        --toggle-dot-margin: 2px !important;
+        --toggle-dot-height: 8px !important;
+        --toggle-dot-width: 8px !important;
+        --toggle-dot-transform-x: 14px !important;
         --toggle-height: 14px !important;
         --toggle-width: 28px !important;
 
@@ -492,53 +503,37 @@
         background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2012%2012'%3E%3Crect%20x%3D'3'%20y%3D'3'%20width%3D'6'%20height%3D'6'%20fill%3D'%23ffb340'%2F%3E%3C%2Fsvg%3E") !important;
     }
 
-    /* Toggles become square switches. */
-    moz-toggle::part(button) {
-        appearance: none !important;
-        align-items: center !important;
-        background-color: var(--ph-bg2) !important;
-        border: 1px solid var(--ph-line0) !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        height: 14px !important;
-        min-height: 0 !important;
-        padding: 0 !important;
-        width: 28px !important;
-    }
-
-    moz-toggle:hover::part(button) {
-        background-color: var(--ph-bg3) !important;
-        border-color: var(--ph-line1) !important;
-    }
-
-    moz-toggle[pressed]::part(button) {
-        background-color: var(--ph-bg2) !important;
-        border-color: var(--ph-line0) !important;
-    }
-
-    moz-toggle[pressed]:hover::part(button) {
-        background-color: var(--ph-bg3) !important;
-        border-color: var(--ph-line1) !important;
-    }
-
-    /* The knob is .toggle-button::before inside moz-toggle's shadow root —
-     * there is no ::part(dot). Reach it through the exported button part. */
-    moz-toggle::part(button)::before {
-        background-color: var(--ph-fg1) !important;
-        border-radius: 0 !important;
-        content: "" !important;
-        display: block !important;
-        height: 10px !important;
-        margin: 0 1px !important;
-        translate: 0 !important;
-        width: 10px !important;
-    }
-
-    moz-toggle[pressed]::part(button)::before {
-        background-color: var(--ph-amber) !important;
-        translate: 14px !important;
+    /* moz-toggle is styled through custom properties only — ::part() from a
+     * user sheet can't reach a shadow root. The component's own tokens.css
+     * DECLARES --toggle-* on :host, and a declared value beats an inherited
+     * one whatever the origin, so setting them on :root is not enough: they
+     * must be declared on the element itself. User-origin !important here wins
+     * over the author :host declaration. Track 28x14 bg2 in a line0 hairline
+     * (amber edge when on); 8x8 knob fg1 -> amber, travelling 14px. */
+    moz-toggle {
+        --toggle-width: 28px !important;
+        --toggle-height: 14px !important;
+        --toggle-border-radius: 0 !important;
+        --toggle-border-width: 1px !important;
+        --toggle-background-color: var(--ph-bg2) !important;
+        --toggle-background-color-hover: var(--ph-bg2) !important;
+        --toggle-background-color-active: var(--ph-bg3) !important;
+        --toggle-background-color-pressed: var(--ph-bg2) !important;
+        --toggle-background-color-pressed-hover: var(--ph-bg2) !important;
+        --toggle-background-color-pressed-active: var(--ph-bg3) !important;
+        --toggle-border-color: var(--ph-line0) !important;
+        --toggle-border-color-hover: var(--ph-line1) !important;
+        --toggle-border-color-active: var(--ph-amber) !important;
+        --toggle-border-color-pressed: var(--ph-amber) !important;
+        --toggle-track-border-color: var(--ph-line0) !important;
+        --toggle-dot-background-color: var(--ph-fg1) !important;
+        --toggle-dot-background-color-hover: var(--ph-fg0) !important;
+        --toggle-dot-background-color-active: var(--ph-fg0) !important;
+        --toggle-dot-background-color-on-pressed: var(--ph-amber) !important;
+        --toggle-dot-margin: 2px !important;
+        --toggle-dot-height: 8px !important;
+        --toggle-dot-width: 8px !important;
+        --toggle-dot-transform-x: 14px !important;
     }
 
     input[type="range"] {
