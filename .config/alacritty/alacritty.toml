@@ -1,39 +1,83 @@
-[colors.bright]
-black = "#444444"
-blue = "#87afff"
-cyan = "#87d7ff"
-green = "#87d75f"
-magenta = "#ff8700"
-red = "#ff8700"
-white = "#ffffff"
-yellow = "#ffaf00"
-
-[colors.normal]
-black = "#303030"
-blue = "#666666"
-cyan = "#87d75f"
-green = "#005f00"
-magenta = "#d75f00"
-red = "#d75f00"
-white = "#ffffff"
-yellow = "#ffaf00"
+# Phosphor palette — see ~/dotfiles/palette.md
 
 [colors.primary]
-background = "#1c1c1c"
-foreground = "#ffffff"
+background = "#07080a"
+foreground = "#e6e9ed"
+
+[colors.cursor]
+cursor = "#c3f542"
+text = "#07080a"
+
+[colors.vi_mode_cursor]
+cursor = "#5ed3f3"
+text = "#07080a"
+
+[colors.selection]
+background = "#1c2027"
+text = "CellForeground"
+
+[colors.search.matches]
+background = "#ffb340"
+foreground = "#07080a"
+
+[colors.search.focused_match]
+background = "#c3f542"
+foreground = "#07080a"
+
+[colors.footer_bar]
+background = "#0d0f12"
+foreground = "#9aa1ab"
+
+[colors.hints.start]
+background = "#c3f542"
+foreground = "#07080a"
+
+[colors.hints.end]
+background = "#1c2027"
+foreground = "#c3f542"
+
+[colors.normal]
+black = "#14171c"
+red = "#ff4d6d"
+green = "#c3f542"
+yellow = "#ffb340"
+blue = "#5b9dff"
+magenta = "#d67cff"
+cyan = "#5ed3f3"
+white = "#c9ced6"
+
+[colors.bright]
+black = "#5b626c"
+red = "#ff7a90"
+green = "#d9ff70"
+yellow = "#ffc966"
+blue = "#82b6ff"
+magenta = "#e3a0ff"
+cyan = "#8ee3fa"
+white = "#f4f6f8"
+
+[cursor]
+blink_interval = 0
 
 [cursor.style]
 shape = "Block"
+blinking = "Never"
 
 [font]
 size = 11.0
-
-[font.bold]
-style = "Bold"
+builtin_box_drawing = true
 
 [font.normal]
-family = "DejaVu Sans Mono for Powerline"
+family = "InputMono Nerd Font"
 style = "Regular"
+
+[font.bold]
+family = "InputMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "InputMono Nerd Font"
+style = "Italic"
 
 [selection]
 save_to_clipboard = true
@@ -41,14 +85,10 @@ save_to_clipboard = true
 [window]
 decorations = "none"
 opacity = 1.0
+dynamic_padding = false
 
 [window.padding]
-x = 8
+x = 10
 y = 8
 
 [keyboard]
-
-[[keyboard.bindings]]
-key = "Return"
-mods = "Shift"
-chars = "\u001B\r"

@@ -16,6 +16,18 @@ vim.opt.rtp:prepend(lazypath)
 vim.opt.number = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.termguicolors = true
+vim.opt.cursorline = true
+vim.opt.signcolumn = "auto"
+vim.opt.fillchars = {
+  vert = "│",
+  horiz = "─",
+  eob = " ",
+  fold = " ",
+  foldopen = "▾",
+  foldclose = "▸",
+  foldsep = "│",
+}
 vim.g.mapleader = " "
 
 -- Runtime paths (corrected version)
@@ -70,41 +82,37 @@ require("lazy").setup({
    dependencies = {
      "nvim-tree/nvim-web-devicons",
    },
-   config = function()
-     -- Define theme colors
-     local colors = {
-       brightyellow = '#ffaf00',
-       brightorange = '#ff8700',
-       mediumorange = '#d75f00',
-       gray2 = '#303030',
-       darkestgreen = '#005f00',
-       white = '#ffffff'
-     }
-     
-     require('lualine').setup {
-       options = {
-         theme = {
-           normal = {
-             a = { bg = colors.brightorange, fg = colors.gray2, gui = 'bold' },
-             b = { bg = colors.mediumorange, fg = colors.white },
-             c = { bg = colors.gray2, fg = colors.white }
-           },
-           insert = {
-             a = { bg = colors.brightyellow, fg = colors.gray2, gui = 'bold' },
-             b = { bg = colors.mediumorange, fg = colors.white },
-             c = { bg = colors.gray2, fg = colors.white }
-           },
-           visual = {
-             a = { bg = colors.white, fg = colors.gray2, gui = 'bold' },
-             b = { bg = colors.mediumorange, fg = colors.white },
-             c = { bg = colors.gray2, fg = colors.white }
-           }
-         },
-         component_separators = { left = '', right = ''},
-         section_separators = { left = '', right = ''}
-       }
-     }
-   end,
+    config = function()
+      -- Phosphor palette: structure is near-white on near-black; state is lime
+      local function mode(accent)
+        return {
+          a = { bg = accent, fg = "#07080a", gui = "bold" },
+          b = { bg = "#1c2027", fg = "#e6e9ed" },
+          c = { bg = "#0d0f12", fg = "#9aa1ab" },
+        }
+      end
+
+      require("lualine").setup({
+        options = {
+          theme = {
+            normal = mode("#c3f542"),
+            insert = mode("#5ed3f3"),
+            visual = mode("#d67cff"),
+            replace = mode("#ff4d6d"),
+            command = mode("#ffb340"),
+            terminal = mode("#5b9dff"),
+            inactive = {
+              a = { bg = "#0d0f12", fg = "#5b626c" },
+              b = { bg = "#0d0f12", fg = "#5b626c" },
+              c = { bg = "#0d0f12", fg = "#5b626c" },
+            },
+          },
+          globalstatus = true,
+          component_separators = { left = "│", right = "│" },
+          section_separators = { left = "", right = "" },
+        },
+      })
+    end,
  },
 
  -- Fuzzy finding
@@ -131,7 +139,7 @@ require("lazy").setup({
     "kevinhwang91/nvim-ufo",
     dependencies = { "kevinhwang91/promise-async" },
     init = function()
-      vim.o.foldcolumn = "1"
+      vim.o.foldcolumn = "0"
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
@@ -208,5 +216,19 @@ map('n', '<leader>.', 'oimport ipdb; ipdb.set_trace()<Esc>', { noremap = true, s
 map('n', '<leader>t', '<cmd>lua require("fzf-lua").files()<CR>', { noremap = true })
 map('n', '<Leader>b', '<cmd>lua require("fzf-lua").buffers()<CR>', { noremap = true })
 map('n', '<Leader>fg', '<cmd>lua require("fzf-lua").live_grep()<CR>', { noremap = true })
+-- Rendered read-only view of the current markdown file (rich), in a split beside the source.
+vim.api.nvim_create_user_command("MdView", function()
+  local file = vim.fn.expand("%:p")
+  vim.cmd("vsplit | enew")
+  vim.wo.number, vim.wo.foldcolumn, vim.wo.signcolumn = false, "0", "no"
+  vim.fn.jobstart({
+    vim.fn.expand("~/.local/bin/uv"), "run", "--no-project", "--with", "rich>=15",
+    "python", "-m", "rich.markdown", file,
+  }, { term = true })
+  vim.bo.buflisted = false
+  vim.keymap.set("n", "q", "<cmd>bwipeout!<CR>", { buffer = true, nowait = true })
+end, { desc = "Render the current markdown file with rich" })
+map("n", "<leader>mv", "<cmd>MdView<CR>", { desc = "Markdown view" })
+
 -- Set colorscheme
 vim.cmd('colorscheme custom')

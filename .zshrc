@@ -59,7 +59,7 @@ function powerline-transient-accept-line {
     local full_ps1="$PS1"
     local full_rps1="$RPS1"
 
-    PS1='%F{242}❯%f '
+    PS1='%F{#c3f542}❯%f '
     RPS1=''
     zle reset-prompt
 
@@ -169,3 +169,11 @@ claude() {
     load_nvm
     claude "$@"
 }
+
+# pnpm
+export PNPM_HOME="/home/guy/.local/bin"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end

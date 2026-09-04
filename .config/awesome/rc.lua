@@ -46,33 +46,59 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/wallpaper.jpg"
+beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/phosphor.svg"
 
--- A small, terminal-inspired palette shared by the bar widgets.
+-- Phosphor: a sharp terminal palette shared by every desktop surface.
 local palette = {
-    bar       = "#15171c",
-    surface   = "#24272f",
-    surface_2 = "#30343e",
-    foreground = "#e5e9f0",
-    muted     = "#707887",
-    green     = "#87d75f",
-    cyan      = "#87d7ff",
-    violet    = "#c099ff",
-    amber     = "#ffaf00",
-    red       = "#ff6b6b",
+    canvas     = "#07080a",
+    bar        = "#0d0f12",
+    surface    = "#14171c",
+    surface_2  = "#1c2027",
+    border     = "#262b33",
+    foreground = "#e6e9ed",
+    secondary  = "#9aa1ab",
+    muted      = "#5b626c",
+    green      = "#c3f542",
+    cyan       = "#5ed3f3",
+    blue       = "#5b9dff",
+    violet     = "#d67cff",
+    amber      = "#ffb340",
+    red        = "#ff4d6d",
 }
 
-beautiful.font = "InputSans Nerd Font 10"
+beautiful.font = "InputMono Nerd Font 9"
 beautiful.bg_normal = palette.bar
 beautiful.bg_focus = palette.surface_2
-beautiful.bg_urgent = "#d75f00"
+beautiful.bg_urgent = "#2a1017"
 beautiful.fg_normal = palette.foreground
-beautiful.fg_focus = "#ffffff"
-beautiful.fg_urgent = "#ffffff"
-beautiful.border_focus = palette.green
-beautiful.taglist_shape = gears.shape.rounded_rect
-beautiful.tasklist_shape = gears.shape.rounded_rect
-beautiful.tooltip_font = "JetBrains Mono 9"
+beautiful.fg_focus = "#e6e9ed"
+beautiful.fg_urgent = palette.red
+beautiful.border_width = 2
+beautiful.border_normal = palette.border
+beautiful.border_focus = "#e6e9ed"
+beautiful.border_marked = palette.green
+beautiful.useless_gap = 6
+beautiful.gap_single_client = true
+beautiful.taglist_shape = gears.shape.rectangle
+beautiful.tasklist_shape = gears.shape.rectangle
+beautiful.tooltip_font = "InputMono Nerd Font 9"
+beautiful.tooltip_bg = palette.surface
+beautiful.tooltip_fg = palette.foreground
+beautiful.tooltip_border_width = 1
+beautiful.tooltip_border_color = "#e6e9ed"
+beautiful.tooltip_shape = gears.shape.rectangle
+beautiful.notification_bg = palette.surface
+beautiful.notification_fg = palette.foreground
+beautiful.notification_border_width = 1
+beautiful.notification_border_color = "#e6e9ed"
+beautiful.notification_shape = gears.shape.rectangle
+beautiful.menu_bg_normal = palette.surface
+beautiful.menu_bg_focus = palette.surface_2
+beautiful.menu_fg_normal = palette.foreground
+beautiful.menu_fg_focus = "#e6e9ed"
+beautiful.menu_border_width = 1
+beautiful.menu_border_color = "#e6e9ed"
+beautiful.menu_shape = gears.shape.rectangle
 beautiful.taglist_squares_sel = nil
 beautiful.taglist_squares_unsel = nil
 beautiful.taglist_squares_sel_empty = nil
@@ -165,19 +191,13 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- {{{ Wibar
-local function make_pill(widget, background, left, right)
+-- ponytail: flat bar. `background` is kept in the signature for the callers but unused.
+local function make_module(widget, background, left, right)
     return wibox.widget {
-        {
-            widget,
-            left = left or 10,
-            right = right or 10,
-            top = 3,
-            bottom = 3,
-            widget = wibox.container.margin,
-        },
-        bg = background or palette.surface,
-        shape = gears.shape.rounded_rect,
-        widget = wibox.container.background,
+        widget,
+        left = left or 8,
+        right = right or 8,
+        widget = wibox.container.margin,
     }
 end
 
@@ -185,7 +205,7 @@ local function make_labeled_widget(icon, widget)
     return wibox.widget {
         {
             text = icon,
-            font = "InputSans Nerd Font 11",
+            font = "InputMono Nerd Font 11",
             widget = wibox.widget.textbox,
         },
         widget,
@@ -291,12 +311,12 @@ end
 local function make_weather_widget()
     local icon = wibox.widget {
         text = "☁️",
-        font = "InputSans Nerd Font 11",
+        font = "InputMono Nerd Font 11",
         widget = wibox.widget.textbox,
     }
     local temperature = wibox.widget {
         text = "--°",
-        font = "JetBrains Mono SemiBold 9",
+        font = "InputMono Nerd Font 9",
         widget = wibox.widget.textbox,
     }
     local contents = wibox.widget {
@@ -305,14 +325,14 @@ local function make_weather_widget()
         spacing = 5,
         layout = wibox.layout.fixed.horizontal,
     }
-    local container = make_pill(contents, palette.surface, 9, 9)
+    local container = make_module(contents, palette.surface, 9, 9)
     local tooltip = awful.tooltip {
         objects = { container },
         text = weather_details,
         delay_show = 0.25,
-        bg = palette.surface_2,
+        bg = palette.surface,
         fg = palette.foreground,
-        shape = gears.shape.rounded_rect,
+        shape = gears.shape.rectangle,
     }
 
     container:buttons(gears.table.join(
@@ -444,11 +464,18 @@ local function update_battery()
                 color,
                 icon
             ))
-            view.percent:set_markup(string.format("<b>%d%%</b>", capacity))
+            local percent_text = string.format("<b>%d%%</b>", capacity)
+            if capacity <= 7 then
+                percent_text = string.format(
+                    "<span foreground='%s'>%s</span>",
+                    palette.red,
+                    percent_text
+                )
+            end
+            view.percent:set_markup(percent_text)
             view.tooltip:set_text(
                 string.format("Battery %d%%\n%s", capacity, battery_details)
             )
-            view.container:set_bg(capacity <= 7 and "#402329" or palette.surface)
         end
 
         if status == "Discharging" then
@@ -474,12 +501,12 @@ end
 
 local function make_battery_widget()
     local icon = wibox.widget {
-        font = "InputSans Nerd Font 12",
+        font = "InputMono Nerd Font 12",
         widget = wibox.widget.textbox,
     }
     local percent = wibox.widget {
         text = "--%",
-        font = "JetBrains Mono SemiBold 9",
+        font = "InputMono Nerd Font 9",
         widget = wibox.widget.textbox,
     }
 
@@ -489,16 +516,16 @@ local function make_battery_widget()
         spacing = 6,
         layout = wibox.layout.fixed.horizontal,
     }
-    local container = make_pill(contents, palette.surface, 10, 10)
+    local container = make_module(contents, palette.surface, 10, 10)
     container:set_visible(false)
 
     local tooltip = awful.tooltip {
         objects = { container },
         text = battery_details,
         delay_show = 0.25,
-        bg = palette.surface_2,
+        bg = palette.surface,
         fg = palette.foreground,
-        shape = gears.shape.rounded_rect,
+        shape = gears.shape.rectangle,
     }
 
     container:buttons(gears.table.join(
@@ -610,8 +637,8 @@ local function update_system_stats()
     local load_1, load_5, load_15 =
         load_line:match("^(%S+)%s+(%S+)%s+(%S+)")
 
-    local cpu_color = resource_color(cpu_usage, palette.cyan, 70, 90)
-    local mem_color = resource_color(mem_usage, palette.violet, 75, 90)
+    local cpu_color = resource_color(cpu_usage, palette.secondary, 70, 90)
+    local mem_color = resource_color(mem_usage, palette.secondary, 75, 90)
     local cpu_details = string.format(
         "CPU %d%%\nLoad  %s  %s  %s\nClick to open htop",
         cpu_usage,
@@ -646,12 +673,12 @@ end
 
 local function make_resource_capsule()
     local icon = wibox.widget {
-        font = "InputSans Nerd Font 11",
+        font = "InputMono Nerd Font 11",
         widget = wibox.widget.textbox,
     }
     local value = wibox.widget {
         text = "--%",
-        font = "JetBrains Mono SemiBold 9",
+        font = "InputMono Nerd Font 9",
         widget = wibox.widget.textbox,
     }
     local contents = wibox.widget {
@@ -664,7 +691,7 @@ local function make_resource_capsule()
     return {
         icon = icon,
         value = value,
-        container = make_pill(contents, palette.surface, 9, 9),
+        container = make_module(contents, palette.surface, 9, 9),
     }
 end
 
@@ -675,17 +702,17 @@ local function make_system_widgets()
         objects = { cpu.container },
         text = "CPU data is loading…",
         delay_show = 0.25,
-        bg = palette.surface_2,
+        bg = palette.surface,
         fg = palette.foreground,
-        shape = gears.shape.rounded_rect,
+        shape = gears.shape.rectangle,
     }
     local mem_tooltip = awful.tooltip {
         objects = { memory.container },
         text = "Memory data is loading…",
         delay_show = 0.25,
-        bg = palette.surface_2,
+        bg = palette.surface,
         fg = palette.foreground,
-        shape = gears.shape.rounded_rect,
+        shape = gears.shape.rectangle,
     }
     local open_monitor = function()
         awful.spawn(terminal .. " -e htop")
@@ -839,21 +866,19 @@ end
 local function update_tag_widget(self, t, index)
     local summary, clients = tag_client_summary(t)
     local number = self:get_children_by_id("number_role")[1]
-    local apps = self:get_children_by_id("apps_role")[1]
-    local number_color = t.selected and "#ffffff"
+    local number_color = t.selected and palette.green
         or #clients > 0 and palette.foreground
         or palette.muted
-    local apps_color = t.selected and palette.cyan or palette.violet
+    local underline = self:get_children_by_id("underline_role")[1]
+    if underline then
+        underline.color = t.selected and palette.green
+            or (t.urgent and palette.red or palette.bar)
+    end
 
     number:set_markup(string.format(
         "<span foreground='%s'><b>%s</b></span>",
         number_color,
         gears.string.xml_escape(t.name or tostring(index))
-    ))
-    apps:set_markup(string.format(
-        "<span foreground='%s'>%s</span>",
-        apps_color,
-        summary
     ))
 
     if self._tag_tooltip then
@@ -865,33 +890,35 @@ local tag_widget_template = {
     {
         {
             {
-                id = "number_role",
-                font = "JetBrains Mono Bold 9",
-                widget = wibox.widget.textbox,
+                {
+                    id = "number_role",
+                    font = "InputMono Nerd Font Bold 9",
+                    widget = wibox.widget.textbox,
+                },
+                spacing = 5,
+                layout = wibox.layout.fixed.horizontal,
             },
-            {
-                id = "apps_role",
-                font = "InputSans Nerd Font 9",
-                widget = wibox.widget.textbox,
-            },
-            spacing = 5,
-            layout = wibox.layout.fixed.horizontal,
+            id = "underline_role",
+            bottom = 2,
+            color = palette.bar,
+            widget = wibox.container.margin,
         },
-        left = 7,
-        right = 7,
+        left = 9,
+        right = 9,
+        top = 2,
         widget = wibox.container.margin,
     },
     id = "background_role",
-    shape = gears.shape.rounded_rect,
+    shape = gears.shape.rectangle,
     widget = wibox.container.background,
     create_callback = function(self, t, index)
         self._tag_tooltip = awful.tooltip {
             objects = { self },
             text = "Workspace " .. t.name,
             delay_show = 0.3,
-            bg = palette.surface_2,
+            bg = palette.surface,
             fg = palette.foreground,
-            shape = gears.shape.rounded_rect,
+            shape = gears.shape.rectangle,
         }
         update_tag_widget(self, t, index)
     end,
@@ -937,20 +964,20 @@ awful.screen.connect_for_each_screen(function(s)
         filter  = awful.widget.taglist.filter.all,
         buttons = taglist_buttons,
         style = {
-            shape = gears.shape.rounded_rect,
-            bg_focus = palette.surface_2,
-            fg_focus = "#ffffff",
-            bg_occupied = palette.surface,
+            shape = gears.shape.rectangle,
+            bg_focus = palette.bar,
+            fg_focus = palette.green,
+            bg_occupied = palette.bar,
             fg_occupied = palette.foreground,
             bg_empty = palette.bar,
             fg_empty = palette.muted,
-            bg_urgent = "#5a2530",
-            fg_urgent = "#ffffff",
-            shape_border_width_focus = 1,
-            shape_border_color_focus = palette.cyan,
+            bg_urgent = palette.bar,
+            fg_urgent = palette.red,
+            shape_border_width = 0,
+            shape_border_width_focus = 0,
         },
         layout = {
-            spacing = 4,
+            spacing = 0,
             layout = wibox.layout.fixed.horizontal,
         },
         widget_template = tag_widget_template,
@@ -962,11 +989,18 @@ awful.screen.connect_for_each_screen(function(s)
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = tasklist_buttons,
         style = {
-            shape = gears.shape.rounded_rect,
-            bg_focus = palette.surface_2,
+            shape = gears.shape.rectangle,
+            bg_normal = palette.bar,
+            fg_normal = palette.secondary,
+            bg_focus = palette.bar,
+            fg_focus = palette.foreground,
+            bg_minimize = palette.bar,
+            fg_minimize = palette.muted,
+            shape_border_width = 0,
+            shape_border_width_focus = 0,
         },
         layout = {
-            spacing = 5,
+            spacing = 16,
             layout = wibox.layout.flex.horizontal,
         },
     }
@@ -975,44 +1009,51 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox = awful.wibar {
         position = "top",
         screen = s,
-        height = 34,
+        height = 30,
         bg = palette.bar,
         fg = palette.foreground,
+        border_width = 0,
     }
 
     local keyboard_layout = awful.widget.keyboardlayout()
-    local keyboard = make_pill(
+    local keyboard = make_module(
         make_labeled_widget("󰌌", keyboard_layout),
         palette.surface
     )
     local systray = wibox.widget.systray()
     systray:set_base_size(18)
-    local tray = make_pill(systray, palette.surface, 8, 8)
+    local tray = make_module(systray, palette.surface, 8, 8)
     tray:set_visible(s == screen.primary)
-    local clock = make_pill(
+    local clock = make_module(
         wibox.widget.textclock(
-            "<span font_family='InputSans Nerd Font' foreground='" ..
-                palette.cyan ..
-                "'>󰥔</span> " ..
-            "<span font_family='JetBrains Mono' weight='medium' foreground='#aeb6c4'>" ..
-                "%a · %d %b</span>  " ..
-            "<span font_family='JetBrains Mono' weight='bold' foreground='#ffffff'>" ..
-                "%H:%M</span>"
+            "<span foreground='" .. palette.secondary .. "'>%a %d %b  </span>" ..
+            "<span font='InputMono Nerd Font Bold 11' foreground='" ..
+                palette.green .. "'>%H:%M</span>"
         ),
         palette.surface
     )
-    local layout = make_pill(s.mylayoutbox, palette.surface, 8, 8)
+    local layout = make_module(s.mylayoutbox, palette.surface, 8, 8)
     s.mycpuwidget, s.mymemorywidget = make_system_widgets()
     s.myweatherwidget = make_weather_widget()
     s.mybatterywidget = make_battery_widget()
 
     -- Add widgets to the wibox
+    local hairline = function()
+        return wibox.widget.separator {
+            orientation = "vertical",
+            thickness = 1,
+            span_ratio = 0.5,
+            color = palette.border,
+            widget = wibox.widget.separator,
+        }
+    end
     s.mywibox:setup {
+        {
         layout = wibox.layout.align.horizontal,
         {
             { -- Left widgets
                 layout = wibox.layout.fixed.horizontal,
-                spacing = 7,
+                spacing = 4,
                 mylauncher,
                 s.mytaglist,
                 s.mypromptbox,
@@ -1033,7 +1074,8 @@ awful.screen.connect_for_each_screen(function(s)
         {
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
-                spacing = 6,
+                spacing = 1,
+                spacing_widget = hairline(),
                 keyboard,
                 tray,
                 layout,
@@ -1048,6 +1090,10 @@ awful.screen.connect_for_each_screen(function(s)
             bottom = 3,
             widget = wibox.container.margin,
         },
+        },
+        bottom = 1,
+        color = "#e6e9ed",
+        widget = wibox.container.margin,
     }
 end)
 -- }}}
