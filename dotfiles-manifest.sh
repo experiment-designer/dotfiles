@@ -20,7 +20,6 @@ CONFIG_DIRS=(
     "btop"
     "chromium-phosphor-theme"
     "fontconfig"
-    "htop"
     "nvim"
     "wezterm"
 )
