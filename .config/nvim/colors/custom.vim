@@ -45,7 +45,7 @@ highlight TabLine                  guifg=#7b838f guibg=#1c1f25
 highlight TabLineFill              guibg=#16181d
 highlight TabLineSel               guifg=#ffb340 guibg=#16181d gui=bold
 highlight WildMenu                 guifg=#16181d guibg=#ffb340 gui=bold
-highlight Title                    guifg=#ffb340 gui=bold
+highlight Title                    guifg=#5b9dff gui=bold
 highlight Directory                guifg=#5b9dff
 highlight Question                 guifg=#ffb340
 highlight MoreMsg                  guifg=#ffb340
@@ -56,12 +56,12 @@ highlight QuickFixLine             guibg=#2c313a
 
 " Standard syntax
 highlight Comment                  guifg=#7b838f gui=italic
-highlight String                   guifg=#5ed3f3
-highlight Character                guifg=#5ed3f3
-highlight Number                   guifg=#ffd866
-highlight Float                    guifg=#ffd866
-highlight Boolean                  guifg=#ffd866
-highlight Constant                 guifg=#ffd866
+highlight String                   guifg=#98c379
+highlight Character                guifg=#98c379
+highlight Number                   guifg=#e5c07b
+highlight Float                    guifg=#e5c07b
+highlight Boolean                  guifg=#e5c07b
+highlight Constant                 guifg=#e5c07b
 highlight Identifier               guifg=#e6e9ed
 highlight Function                 guifg=#e6e9ed gui=bold
 highlight Statement                guifg=#d67cff
@@ -80,28 +80,28 @@ highlight Type                     guifg=#5b9dff
 highlight StorageClass             guifg=#5b9dff
 highlight Structure                guifg=#5b9dff
 highlight Typedef                  guifg=#5b9dff
-highlight Special                  guifg=#ffb340
-highlight SpecialChar              guifg=#ffb340
+highlight Special                  guifg=#5ed3f3
+highlight SpecialChar              guifg=#ffd866
 highlight Tag                      guifg=#ffb340
 highlight Delimiter                guifg=#b7bec8
 highlight Todo                     guifg=#16181d guibg=#ffb340 gui=bold
 highlight Error                    guifg=#f4f6f8 guibg=#432130
-highlight Underlined               guifg=#5ed3f3 gui=underline
+highlight Underlined               guifg=#5b9dff gui=underline
 
 " Treesitter syntax
 highlight @comment                 guifg=#7b838f gui=italic
-highlight @string                  guifg=#5ed3f3
-highlight @string.escape           guifg=#ffb340
-highlight @string.regex            guifg=#5ed3f3
-highlight @string.special          guifg=#ffb340
-highlight @character               guifg=#5ed3f3
-highlight @character.special       guifg=#ffb340
-highlight @number                  guifg=#ffd866
-highlight @number.float            guifg=#ffd866
-highlight @boolean                 guifg=#ffd866
-highlight @constant                guifg=#ffd866
-highlight @constant.builtin        guifg=#ffd866
-highlight @constant.macro          guifg=#ffd866
+highlight @string                  guifg=#98c379
+highlight @string.escape           guifg=#ffd866
+highlight @string.regex            guifg=#98c379
+highlight @string.special          guifg=#98c379
+highlight @character               guifg=#98c379
+highlight @character.special       guifg=#ffd866
+highlight @number                  guifg=#e5c07b
+highlight @number.float            guifg=#e5c07b
+highlight @boolean                 guifg=#e5c07b
+highlight @constant                guifg=#e5c07b
+highlight @constant.builtin        guifg=#e5c07b
+highlight @constant.macro          guifg=#e5c07b
 highlight @variable                guifg=#e6e9ed
 highlight @variable.builtin        guifg=#d67cff
 highlight @variable.parameter      guifg=#e6e9ed
@@ -128,7 +128,7 @@ highlight @keyword.directive       guifg=#5b9dff
 highlight @operator                guifg=#b7bec8
 highlight @punctuation.bracket     guifg=#b7bec8
 highlight @punctuation.delimiter   guifg=#b7bec8
-highlight @punctuation.special     guifg=#ffb340
+highlight @punctuation.special     guifg=#5ed3f3
 highlight @type                    guifg=#5b9dff
 highlight @type.builtin            guifg=#5b9dff
 highlight @type.definition         guifg=#5b9dff
@@ -137,17 +137,23 @@ highlight @attribute               guifg=#ffb340
 highlight @tag                     guifg=#d67cff
 highlight @tag.attribute           guifg=#5b9dff
 highlight @tag.delimiter           guifg=#b7bec8
-highlight @markup.heading          guifg=#ffb340 gui=bold
+highlight @markup.heading          guifg=#5b9dff gui=bold
 highlight @markup.link.url         guifg=#5ed3f3 gui=underline
-highlight @markup.link             guifg=#5ed3f3
+highlight @markup.link             guifg=#5b9dff
 highlight @markup.link.label       guifg=#ffb340
-highlight @markup.raw              guifg=#5ed3f3
-highlight @markup.raw.block        guifg=#5ed3f3
+highlight @markup.raw              guifg=#e6e9ed
+highlight @markup.raw.block        guifg=#e6e9ed
 highlight @markup.list             guifg=#ffb340
 highlight @markup.list.checked     guifg=#ffb340
 highlight @markup.list.unchecked   guifg=#7b838f
 highlight @markup.strong           gui=bold
 highlight @markup.italic           gui=italic
+
+" Filetype headers
+highlight default link tomlTable        Title
+highlight default link tomlTableArray   Title
+highlight default link dosiniHeader     Title
+highlight default link @type.toml       Title
 
 " LSP Semantic Tokens
 highlight default link @lsp.type.comment     @comment
@@ -174,12 +180,12 @@ highlight default link @lsp.type.decorator   @attribute
 highlight DiagnosticError          guifg=#ff4d6d
 highlight DiagnosticWarn           guifg=#ffd866
 highlight DiagnosticInfo           guifg=#5b9dff
-highlight DiagnosticHint           guifg=#5ed3f3
+highlight DiagnosticHint           guifg=#5b9dff
 
 highlight DiagnosticUnderlineError gui=undercurl guisp=#ff4d6d
 highlight DiagnosticUnderlineWarn  gui=undercurl guisp=#ffd866
 highlight DiagnosticUnderlineInfo  gui=undercurl guisp=#5b9dff
-highlight DiagnosticUnderlineHint  gui=undercurl guisp=#5ed3f3
+highlight DiagnosticUnderlineHint  gui=undercurl guisp=#5b9dff
 
 " Diff & Git
 highlight DiffAdd                  guifg=#98c379 guibg=#1f2b1c
