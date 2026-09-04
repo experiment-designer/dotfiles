@@ -385,9 +385,28 @@
         max-width: none !important;
         width: auto !important;
         flex: 1 1 auto !important;
-        margin-inline: 4px !important;
+        /* 8px of air on each side, between the field and the two groups. */
+        margin-inline: 8px !important;
         padding: 0 !important;
         --urlbar-container-height: 26px !important;
+    }
+
+    /*
+     * Firefox's default nav-bar placements put a flexible `spring` on each
+     * side of the urlbar (CustomizableUI.sys.mjs `navbarPlacements`), which
+     * pushed ~120px of dead air between the button groups and the field. The
+     * field's own flex fills the row instead, so the only gap left is the 8px
+     * above.
+     */
+    #nav-bar toolbarspring,
+    #nav-bar toolbarpaletteitem[id*="special-spring"],
+    #nav-bar toolbaritem[id*="special-spring"],
+    #nav-bar #vertical-spacer {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        flex: 0 0 0 !important;
     }
 
     #urlbar,
@@ -1365,6 +1384,26 @@
         stroke: var(--ph-fg2) !important;
     }
 
+    /*
+     * Disabled back / forward: dimmed, never hidden — the slot has to stay so
+     * the nav line does not reflow when history appears. Reload and stop
+     * already share one slot (#stop-reload-button swaps them on [displaystop]),
+     * so the group is always three squares wide.
+     */
+    #back-button[disabled] > .toolbarbutton-icon,
+    #forward-button[disabled] > .toolbarbutton-icon,
+    #back-button[disabled="true"] > .toolbarbutton-icon,
+    #forward-button[disabled="true"] > .toolbarbutton-icon {
+        opacity: 0.35 !important;
+        stroke: var(--ph-fg2) !important;
+        fill: none !important;
+    }
+
+    #back-button[disabled],
+    #forward-button[disabled] {
+        visibility: visible !important;
+    }
+
     /* Active / checked / attention: amber, and only amber. */
     #nav-bar .toolbarbutton-1:is([checked="true"], [open], [attention], [badged="true"][attention]) > .toolbarbutton-icon,
     #nav-bar .toolbarbutton-1[checked="true"] .toolbarbutton-icon,
@@ -1480,41 +1519,113 @@
      * Add-on artwork is somebody else's palette. It cannot be redrawn, so it
      * is desaturated to sit inside the greyscale instead of shouting over it.
      */
+/*
+     * FF 154 builds every extension action button the same way, in the bar and
+     * in the panel (ext-browserAction.js `onBuild`/`onCreated`):
+     *
+     *   toolbaritem.unified-extensions-item.toolbaritem-combined-buttons
+     *     > box.unified-extensions-item-row-wrapper
+     *         > toolbarbutton.unified-extensions-item-action-button
+     *                        .webextension-browser-action[badged="true"]
+     *             > stack.toolbarbutton-badge-stack
+     *                 > image.toolbarbutton-icon
+     *                 > label.toolbarbutton-badge
+     *
+     * The button carries no `.toolbarbutton-1` and no `*-browser-action` id,
+     * so every `.toolbarbutton-1`-anchored rule above misses it — which is why
+     * the add-on artwork kept its own colours. Match the two classes the
+     * button really has, in the bar, in #unified-extensions-area and in the
+     * panel view, and desaturate the artwork itself.
+     */
+    #nav-bar toolbarbutton.webextension-browser-action .toolbarbutton-icon,
+    #nav-bar .unified-extensions-item-action-button .toolbarbutton-icon,
     #nav-bar .unified-extensions-item .toolbarbutton-icon,
     #nav-bar toolbarbutton[widget-type="view"] .toolbarbutton-icon,
-    #nav-bar .webextension-browser-action .toolbarbutton-icon,
     #nav-bar toolbaritem[id*="_-browser-action"] .toolbarbutton-icon,
     #nav-bar toolbarbutton[id$="-browser-action"] .toolbarbutton-icon,
     #nav-bar toolbarbutton[id$="-browser-action"] > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    #unified-extensions-area toolbarbutton .toolbarbutton-icon,
+    #unified-extensions-area toolbarbutton > .toolbarbutton-badge-stack > .toolbarbutton-icon,
     #unified-extensions-view .unified-extensions-item .toolbarbutton-icon,
     #unified-extensions-view .webextension-browser-action .toolbarbutton-icon,
+    .unified-extensions-item-action-button .toolbarbutton-icon,
+    .unified-extensions-item-action-button > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    .unified-extensions-item-icon,
     #unified-extensions-panel image.toolbarbutton-icon {
         filter: grayscale(1) brightness(1.15) !important;
         -moz-context-properties: none !important;
+        box-sizing: border-box !important;
         width: var(--ph-icon) !important;
         height: var(--ph-icon) !important;
+        min-width: var(--ph-icon) !important;
+        min-height: var(--ph-icon) !important;
+        padding: 0 !important;
     }
 
-    /* Badges: bg2 plate, fg1 digits, square. No red, no blue, no pill. */
-    .toolbarbutton-badge {
+    /* Same 24px square hit area as the drawn buttons, no radius, no dot. */
+    #nav-bar toolbarbutton.webextension-browser-action,
+    #nav-bar .unified-extensions-item-action-button,
+    #nav-bar .unified-extensions-item-menu-button {
+        min-width: 24px !important;
+        min-height: 24px !important;
+        border-radius: 0 !important;
+    }
+
+    #nav-bar .unified-extensions-item-action-button > .toolbarbutton-badge-stack,
+    #nav-bar toolbarbutton.webextension-browser-action > .toolbarbutton-badge-stack {
+        border-radius: 0 !important;
+        padding: 0 !important;
+    }
+
+    #nav-bar :is(.unified-extensions-item-action-button, toolbarbutton.webextension-browser-action):hover > .toolbarbutton-badge-stack {
+        background: var(--ph-bg2) !important;
+        border-radius: 0 !important;
+    }
+
+/*
+     * Badges: bg2 plate, line0 hairline, fg1 digits, square. No red, no pill.
+     *
+     * The badge label inherits its `style` attribute from the button's
+     * `badgeStyle` attribute (toolkit toolbarbutton.js:
+     * `".toolbarbutton-badge": "text=badge,style=badgeStyle"`), which
+     * ext-browserAction.js fills with the add-on's own
+     * `background-color: rgba(...)`. That is an inline declaration, so every
+     * colour here has to be !important — and background-color, not just the
+     * `background` shorthand, or uBlock's red plate survives.
+     */
+    .toolbarbutton-badge,
+    .toolbarbutton-badge-stack > .toolbarbutton-badge,
+    .toolbarbutton-badge[style],
+    .toolbarbutton-badge-stack > .toolbarbutton-badge[style],
+    #nav-bar .toolbarbutton-badge,
+    #unified-extensions-area .toolbarbutton-badge,
+    #unified-extensions-view .toolbarbutton-badge {
         appearance: none !important;
         background: var(--ph-bg2) !important;
+        background-color: var(--ph-bg2) !important;
         background-image: none !important;
-        border: 0 !important;
+        border: 1px solid var(--ph-line0) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         color: var(--ph-fg1) !important;
-        font-family: var(--ph-font-dense) !important;
-        font-size: 8px !important;
+        font-family: var(--ph-font) !important;
+        font-size: 9px !important;
         font-weight: 400 !important;
+        line-height: 1 !important;
         min-width: 0 !important;
+        max-width: none !important;
         padding: 0 1px !important;
         margin: 0 !important;
         text-shadow: none !important;
     }
 
-    .toolbarbutton-badge[style*="background"] {
-        background: var(--ph-bg2) !important;
+    /* Firefox's own badge tokens, so nothing red leaks in from the theme. */
+    :root {
+        --toolbarbutton-badge-background-color: var(--ph-bg2) !important;
+        --toolbarbutton-badge-font-size: 9px !important;
+        --toolbarbutton-badge-min-width: 0 !important;
+        --toolbarbutton-badge-padding-inline: 1px !important;
+        --toolbarbutton-badge-padding-block-end: 0 !important;
     }
 
     /* ---- The urlbar keeps no engine favicon --------------------------- */
@@ -1701,11 +1812,18 @@
         background: transparent !important;
     }
 
-    /* Result-row favicons are third-party artwork: desaturate, don't hide. */
+/*
+     * Result-row favicons stay in FULL COLOUR: in the dropdown the favicon is
+     * the only way to tell one row from another at a glance. Greyscale is for
+     * chrome furniture (toolbar and extension icons) and tab favicons only.
+     */
     .urlbarView-favicon,
     .urlbarView-row .urlbarView-favicon,
-    .urlbarView-type-icon {
-        filter: grayscale(1) brightness(1.15) !important;
+    .urlbarView-type-icon,
+    #urlbar-results .urlbarView-favicon,
+    #urlbar-results img {
+        filter: none !important;
+        opacity: 1 !important;
         width: 14px !important;
         height: 14px !important;
         border-radius: 0 !important;
