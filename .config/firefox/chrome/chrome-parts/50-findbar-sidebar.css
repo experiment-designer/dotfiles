@@ -264,3 +264,16 @@
         background: var(--ph-bg2) !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Round 3: findbar fill comes from toolbar vars, not background-color. */
+    findbar,
+    findbar > .findbar-container {
+        --findbar-background: var(--ph-bg1) !important;
+        --toolbar-bgcolor: var(--ph-bg1) !important;
+        --toolbar-non-lwt-bgcolor: var(--ph-bg1) !important;
+        -moz-default-appearance: none !important;
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+    }
+}
