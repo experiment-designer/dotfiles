@@ -1,0 +1,94 @@
+/* about:config — part of userContent.css; see ../userContent.css for load order. */
+
+/* ====================================================================== *
+ * about:config                                                           *
+ * ====================================================================== */
+
+@-moz-document url("about:config") {
+    .config-background,
+    #main {
+        background-color: var(--ph-bg0) !important;
+    }
+
+    #toolbar,
+    #filter-container {
+        background-color: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-bottom: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 4px 6px !important;
+    }
+
+    #about-config-search,
+    #about-config-search::part(input) {
+        appearance: none !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 24px !important;
+    }
+
+    #prefs {
+        background-color: var(--ph-bg0) !important;
+        border-collapse: collapse !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #prefs > tr {
+        background-color: var(--ph-bg0) !important;
+        border: 0 !important;
+    }
+
+    /* Zebra striping is one shade only: bg1 against bg0. */
+    #prefs > tr.odd {
+        background-color: var(--ph-bg1) !important;
+    }
+
+    #prefs > tr:hover {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    #prefs > tr > :is(th, td) {
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        color: var(--ph-fg1) !important;
+        font-weight: 400 !important;
+        letter-spacing: 0 !important;
+        padding: 2px 6px !important;
+        text-transform: none !important;
+        background-color: transparent !important;
+    }
+
+    /* A user-set pref is state: amber text. */
+    #prefs > tr.has-user-value > th,
+    #prefs > tr.has-user-value > th > span {
+        color: var(--ph-amber) !important;
+        font-weight: 500 !important;
+    }
+
+    #prefs > tr.locked > th {
+        color: var(--ph-fg2) !important;
+    }
+
+    #prefs > tr > td.cell-value {
+        color: var(--ph-fg0) !important;
+    }
+
+    #prefs td.cell-edit button,
+    #prefs button {
+        min-height: 20px !important;
+        padding: 1px 6px !important;
+        font-size: 11px !important;
+    }
+
+    #warningTitle,
+    #warningButton {
+        font-family: var(--ph-font) !important;
+    }
+}

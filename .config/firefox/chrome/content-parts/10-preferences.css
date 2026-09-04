@@ -1,0 +1,198 @@
+/* about:preferences — part of userContent.css; see ../userContent.css for load order. */
+
+/* ====================================================================== *
+ * about:preferences                                                      *
+ * ====================================================================== */
+
+@-moz-document url-prefix("about:preferences") {
+    .main-content,
+    #mainPrefPane {
+        background-color: var(--ph-bg0) !important;
+        padding-top: 12px !important;
+    }
+
+    #mainPrefPane {
+        max-width: 800px !important;
+        font-size: 12px !important;
+    }
+
+    /* Sidebar: a bg1 column behind a line0 rule. */
+    #categories,
+    moz-page-nav,
+    moz-page-nav::part(nav) {
+        background-color: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        padding-block: 6px !important;
+    }
+
+    /* Nav items: fg1 at rest, amber + a 2px amber edge when current. */
+    moz-page-nav-button,
+    #categories > .category {
+        appearance: none !important;
+        border: 0 !important;
+        border-inline-start: 2px solid transparent !important;
+        border-radius: 0 !important;
+        background-color: transparent !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.05em !important;
+        min-height: 24px !important;
+        margin: 0 !important;
+        padding-inline: 10px !important;
+        text-transform: uppercase !important;
+    }
+
+    moz-page-nav-button::part(button),
+    #categories > .category::part(button) {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: inherit !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.05em !important;
+        min-height: 24px !important;
+        text-transform: uppercase !important;
+    }
+
+    moz-page-nav-button:hover,
+    #categories > .category:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    moz-page-nav-button:hover::part(button) {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    moz-page-nav-button[selected],
+    #categories > .category[selected] {
+        background-color: transparent !important;
+        border-inline-start-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    moz-page-nav-button[selected]::part(button) {
+        background-color: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    /* Groupboxes: bg1 cards behind a line0 hairline. */
+    groupbox,
+    setting-group,
+    setting-pane > section > :is(setting-group, groupbox),
+    .highlight {
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin-block: 8px !important;
+        padding: 10px 12px !important;
+    }
+
+    groupbox > label > h2,
+    setting-group::part(heading),
+    .search-header {
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+    }
+
+    #searchInput,
+    #searchInput::part(input) {
+        appearance: none !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 24px !important;
+    }
+
+    #search-container {
+        background-color: var(--ph-bg0) !important;
+        border-bottom: var(--ph-quiet) !important;
+        padding-block: 6px !important;
+    }
+
+    .info-box-container,
+    #dataMigrationGroup {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+    }
+
+    description,
+    .description-deemphasized,
+    caption > label {
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+    }
+
+    checkbox,
+    radio,
+    .checkbox-label,
+    .radio-label {
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    checkbox .checkbox-check,
+    radio .radio-check {
+        appearance: none !important;
+        width: 13px !important;
+        height: 13px !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        margin-inline-end: 6px !important;
+    }
+
+    checkbox[checked] .checkbox-check {
+        background-color: var(--ph-amber) !important;
+        border-color: var(--ph-amber) !important;
+    }
+
+    radio[selected] .radio-check {
+        border-color: var(--ph-amber) !important;
+        background-color: var(--ph-amber) !important;
+        background-image: none !important;
+    }
+
+    /* Sub-dialogs: bg1 body inside a line1 frame, no scrim blur. */
+    dialog::backdrop,
+    .dialogOverlay {
+        background-color: rgba(7, 8, 10, 0.82) !important;
+        backdrop-filter: none !important;
+    }
+
+    dialog,
+    .dialogBox {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+    }
+
+    .dialogTitleBar,
+    .dialogTitle {
+        background-color: var(--ph-bg1) !important;
+        border-bottom: var(--ph-quiet) !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+    }
+}

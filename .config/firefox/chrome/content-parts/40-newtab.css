@@ -1,0 +1,303 @@
+/* about:newtab / about:home / about:privatebrowsing — part of userContent.css; see ../userContent.css for load order. */
+
+/* ====================================================================== *
+ * about:newtab / about:home — a terminal prompt on a bare canvas.        *
+ *                                                                        *
+ * The field itself is <content-search-handoff-ui>, a lit custom element  *
+ * whose button/input/placeholder live in a CLOSED-to-CSS shadow root     *
+ * with no ::part(). Only two levers reach inside: the                    *
+ * --content-search-handoff-ui-* custom properties it declares on :host,  *
+ * and inherited design tokens (--space-*, --font-size-root). Everything  *
+ * else — prompt, placeholder text, hairline — is drawn in the light DOM  *
+ * on .search-wrapper / .search-inner-wrapper.                            *
+ * ====================================================================== */
+
+@-moz-document url("about:newtab"), url("about:home"), url("about:privatebrowsing") {
+    :root,
+    body {
+        background-color: var(--ph-bg0) !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+        --newtab-background-color: var(--ph-bg0) !important;
+        --newtab-background-color-secondary: var(--ph-bg1) !important;
+        --newtab-text-primary-color: var(--ph-fg0) !important;
+        --newtab-text-secondary-color: var(--ph-fg1) !important;
+        --newtab-primary-action-background: var(--ph-amber) !important;
+        --newtab-primary-element-text-color: var(--ph-bg0) !important;
+        --newtab-border-color: var(--ph-line0) !important;
+        --newtab-element-hover-color: var(--ph-bg2) !important;
+        --newtab-element-active-color: var(--ph-bg3) !important;
+        --newtab-link-primary-color: var(--ph-cyan) !important;
+        --newtab-link-secondary-color: var(--ph-fg1) !important;
+        --newtab-icon-primary-color: var(--ph-fg1) !important;
+        --newtab-wordmark-color: var(--ph-fg2) !important;
+        /* The engine favicon is set as an inline style on <body> by the
+         * handoff controller; an !important author rule still beats it. */
+        --newtab-search-icon: none !important;
+    }
+
+    /* Inner wrappers must not paint, or they cover the glyph behind them. */
+    .outer-wrapper,
+    main,
+    .base-content-fallback {
+        background-color: transparent !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* The field: no chrome of its own, no icon, no radius, no shadow.
+     * <content-search-handoff-ui> is a Lit element with no ::part, so the
+     * only lever on .search-handoff-button inside its shadow root is the
+     * set of custom properties it reads. It reads more than its own
+     * --content-search-handoff-ui-* namespace: the raised look came from
+     * `box-shadow: var(--box-shadow-level-3)`, a *global* design-system
+     * token, which is why the box survived every namespaced override. */
+    content-search-handoff-ui {
+        --content-search-handoff-ui-background-color: transparent !important;
+        --content-search-handoff-ui-color: var(--ph-fg0) !important;
+        --content-search-handoff-ui-fill: var(--ph-fg2) !important;
+        --content-search-handoff-ui-caret-color: var(--ph-amber) !important;
+        --content-search-handoff-ui-border-width: 0 !important;
+        --content-search-handoff-ui-border-radius: 0 !important;
+        --content-search-handoff-ui-engine-icon: none !important;
+        --content-search-handoff-ui-unfocused-border-color: transparent !important;
+        --content-search-handoff-ui-fakefocus-border-color: transparent !important;
+        --content-search-handoff-ui-fakefocus-box-shadow-inner: transparent !important;
+        --content-search-handoff-ui-fakefocus-box-shadow-outer: transparent !important;
+
+        /* The box itself: .search-handoff-button's drop shadow, and the
+         * background/radius tokens the page feeds into the namespace above. */
+        --box-shadow-level-2: none !important;
+        --box-shadow-level-3: none !important;
+        --box-shadow-level-4: none !important;
+        --newtab-background-color-secondary: transparent !important;
+        --newtab-primary-action-background-dimmed: transparent !important;
+        --border-radius-circle: 0 !important;
+        --border-radius-medium: 0 !important;
+
+        /* The shadow button reserves 2 * --space-xlarge for the icon it no
+         * longer has, and .fake-textbox is offset by --space-xsmall. */
+        --space-xlarge: 0px !important;
+        --space-small: 0px !important;
+        --space-xsmall: 0px !important;
+
+        /* .fake-textbox hard-codes font-size: var(--font-size-root), which is
+         * the only way to suppress the built-in "Search with …" placeholder;
+         * ours is drawn on .search-inner-wrapper::after instead. */
+        --font-size-root: 0px !important;
+
+        /* Vertical alignment. .fake-caret is a 17px block with margin-top:
+         * -17px, so it lands on .fake-textbox's line box — which collapses to
+         * nothing at font-size 0 unless line-height is set explicitly. Pin
+         * line-height to the caret's own 17px and the caret sits exactly on
+         * the (invisible) text line; stretch the button over the full 40px
+         * field so the button centres that line, putting caret, placeholder
+         * and the amber prefix all on one baseline at 20px. */
+        align-items: stretch !important;
+        height: 40px !important;
+        line-height: 17px !important;
+
+        background: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 22px !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+    /* userContent.css is a *user-origin* sheet, so — unlike an author sheet —
+     * it cascades **into shadow trees**, and user-origin !important outranks
+     * author !important. That is exactly why the box survived: the generic
+     * :where(button, input[type="button"], …) rule in the about:* block above
+     * reaches .search-handoff-button inside this element's shadow root and
+     * repaints it with --ph-bg1 + --ph-quiet, beating the shadow sheet's own
+     * background/border (and so beating every --content-search-handoff-ui-*
+     * token we set). The same reach is the cure: style the shadow parts. */
+    .search-handoff-button,
+    .search-handoff-button:hover,
+    .search-handoff-button:focus,
+    .search-handoff-button:focus-visible,
+    .search-handoff-button:active,
+    #newtab-search-text {
+        appearance: none !important;
+        -moz-appearance: none !important;
+        background: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        height: 40px !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* The invisible <input> that actually takes the keystrokes. */
+    .fake-editable,
+    .fake-editable:focus {
+        background: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        padding: 0 !important;
+    }
+
+    /* One baseline for all three marks. .fake-caret is a block that follows
+     * .fake-textbox with margin-top: -<its own height>, so it lands on the
+     * text line only when the two agree; the button then centres that line in
+     * its 40px box — the same 40px line box the amber prefix and the
+     * placeholder use, so all three end up centred on the field's midline. */
+    .fake-textbox {
+        font-size: 0 !important;
+        line-height: 22px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .fake-caret {
+        height: 22px !important;
+        margin-top: -22px !important;
+        inset-inline-start: 0 !important;
+        background: var(--ph-amber) !important;
+    }
+}
+
+@-moz-document url("about:newtab"), url("about:home") {
+    /* No scrollbars: the page is exactly one screen. */
+    :root,
+    body {
+        overflow: hidden !important;
+        scrollbar-width: none !important;
+    }
+
+    /*
+     * body must not paint: body is not a stacking context, so the glyph below
+     * (z-index: -1) resolves against :root and would land *under* a painted
+     * body background. :root carries the canvas colour instead.
+     */
+    body {
+        background-color: transparent !important;
+    }
+
+    /* A giant dim glyph, behind everything, lower right. */
+    body::before {
+        color: var(--ph-bg2);
+        content: "❯_";
+        font-family: var(--ph-font);
+        font-size: 360px;
+        inset-block-end: -3vh;
+        inset-inline-end: 3vw;
+        line-height: 1;
+        pointer-events: none;
+        position: fixed;
+        user-select: none;
+        z-index: -1;
+    }
+
+    /* Everything but the prompt line goes away. */
+    .logo-and-wordmark,
+    .logo-and-wordmark-wrapper,
+    .wordmark,
+    .logo,
+    .top-sites,
+    .top-sites-list,
+    .edit-topsites-button,
+    .edit-topsites,
+    .section-top-bar,
+    .context-menu-button,
+    .customize-menu,
+    #customize-menu,
+    .personalizeButtonWrapper,
+    .personalize-button,
+    .open-customization-button,
+    section.collapsible-section,
+    .ds-outer-wrapper-breakpoint-override,
+    .discovery-stream,
+    .ds-navigation,
+    .ds-layout,
+    .sections-list,
+    .weatherWidget,
+    .weather,
+    #weather,
+    .widget-container,
+    .body-wrapper > section,
+    .ASRouterButton,
+    .info-icon,
+    .fixed-search .search-wrapper::after {
+        display: none !important;
+    }
+
+    /* The prompt line: left-aligned in a 720px column, 38% down the page. */
+    /* Fixed, so neither .outer-wrapper's padding nor the flex centring of
+     * main can drag the line off the 38% mark. */
+    .search-wrapper {
+        align-items: center !important;
+        display: flex !important;
+        inset-block-start: 38vh !important;
+        inset-inline: 0 !important;
+        margin: 0 auto !important;
+        max-width: 720px !important;
+        padding: 0 !important;
+        position: fixed !important;
+        width: 88vw !important;
+    }
+
+    .search-wrapper::before {
+        color: var(--ph-amber);
+        content: "~ ❯ ";
+        flex: 0 0 auto;
+        font-family: var(--ph-font);
+        font-size: 22px;
+        line-height: 40px;
+        user-select: none;
+        white-space: pre;
+    }
+
+    /* The hairline sits under the field only, not under the prompt. */
+    .search-inner-wrapper {
+        align-items: center !important;
+        background: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-block-end: 1px solid var(--ph-line1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex: 1 1 auto !important;
+        height: 40px !important;
+        margin: 0 !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+    }
+
+    /* Our own placeholder, since the real one lives in the shadow root. */
+    .search-inner-wrapper::after {
+        color: var(--ph-fg2);
+        content: "search or url";
+        font-family: var(--ph-font);
+        font-size: 22px;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        line-height: 40px;
+        pointer-events: none;
+        position: absolute;
+        user-select: none;
+    }
+
+    /* Handing off to the URL bar sets [fakefocus] on the host: drop the
+     * placeholder so the amber caret stands alone. */
+    .search-inner-wrapper:has(content-search-handoff-ui[fakefocus])::after {
+        content: "" !important;
+    }
+}

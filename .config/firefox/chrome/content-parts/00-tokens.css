@@ -1,0 +1,606 @@
+/* Shared --ph-* tokens and base widgets for every about: / toolkit document — part of userContent.css; see ../userContent.css for load order. */
+
+/*
+ * Phosphor in-content pages — near-white hairlines on deep graphite, amber for
+ * state. Zero radius, monospace, small and dense.
+ * Selectors validated against Firefox Developer Edition 154.0b5.
+ */
+
+/* Thin, trackless scrollbars everywhere in content, matching the chrome. */
+:root {
+    scrollbar-width: thin !important;
+    scrollbar-color: #7b838f transparent !important;
+}
+
+/* ====================================================================== *
+ * Every toolkit "about:" page and extension-manager document.            *
+ * ====================================================================== */
+
+@-moz-document url-prefix("about:"), url-prefix("chrome://mozapps/content/"),
+               url-prefix("chrome://browser/content/") {
+    :root {
+        --ph-bg0: #16181d;
+        --ph-bg1: #1c1f25;
+        --ph-bg2: #23272e;
+        --ph-bg3: #2c313a;
+        --ph-line0: #3a404a;
+        --ph-line1: #e6e9ed;
+        --ph-fg0: #e6e9ed;
+        --ph-fg1: #b7bec8;
+        --ph-fg2: #7b838f;
+        --ph-amber: #ffb340;
+        --ph-amber-hi: #ffc966;
+        --ph-cyan: #5ed3f3;
+        --ph-blue: #5b9dff;
+        --ph-magenta: #d67cff;
+        --ph-yellow: #ffd866;
+        --ph-red: #ff4d6d;
+
+        --ph-hair: 1px solid var(--ph-line1);
+        --ph-quiet: 1px solid var(--ph-line0);
+        --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+
+        /* --- Firefox 154 semantic colour system --- */
+        --background-color-canvas: var(--ph-bg0) !important;
+        --background-color-box: var(--ph-bg1) !important;
+        --background-color-box-info: var(--ph-bg1) !important;
+        --background-color-overlay: var(--ph-bg0) !important;
+        --background-color-critical: var(--ph-bg1) !important;
+        --background-color-information: var(--ph-bg1) !important;
+        --background-color-success: var(--ph-bg1) !important;
+        --background-color-warning: var(--ph-bg1) !important;
+        --background-color-list-item-hover: var(--ph-bg2) !important;
+        --background-color-list-item-selected: var(--ph-bg2) !important;
+        --border-color: var(--ph-line0) !important;
+        --border-color-deemphasized: var(--ph-line0) !important;
+        --border-color-error: var(--ph-red) !important;
+        --border-color-interactive: var(--ph-line1) !important;
+        --border-color-interactive-hover: var(--ph-line1) !important;
+        --border-color-interactive-active: var(--ph-amber) !important;
+        --border-color-interactive-disabled: var(--ph-line0) !important;
+        --border-color-selected: var(--ph-amber) !important;
+        --text-color: var(--ph-fg0) !important;
+        --text-color-deemphasized: var(--ph-fg1) !important;
+        --text-color-disabled: var(--ph-fg2) !important;
+        --text-color-error: var(--ph-red) !important;
+        --text-color-list-item-hover: var(--ph-fg0) !important;
+        --text-color-accent-primary-selected: var(--ph-amber) !important;
+        --link-color: var(--ph-cyan) !important;
+        --link-color-hover: var(--ph-cyan) !important;
+        --link-color-active: var(--ph-cyan) !important;
+        --link-color-visited: var(--ph-magenta) !important;
+        --icon-color: var(--ph-fg1) !important;
+        --icon-color-information: var(--ph-cyan) !important;
+        --icon-color-success: var(--ph-amber) !important;
+        --icon-color-warning: var(--ph-yellow) !important;
+        --icon-color-critical: var(--ph-red) !important;
+        --color-accent-primary: var(--ph-amber) !important;
+        --color-accent-primary-hover: var(--ph-amber) !important;
+        --color-accent-primary-active: var(--ph-amber) !important;
+        --color-accent-primary-selected: var(--ph-amber) !important;
+
+        /* --- Legacy in-content aliases --- */
+        --in-content-page-background: var(--ph-bg0) !important;
+        --in-content-page-color: var(--ph-fg0) !important;
+        --in-content-box-background: var(--ph-bg1) !important;
+        --in-content-box-background-odd: var(--ph-bg1) !important;
+        --in-content-box-border-color: var(--ph-line0) !important;
+        --in-content-border-color: var(--ph-line0) !important;
+        --in-content-deemphasized-text: var(--ph-fg1) !important;
+        --in-content-item-hover: var(--ph-bg2) !important;
+        --in-content-item-hover-text: var(--ph-fg0) !important;
+        --in-content-item-selected: var(--ph-bg2) !important;
+        --in-content-item-selected-text: var(--ph-amber) !important;
+        --in-content-link-color: var(--ph-cyan) !important;
+        --in-content-focus-outline-color: var(--ph-amber) !important;
+        --in-content-button-background: var(--ph-bg1) !important;
+        --in-content-button-background-hover: var(--ph-bg2) !important;
+        --in-content-button-background-active: var(--ph-bg3) !important;
+        --in-content-button-text-color: var(--ph-fg0) !important;
+        --in-content-button-border-color: var(--ph-line0) !important;
+        /* Primary action = amber text on a amber hairline, never a amber slab. */
+        --in-content-primary-button-background: transparent !important;
+        --in-content-primary-button-background-hover: var(--ph-bg2) !important;
+        --in-content-primary-button-background-active: var(--ph-bg3) !important;
+        --in-content-primary-button-text-color: var(--ph-amber) !important;
+        --in-content-primary-button-text-color-hover: var(--ph-amber) !important;
+        --in-content-primary-button-border-color: var(--ph-amber) !important;
+
+        /* --- Buttons --- */
+        --button-background-color: var(--ph-bg1) !important;
+        --button-background-color-hover: var(--ph-bg2) !important;
+        --button-background-color-active: var(--ph-bg3) !important;
+        --button-background-color-selected: var(--ph-bg2) !important;
+        --button-background-color-disabled: var(--ph-bg1) !important;
+        --button-background-color-primary: transparent !important;
+        --button-background-color-primary-hover: var(--ph-bg2) !important;
+        --button-background-color-primary-active: var(--ph-bg3) !important;
+        --button-background-color-primary-disabled: transparent !important;
+        --button-background-color-destructive: transparent !important;
+        --button-background-color-destructive-hover: var(--ph-bg2) !important;
+        --button-background-color-ghost: transparent !important;
+        --button-background-color-ghost-hover: var(--ph-bg2) !important;
+        --button-background-color-muted: var(--ph-bg1) !important;
+        --button-background-color-muted-hover: var(--ph-bg2) !important;
+        --button-background-color-menu: var(--ph-bg1) !important;
+        --button-background-color-menu-hover: var(--ph-bg2) !important;
+        --button-background-color-toolbar: transparent !important;
+        --button-background-color-toolbar-hover: var(--ph-bg2) !important;
+        --button-border: 1px solid var(--ph-line0) !important;
+        --button-border-color: var(--ph-line0) !important;
+        --button-border-color-hover: var(--ph-line1) !important;
+        --button-border-color-active: var(--ph-amber) !important;
+        --button-border-color-primary: var(--ph-amber) !important;
+        --button-border-color-primary-hover: var(--ph-amber) !important;
+        --button-border-color-destructive: var(--ph-red) !important;
+        --button-text-color: var(--ph-fg0) !important;
+        --button-text-color-hover: var(--ph-fg0) !important;
+        --button-text-color-active: var(--ph-fg0) !important;
+        --button-text-color-disabled: var(--ph-fg2) !important;
+        --button-text-color-primary: var(--ph-amber) !important;
+        --button-text-color-primary-hover: var(--ph-amber) !important;
+        --button-text-color-destructive: var(--ph-red) !important;
+        --button-text-color-ghost: var(--ph-fg1) !important;
+        --button-min-height: 24px !important;
+        --button-size-icon: 24px !important;
+        --button-font-size: 11px !important;
+
+        /* --- Fields --- */
+        --input-text-background-color: var(--ph-bg0) !important;
+        --input-text-background-color-disabled: var(--ph-bg1) !important;
+        --input-text-color: var(--ph-fg0) !important;
+        --input-text-color-disabled: var(--ph-fg2) !important;
+        --input-text-border: 1px solid var(--ph-line1) !important;
+        --input-text-border-color: var(--ph-line1) !important;
+        --input-text-border-color-disabled: var(--ph-line0) !important;
+        --input-text-min-height: 24px !important;
+        --select-background-color: var(--ph-bg0) !important;
+        --select-background-color-hover: var(--ph-bg2) !important;
+        --select-text-color: var(--ph-fg0) !important;
+        --select-border: 1px solid var(--ph-line1) !important;
+        --select-border-color: var(--ph-line1) !important;
+        --select-border-color-hover: var(--ph-line1) !important;
+        --select-min-height: 24px !important;
+
+        /* --- Checks, radios, toggles: square, amber when on --- */
+        --checkbox-background-color: var(--ph-bg0) !important;
+        --checkbox-background-color-hover: var(--ph-bg2) !important;
+        --checkbox-background-color-checked: var(--ph-amber) !important;
+        --checkbox-background-color-checked-hover: var(--ph-amber) !important;
+        --checkbox-border-color: var(--ph-line1) !important;
+        --checkbox-border-color-checked: var(--ph-amber) !important;
+        --checkbox-checked-color: var(--ph-bg0) !important;
+        --radio-background-color: var(--ph-bg0) !important;
+        --radio-border-color: var(--ph-line1) !important;
+        --radio-check-background-color: var(--ph-amber) !important;
+        --radio-indicator-background-color: var(--ph-amber) !important;
+        --radio-indicator-border-color: var(--ph-line1) !important;
+        --radio-indicator-border-color-checked: var(--ph-amber) !important;
+        --toggle-background-color: var(--ph-bg0) !important;
+        --toggle-background-color-hover: var(--ph-bg2) !important;
+        --toggle-background-color-pressed: var(--ph-amber) !important;
+        --toggle-background-color-pressed-hover: var(--ph-amber) !important;
+        --toggle-border-color: var(--ph-line1) !important;
+        --toggle-border-color-pressed: var(--ph-amber) !important;
+        --toggle-track-border-color: var(--ph-line1) !important;
+        --toggle-dot-background-color: var(--ph-fg1) !important;
+        --toggle-dot-background-color-on-pressed: var(--ph-bg0) !important;
+        --toggle-dot-margin: 2px !important;
+        --toggle-height: 14px !important;
+        --toggle-width: 28px !important;
+
+        /* --- Cards, panels, nav, tables, message bars --- */
+        --card-background-color: var(--ph-bg1) !important;
+        --card-border: 1px solid var(--ph-line0) !important;
+        --card-border-color: var(--ph-line0) !important;
+        --card-box-shadow: none !important;
+        --card-box-shadow-hover: none !important;
+        --card-header-background-color: var(--ph-bg1) !important;
+        --card-header-background-color-hover: var(--ph-bg2) !important;
+        --card-header-border-color: var(--ph-line0) !important;
+        --card-padding: 10px !important;
+        --panel-background-color: var(--ph-bg1) !important;
+        --panel-border-color: var(--ph-line1) !important;
+        --panel-text-color: var(--ph-fg0) !important;
+        --panel-shadow: none !important;
+        --popup-box-shadow: none !important;
+        --box-shadow-level-1: none !important;
+        --box-shadow-level-2: none !important;
+        --box-shadow-level-3: none !important;
+        --box-shadow-level-4: none !important;
+        --box-shadow-card: none !important;
+        --sidebar-background-color: var(--ph-bg1) !important;
+        --sidebar-border-color: var(--ph-line0) !important;
+        --sidebar-text-color: var(--ph-fg0) !important;
+        --toolbar-background-color: var(--ph-bg1) !important;
+        --toolbar-field-background-color: var(--ph-bg0) !important;
+        --toolbar-field-background-color-focus: var(--ph-bg0) !important;
+        --toolbar-field-text-color: var(--ph-fg0) !important;
+        --toolbar-field-text-color-focus: var(--ph-fg0) !important;
+        --toolbar-field-border-color: var(--ph-line1) !important;
+        --toolbar-text-color: var(--ph-fg0) !important;
+        --table-row-background-color: var(--ph-bg1) !important;
+        --table-row-background-color-alternate: var(--ph-bg0) !important;
+        --table-row-border-color: var(--ph-line0) !important;
+        --page-nav-border-color: var(--ph-line0) !important;
+        --page-nav-button-background-color: transparent !important;
+        --page-nav-button-background-color-hover: var(--ph-bg2) !important;
+        --page-nav-button-background-color-active: var(--ph-bg3) !important;
+        --page-nav-button-background-color-selected: transparent !important;
+        --page-nav-button-border-color: transparent !important;
+        --page-nav-button-border-color-hover: transparent !important;
+        --page-nav-button-indicator-background-color: var(--ph-amber) !important;
+        --page-nav-button-text-color: var(--ph-fg1) !important;
+        --page-nav-button-text-color-hover: var(--ph-fg0) !important;
+        --page-nav-button-text-color-selected: var(--ph-amber) !important;
+        --message-bar-background-color: var(--ph-bg1) !important;
+        --message-bar-background-color-critical: var(--ph-bg1) !important;
+        --message-bar-background-color-success: var(--ph-bg1) !important;
+        --message-bar-background-color-warning: var(--ph-bg1) !important;
+        --message-bar-border-color: var(--ph-line0) !important;
+        --message-bar-icon-background-color: transparent !important;
+        --message-bar-icon-background-color-critical: var(--ph-red) !important;
+        --message-bar-icon-background-color-success: var(--ph-amber) !important;
+        --message-bar-icon-background-color-warning: var(--ph-yellow) !important;
+        --message-bar-text-color: var(--ph-fg0) !important;
+
+        /* --- Geometry: zero radius, in every dialect --- */
+        --border-radius-xsmall: 0 !important;
+        --border-radius-small: 0 !important;
+        --border-radius-medium: 0 !important;
+        --border-radius-large: 0 !important;
+        --border-radius-circle: 0 !important;
+        --button-border-radius: 0 !important;
+        --input-text-border-radius: 0 !important;
+        --select-border-radius: 0 !important;
+        --checkbox-border-radius: 0 !important;
+        --radio-border-radius: 0 !important;
+        --toggle-border-radius: 0 !important;
+        --toggle-dot-border-radius: 0 !important;
+        --card-border-radius: 0 !important;
+        --card-border-radius-compact: 0 !important;
+        --box-border-radius: 0 !important;
+        --box-border-radius-start: 0 !important;
+        --box-border-radius-end: 0 !important;
+        --box-border-radius-inner: 0 !important;
+        --message-bar-border-radius: 0 !important;
+        --panel-border-radius: 0 !important;
+        --panel-menuitem-border-radius: 0 !important;
+        --page-nav-button-border-radius: 0 !important;
+        --page-nav-button-border-radius-focused: 0 !important;
+        --segmented-control-border-radius: 0 !important;
+        --visual-picker-item-border-radius: 0 !important;
+        --visual-picker-item-border-radius-inner: 0 !important;
+        --focus-outline-color: var(--ph-amber) !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --focus-outline-width: 1px !important;
+        --focus-outline-offset: 1px !important;
+        --focus-outline-inset: 1px solid var(--ph-amber) !important;
+
+        color-scheme: dark !important;
+        accent-color: var(--ph-amber) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 12px !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
+    html,
+    body {
+        background-color: var(--ph-bg0) !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+    }
+
+    /* Headings: small, tracked-out, uppercase — labels, not banners. */
+    :where(h1, .title, .main-heading, .heading) {
+        font-family: var(--ph-font) !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :where(h2, h3, h4, .sub-header, .main-subheading) {
+        font-family: var(--ph-font) !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.05em !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* --- Buttons ---------------------------------------------------- */
+
+    :where(button, input[type="button"], input[type="submit"], .button) {
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 24px !important;
+        padding: 3px 10px !important;
+    }
+
+    :where(button, input[type="button"], input[type="submit"], .button):hover:not([disabled]) {
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-line1) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :where(button, .button)[disabled] {
+        color: var(--ph-fg2) !important;
+        border-color: var(--ph-line0) !important;
+        background-color: var(--ph-bg1) !important;
+    }
+
+    /* Primary: amber text inside a amber hairline. No amber slab. */
+    button.primary,
+    button[default="true"],
+    input[type="submit"],
+    .primary-button,
+    moz-button[type="primary"],
+    moz-button[type="primary"]::part(button) {
+        background-color: transparent !important;
+        border: 1px solid var(--ph-amber) !important;
+        border-radius: 0 !important;
+        color: var(--ph-amber) !important;
+        box-shadow: none !important;
+        font-weight: 500 !important;
+    }
+
+    button.primary:hover,
+    input[type="submit"]:hover,
+    moz-button[type="primary"]:hover::part(button) {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    button.danger-button,
+    moz-button[type="destructive"]::part(button) {
+        background-color: transparent !important;
+        border: 1px solid var(--ph-red) !important;
+        color: var(--ph-red) !important;
+    }
+
+    moz-button::part(button) {
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 24px !important;
+    }
+
+    moz-button:hover::part(button) {
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-line1) !important;
+    }
+
+    /* --- Text fields, selects ---------------------------------------- */
+
+    :where(input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+           textarea, select, search-textbox, menulist, moz-input-search) {
+        appearance: none !important;
+        background-color: var(--ph-bg0) !important;
+        background-image: none !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 24px !important;
+        padding: 2px 6px !important;
+    }
+
+    /* Focus everywhere reads as the same 2px amber bottom edge. */
+    :where(input, textarea, select, button, moz-button, a, [role="button"],
+           search-textbox, menulist):focus-visible {
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: -1px !important;
+        border-radius: 0 !important;
+    }
+
+    select,
+    menulist {
+        padding-inline-end: 18px !important;
+    }
+
+    select > option,
+    menupopup {
+        background-color: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--ph-fg2) !important;
+    }
+
+    /* --- Checkboxes, radios, toggles: square, amber when on ----------- */
+
+    input[type="checkbox"] {
+        appearance: none !important;
+        width: 13px !important;
+        height: 13px !important;
+        min-height: 0 !important;
+        margin: 0 6px 0 0 !important;
+        padding: 0 !important;
+        background-color: var(--ph-bg0) !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: 11px 11px !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    input[type="checkbox"]:hover {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: var(--ph-amber) !important;
+        border-color: var(--ph-amber) !important;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2012%2012'%3E%3Cpath%20d%3D'M2.2%206.3L4.6%208.7L9.6%203.3'%20fill%3D'none'%20stroke%3D'%2316181d'%20stroke-width%3D'2'%20stroke-linecap%3D'square'%2F%3E%3C%2Fsvg%3E") !important;
+    }
+
+    input[type="checkbox"]:indeterminate {
+        background-color: var(--ph-amber) !important;
+        border-color: var(--ph-amber) !important;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2012%2012'%3E%3Crect%20x%3D'2'%20y%3D'5'%20width%3D'8'%20height%3D'2'%20fill%3D'%2316181d'%2F%3E%3C%2Fsvg%3E") !important;
+    }
+
+    /* Radios stay square too: a amber block inside a hairline square. */
+    input[type="radio"] {
+        appearance: none !important;
+        width: 13px !important;
+        height: 13px !important;
+        min-height: 0 !important;
+        margin: 0 6px 0 0 !important;
+        padding: 0 !important;
+        background-color: var(--ph-bg0) !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: 13px 13px !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    input[type="radio"]:hover {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    input[type="radio"]:checked {
+        border-color: var(--ph-amber) !important;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2012%2012'%3E%3Crect%20x%3D'3'%20y%3D'3'%20width%3D'6'%20height%3D'6'%20fill%3D'%23ffb340'%2F%3E%3C%2Fsvg%3E") !important;
+    }
+
+    /* Toggles become square switches. */
+    moz-toggle::part(button) {
+        appearance: none !important;
+        width: 28px !important;
+        height: 14px !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    moz-toggle[pressed]::part(button) {
+        background-color: var(--ph-bg0) !important;
+        border-color: var(--ph-amber) !important;
+    }
+
+    moz-toggle::part(dot) {
+        border-radius: 0 !important;
+        background-color: var(--ph-fg2) !important;
+        width: 8px !important;
+        height: 8px !important;
+    }
+
+    moz-toggle[pressed]::part(dot) {
+        background-color: var(--ph-amber) !important;
+    }
+
+    input[type="range"] {
+        accent-color: var(--ph-amber) !important;
+    }
+
+    /* --- Cards, boxes, panels ---------------------------------------- */
+
+    :where(.card, moz-card, moz-box-item, moz-box-group, groupbox, setting-group,
+           .info-box-container, .action-box, .dialogBox, .modal) {
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    :where(moz-card, moz-box-item, .card)::part(container),
+    moz-card::part(header) {
+        background-color: var(--ph-bg1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    moz-message-bar,
+    moz-message-bar::part(container) {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    /* --- Links, selection, tables ------------------------------------ */
+
+    a,
+    a:visited {
+        color: var(--ph-cyan) !important;
+        text-decoration: none !important;
+    }
+
+    a:hover {
+        color: var(--ph-cyan) !important;
+        text-decoration: underline !important;
+        text-underline-offset: 2px !important;
+    }
+
+    ::selection {
+        background-color: var(--ph-bg3) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :where(table) {
+        border-collapse: collapse !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    :where(th, thead th, treecols) {
+        background-color: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        text-align: start !important;
+    }
+
+    :where(td) {
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        color: var(--ph-fg0) !important;
+        padding: 2px 6px !important;
+    }
+
+    tbody tr:hover {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    /* No blur, no shadow, no rounding survives anywhere in content chrome. */
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+}
