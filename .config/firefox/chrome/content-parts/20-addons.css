@@ -181,9 +181,12 @@
     }
 
     /* --- Card "⋯" menu (panel-list / panel-item) ---------------------- *
-     * The item icon is a background-image on the shadow button, offset by
-     * padding-inline-start. Restate both so the glyph and label never
-     * collide, whatever the shorthand padding upstream resolves to.       */
+     * panel-item's button lives in a shadow root, so ::part() from this user
+     * sheet can't reach it. The label collides with the icon because the
+     * upstream padding-inline-start (var(--space-xxlarge)) resolves too small
+     * for the icon gutter. These are inherited custom properties, so set them
+     * on the element itself: icon parked at 8px, 14px wide, label pushed to
+     * 28px so a 6px gap always survives.                                    */
     panel-list {
         background-color: var(--ph-bg1) !important;
         border: var(--ph-hair) !important;
@@ -195,40 +198,14 @@
         padding-block: 2px !important;
     }
 
-    panel-item::part(button) {
-        appearance: none !important;
-        align-items: center !important;
-        background-color: transparent !important;
-        background-position: 7px center !important;
-        background-repeat: no-repeat !important;
-        background-size: 12px 12px !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: var(--ph-fg0) !important;
-        display: flex !important;
+    panel-item {
+        --icon-size: 14px !important;
+        --panel-menuitem-padding-inline: 8px !important;
+        --panel-item-button-padding: 4px 12px !important;
+        --panel-item-button-padding-inline-start: 28px !important;
+        --panel-item-badge-inset-inline-start: 8px !important;
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
-        gap: 6px !important;
-        margin: 0 !important;
-        min-height: 22px !important;
-        padding: 3px 12px !important;
-        padding-inline-start: 26px !important;
-    }
-
-    panel-item::part(label) {
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-
-    panel-item::part(button):hover {
-        background-color: var(--ph-bg2) !important;
-        color: var(--ph-fg0) !important;
-    }
-
-    panel-item[disabled]::part(button) {
-        color: var(--ph-fg2) !important;
-        opacity: 1 !important;
     }
 
     /* --- Card hover: bg2 lift behind a hard hairline ------------------- */
