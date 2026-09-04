@@ -18,7 +18,7 @@ user_pref("browser.newtabpage.activity-stream.showSponsoredTopSites", false);
 user_pref("browser.newtabpage.activity-stream.feeds.topsites", false);
 user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
 user_pref("browser.newtabpage.activity-stream.showWeather", false);
-user_pref("browser.newtabpage.activity-stream.showSearch", true);
+user_pref("browser.newtabpage.activity-stream.showSearch", false);
 
 // The tab-manager dropdown duplicates the tab strip; the CSS hides its button.
 user_pref("browser.tabs.tabmanager.enabled", false);
