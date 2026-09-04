@@ -1186,9 +1186,24 @@
         background-color: var(--ph-amber) !important;
     }
 
+    /*
+     * The engine favicon (Google, by default) is the only colour left on an
+     * otherwise empty page, so the handoff button loses its artwork entirely.
+     */
     .search-wrapper .search-button,
-    .search-handoff-button::before {
+    .search-handoff-button::before,
+    .search-handoff-button .icon,
+    .search-wrapper .logo,
+    .search-inner-wrapper .search-button,
+    .search-handoff-button img,
+    .search-wrapper input + .search-button {
         display: none !important;
+    }
+
+    .search-handoff-button,
+    .search-wrapper input {
+        background-image: none !important;
+        padding-inline-start: 10px !important;
     }
 
     /* Personalize stays reachable, at fg2, out of the way. */
