@@ -377,6 +377,8 @@ local battery_views = {}
 local battery_timer
 local battery_details = "Battery data is loading…"
 local battery_alert_level
+-- Last time the low-battery blip played (os.time seconds); rate-limited to 10 min.
+local battery_blip_last = 0
 
 local battery_command = [[
 for battery in /sys/class/power_supply/BAT*; do
@@ -491,6 +493,13 @@ local function update_battery()
         end
 
         if status == "Discharging" then
+            if capacity <= 15 then
+                local now_ts = os.time()
+                if now_ts - battery_blip_last >= 600 then
+                    battery_blip_last = now_ts
+                    awful.spawn({"/home/guy/dotfiles/bin/blip", "lowbatt"}, false)
+                end
+            end
             local alert_level = capacity <= 7 and 7 or capacity <= 15 and 15
             if alert_level and (not battery_alert_level or alert_level < battery_alert_level) then
                 naughty.notify {
@@ -1482,6 +1491,17 @@ client.connect_signal("property::urgent", function(c)
     if c.urgent then
         awful.spawn({"/home/guy/dotfiles/bin/blip", "attn"}, false)
     end
+end)
+-- One cue per tag switch: the deselect of the old tag is ignored, and blip's
+-- own rate limit swallows the extra event when several screens follow along.
+tag.connect_signal("property::selected", function(t)
+    if t.selected then
+        awful.spawn({"/home/guy/dotfiles/bin/blip", "tag"}, false)
+    end
+end)
+client.connect_signal("manage", function(c)
+    if awesome.startup then return end
+    awful.spawn({"/home/guy/dotfiles/bin/blip", "window"}, false)
 end)
 awesome.connect_signal("startup", function()
     awful.spawn({"/home/guy/dotfiles/bin/blip", "start"}, false)
