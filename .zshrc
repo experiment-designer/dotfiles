@@ -19,7 +19,18 @@ zstyle :compinstall filename '/home/guy/.zshrc'
 
 zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
 autoload -Uz compinit
-compinit
+# Rebuild the completion cache at most once a day; the rest of the time trust
+# the existing dump with -C, which skips compaudit's filesystem walk (~16ms of
+# a ~30ms interactive startup). The touch keeps the daily clock ticking even
+# when compinit finds the dump still valid and so never rewrites it.
+_zcompdump=${ZDOTDIR:-$HOME}/.zcompdump
+if [[ ! -s $_zcompdump || -n $_zcompdump(#qN.mh+24) ]]; then
+    compinit -d "$_zcompdump"
+    touch "$_zcompdump"
+else
+    compinit -C -d "$_zcompdump"
+fi
+unset _zcompdump
 # End of lines added by compinstall
 
 # Fix shell bugs

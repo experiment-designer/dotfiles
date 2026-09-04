@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open a terminal window from the already-running alacritty process (tens of
+# milliseconds), falling back to a cold start when no instance is listening.
+alacritty msg create-window "$@" 2>/dev/null || exec alacritty "$@"

@@ -37,6 +37,7 @@ USER_SCRIPTS=(
     "bin/blip"
     "bin/blip-post-bash"
     "bin/rice-shot"
+    "bin/term"
     "bin/brightness-step"
     "bin/htop"
 )
