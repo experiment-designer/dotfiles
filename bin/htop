@@ -1,16 +1,27 @@
 #!/bin/sh
 # ponytail: htop cannot draw line graphs or custom colours; btop can. btop stays alive in a
 # private tmux server so its graphs keep history between launches; q detaches instead of quitting.
-sock=btop
-tmux -L "$sock" has-session -t btop 2>/dev/null || {
-    tmux -L "$sock" new-session -d -s btop -x 220 -y 60 "exec btop"
-    tmux -L "$sock" set -g window-size manual
-    tmux -L "$sock" resize-window -t btop -x 220 -y 60
-    tmux -L "$sock" set -g detach-on-destroy on
-    tmux -L "$sock" set -g status off
-    tmux -L "$sock" set -g mouse on
-    tmux -L "$sock" bind -n q detach-client
-    tmux -L "$sock" set -g default-terminal "tmux-256color"
-    tmux -L "$sock" set -ga terminal-overrides ",*:Tc"
+sock=${BTOP_SOCK:-btop}
+
+ensure_session() {
+    tmux -L "$sock" has-session -t btop 2>/dev/null || {
+        tmux -L "$sock" new-session -d -s btop -x 220 -y 60 "exec /usr/bin/btop"
+        tmux -L "$sock" set -g window-size manual
+        tmux -L "$sock" resize-window -t btop -x 220 -y 60
+        tmux -L "$sock" set -g detach-on-destroy on
+        tmux -L "$sock" set -g status off
+        tmux -L "$sock" set -g mouse on
+        tmux -L "$sock" bind -n q detach-client
+        tmux -L "$sock" bind -n C-c detach-client
+        tmux -L "$sock" set -g default-terminal "tmux-256color"
+        tmux -L "$sock" set -ga terminal-overrides ",*:Tc"
+    }
 }
+
+if [ "${1:-}" = --daemon ]; then
+    ensure_session
+    exit 0
+fi
+
+ensure_session
 exec tmux -L "$sock" attach -t btop
