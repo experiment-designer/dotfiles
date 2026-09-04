@@ -68,10 +68,8 @@ user_pref("browser.newtabpage.activity-stream.telemetry", false);
 user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
 
 // Render a skeleton UI before chrome is fully ready for faster perceived startup.
-user_pref("browser.startup.preXulSkeletonUI", true);
 
 // Save session state less frequently to reduce disk I/O overhead.
-user_pref("browser.sessionstore.interval", 60000);
 
 // Disable new tab discovery stream to eliminate remote content fetching.
 user_pref("browser.newtabpage.activity-stream.discoverystream.enabled", false);
