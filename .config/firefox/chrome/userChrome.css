@@ -1,6 +1,1523 @@
-/* Keep selected address/search text visible with every Firefox theme. */
-.urlbar-input::selection,
-.searchbar-textbox::selection {
-    background-color: #0060df !important;
-    color: #ffffff !important;
+/*
+ * Phosphor browser chrome — near-white hairlines on deep graphite, amber for state.
+ *
+ * The one-line toolbox grid (tabs and navigation sharing a single row) is
+ * adapted from MrOtherGuy/firefox-csshacks (MPL-2.0):
+ * https://github.com/MrOtherGuy/firefox-csshacks
+ * Selectors validated against Firefox Developer Edition 154.0b5.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    :root {
+        --ph-bg0: #16181d;
+        --ph-bg1: #1c1f25;
+        --ph-bg2: #23272e;
+        --ph-bg3: #2c313a;
+        --ph-line0: #3a404a;
+        --ph-line1: #e6e9ed;
+        --ph-fg0: #e6e9ed;
+        --ph-fg1: #b7bec8;
+        --ph-fg2: #7b838f;
+        --ph-amber: #ffb340;
+        --ph-amber-hi: #ffc966;
+        --ph-cyan: #5ed3f3;
+        --ph-magenta: #d67cff;
+        --ph-yellow: #ffd866;
+        --ph-red: #ff4d6d;
+
+        --ph-hair: 1px solid var(--ph-line1);
+        --ph-quiet: 1px solid var(--ph-line0);
+        --ph-tab-row: 28px;
+        --ph-nav-row: 30px;
+        --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+        --ph-font-dense: "InputMonoCondensed Nerd Font", "InputMono Nerd Font", monospace;
+
+        /* Native theme channels: keep everything on bg0/bg1. */
+        --lwt-accent-color: var(--ph-bg1) !important;
+        --lwt-accent-color-inactive: var(--ph-bg1) !important;
+        --lwt-text-color: var(--ph-fg0) !important;
+        --lwt-tab-text: var(--ph-fg1) !important;
+        --lwt-selected-tab-background-color: var(--ph-bg0) !important;
+        --toolbar-bgcolor: var(--ph-bg1) !important;
+        --toolbar-color: var(--ph-fg0) !important;
+        --toolbox-non-lwt-bgcolor: var(--ph-bg1) !important;
+        --chrome-content-separator-color: var(--ph-line0) !important;
+
+        --toolbar-field-background-color: var(--ph-bg0) !important;
+        --toolbar-field-color: var(--ph-fg0) !important;
+        --toolbar-field-border-color: var(--ph-line1) !important;
+        --toolbar-field-focus-background-color: var(--ph-bg0) !important;
+        --toolbar-field-focus-color: var(--ph-fg0) !important;
+        --toolbar-field-focus-border-color: var(--ph-line1) !important;
+
+        --toolbarbutton-icon-fill: var(--ph-fg1) !important;
+        --toolbarbutton-icon-fill-attention: var(--ph-amber) !important;
+        --toolbarbutton-hover-background: var(--ph-bg2) !important;
+        --toolbarbutton-active-background: var(--ph-bg3) !important;
+        --toolbarbutton-outer-padding: 0 !important;
+        --toolbarbutton-inner-padding: 4px !important;
+
+        /* Compact geometry. */
+        --tab-min-height: 25px !important;
+        --tab-min-width: 76px !important;
+        --tab-block-margin: 0 !important;
+        --tab-inline-padding: 8px !important;
+        --tab-selected-bgcolor: var(--ph-bg0) !important;
+        --tab-selected-textcolor: var(--ph-fg0) !important;
+        --tab-hover-background-color: var(--ph-bg2) !important;
+        --tab-selected-shadow: none !important;
+        --urlbar-min-height: 24px !important;
+        --urlbar-container-padding: 0 !important;
+        --urlbar-icon-padding: 3px !important;
+        --panel-shadow-margin: 0 !important;
+        --arrowpanel-padding: 4px !important;
+        --arrowpanel-menuitem-padding: 3px 8px !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --panel-separator-color: var(--ph-line0) !important;
+
+        /* Zero radius, everywhere, in every dialect Firefox still speaks. */
+        --tab-border-radius: 0 !important;
+        --toolbarbutton-border-radius: 0 !important;
+        --urlbar-border-radius: 0 !important;
+        --urlbarView-row-border-radius: 0 !important;
+        --urlbarview-border-radius: 0 !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-menuitem-border-radius: 0 !important;
+        --panel-border-radius: 0 !important;
+        --panel-menuitem-border-radius: 0 !important;
+        --button-border-radius: 0 !important;
+        --input-text-border-radius: 0 !important;
+        --border-radius-xsmall: 0 !important;
+        --border-radius-small: 0 !important;
+        --border-radius-medium: 0 !important;
+        --border-radius-large: 0 !important;
+        --identity-box-border-radius: 0 !important;
+
+        --color-accent-primary: var(--ph-amber) !important;
+        --focus-outline-color: var(--ph-amber) !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --focus-outline-offset: -1px !important;
+        --input-text-background-color: var(--ph-bg0) !important;
+        --input-text-border: 1px solid var(--ph-line1) !important;
+        --input-text-color: var(--ph-fg0) !important;
+
+        color-scheme: dark !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
+    /* ---- Chassis ------------------------------------------------------ */
+
+    #navigator-toolbox,
+    #toolbar-menubar,
+    #TabsToolbar,
+    #nav-bar,
+    #PersonalToolbar,
+    #navigator-toolbox-background {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    #navigator-toolbox {
+        border: 0 !important;
+        border-bottom: var(--ph-hair) !important;
+    }
+
+    #TabsToolbar {
+        min-height: var(--ph-tab-row) !important;
+        max-height: var(--ph-tab-row) !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+    }
+
+    #nav-bar {
+        min-height: var(--ph-nav-row) !important;
+        max-height: var(--ph-nav-row) !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    #browser,
+    #tabbrowser-tabbox,
+    #appcontent,
+    #tabbrowser-tabpanels {
+        background: var(--ph-bg0) !important;
+    }
+
+    /* Window controls belong to the tab row only. */
+    #nav-bar > :is(.titlebar-buttonbox-container, .titlebar-spacer) {
+        display: none !important;
+    }
+
+    /* ---- Tabs --------------------------------------------------------- */
+
+    #tabbrowser-tabs {
+        border: 0 !important;
+        padding-inline: 0 !important;
+        font-family: var(--ph-font-dense) !important;
+    }
+
+    /*
+     * Pin the tab box to the row height explicitly. Left to itself the
+     * tab-background stretches past the toolbar and Firefox clips the top
+     * hairline away, so the active tab loses one side of its frame.
+     */
+    .tabbrowser-tab,
+    #tabbrowser-tabs,
+    #tabbrowser-arrowscrollbox,
+    .tabbrowser-tab > .tab-stack {
+        height: var(--ph-tab-row) !important;
+        max-height: var(--ph-tab-row) !important;
+        min-height: 0 !important;
+    }
+
+    .tabbrowser-tab {
+        padding-inline: 0 !important;
+        font-family: var(--ph-font-dense) !important;
+    }
+
+    /* Kill the tab background art: no shadow, no radius, no gradient. */
+    .tabbrowser-tab > .tab-stack > .tab-background,
+    .tab-background {
+        box-sizing: border-box !important;
+        height: var(--ph-tab-row) !important;
+        max-height: var(--ph-tab-row) !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background-image: none !important;
+    }
+
+    .tab-background::before,
+    .tab-background::after,
+    .tab-background > .tab-context-line,
+    #tabbrowser-tabs::before,
+    #tabbrowser-tabs::after {
+        display: none !important;
+    }
+
+    /* Inactive: bg1 with a quiet line0 separator. */
+    .tabbrowser-tab:not([selected], [multiselected]) > .tab-stack > .tab-background {
+        background-color: var(--ph-bg1) !important;
+        border-inline-end: var(--ph-quiet) !important;
+    }
+
+    .tabbrowser-tab:not([selected], [multiselected]):hover > .tab-stack > .tab-background {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    /*
+     * Active: bg0 cut out of the bar, framed in a line1 hairline, marked by a
+     * single 2px amber bottom edge. The amber edge is THE active marker — tab
+     * text stays fg0 so the language never doubles up.
+     */
+    .tabbrowser-tab:is([selected], [multiselected]) > .tab-stack > .tab-background {
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-bottom: 2px solid var(--ph-amber) !important;
+    }
+
+    .tab-content {
+        padding-inline: 7px !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    .tabbrowser-tab:is([selected], [multiselected]) .tab-content {
+        color: var(--ph-fg0) !important;
+    }
+
+    .tab-label {
+        font-size: 11px !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    .tabbrowser-tab:is([selected], [multiselected]) .tab-label {
+        font-weight: 500 !important;
+    }
+
+    .tab-icon-image,
+    .tab-icon-pending {
+        width: 13px !important;
+        height: 13px !important;
+        margin-inline-end: 5px !important;
+        opacity: 0.7 !important;
+    }
+
+    .tabbrowser-tab:is([selected], :hover) .tab-icon-image {
+        opacity: 1 !important;
+    }
+
+    .tab-close-button {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 0 !important;
+        border-radius: 0 !important;
+        padding: 2px !important;
+        margin-inline-start: 2px !important;
+    }
+
+    .tab-close-button > .toolbarbutton-icon {
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    .tabbrowser-tab:not([selected], :hover) .tab-close-button {
+        display: none !important;
+    }
+
+    .tab-close-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-red) !important;
+        fill: var(--ph-red) !important;
+    }
+
+    #tabs-newtab-button,
+    #new-tab-button {
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+    }
+
+    #tabs-newtab-button:hover,
+    #new-tab-button:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    #tabs-newtab-button > .toolbarbutton-icon,
+    #new-tab-button > .toolbarbutton-icon,
+    #alltabs-button > .toolbarbutton-badge-stack,
+    #scrollbutton-up,
+    #scrollbutton-down {
+        border-radius: 0 !important;
+        background: transparent !important;
+    }
+
+    /* Audio/loading indicators keep their meaning, on-palette. */
+    .tab-icon-sound {
+        border-radius: 0 !important;
+        fill: var(--ph-amber) !important;
+    }
+
+    /* ---- Clutter removal --------------------------------------------- */
+
+    /* Firefox View: gone. */
+    #firefox-view-button,
+    #tabbrowser-tabs > .tabbrowser-arrowscrollbox > toolbarbutton#firefox-view-button {
+        display: none !important;
+    }
+
+    /* "List all tabs" only earns space when the strip actually overflows. */
+    #alltabs-button {
+        display: none !important;
+    }
+
+    #tabbrowser-tabs[overflow] ~ #alltabs-button,
+    #tabbrowser-tabs[overflow="true"] ~ #alltabs-button {
+        display: flex !important;
+    }
+
+    /* The urlbar's "Firefox"/switch-to-tab chiclet and identity word-noise. */
+    #urlbar-search-mode-indicator,
+    #urlbar-label-box,
+    #urlbar-label-switchtab,
+    #urlbar-label-extension,
+    #urlbar-label-search-mode,
+    #identity-icon-labels,
+    #identity-icon-label,
+    .identity-box-label {
+        display: none !important;
+    }
+
+    /* Bookmarks toolbar: out of the way, revealed on toolbox hover. */
+    #PersonalToolbar {
+        appearance: none !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    #navigator-toolbox:hover #PersonalToolbar:not([collapsed="true"]),
+    #navigator-toolbox:focus-within #PersonalToolbar:not([collapsed="true"]) {
+        max-height: 24px !important;
+        min-height: 24px !important;
+        overflow: visible !important;
+        border-top: var(--ph-quiet) !important;
+    }
+
+    .bookmark-item {
+        border-radius: 0 !important;
+        padding: 1px 6px !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .bookmark-item:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* ---- Urlbar: a terminal input field, not a pill ------------------- */
+
+    #nav-bar-customization-target {
+        min-width: 0 !important;
+        max-width: none !important;
+        flex: 1 1 auto !important;
+    }
+
+    #urlbar-container {
+        min-width: 0 !important;
+        max-width: none !important;
+        width: auto !important;
+        flex: 1 1 auto !important;
+        margin-inline: 4px !important;
+        padding: 0 !important;
+        --urlbar-container-height: 26px !important;
+    }
+
+    #urlbar,
+    #urlbar[focused],
+    #urlbar[open],
+    #urlbar[breakout],
+    #urlbar[breakout-extend] {
+        --urlbar-height: 26px !important;
+        --urlbar-min-height: 26px !important;
+        --toolbar-field-background-color: var(--ph-bg1) !important;
+        --toolbar-field-focus-background-color: var(--ph-bg1) !important;
+        --toolbar-field-color: var(--ph-fg0) !important;
+        --toolbar-field-focus-color: var(--ph-fg0) !important;
+        --toolbar-field-border-color: var(--ph-line1) !important;
+        --toolbar-field-focus-border-color: var(--ph-amber) !important;
+        --urlbar-box-bgcolor: var(--ph-bg1) !important;
+        --urlbar-box-focus-bgcolor: var(--ph-bg1) !important;
+        --urlbar-box-hover-bgcolor: var(--ph-bg2) !important;
+        --urlbar-box-active-bgcolor: var(--ph-bg3) !important;
+        --urlbar-box-text-color: var(--ph-fg0) !important;
+        --urlbar-box-hover-text-color: var(--ph-fg0) !important;
+        min-height: 26px !important;
+        font-size: 11px !important;
+    }
+
+    /*
+     * Leave Firefox's breakout geometry alone -- overriding top/margin-top made
+     * the results view overlap the field. Only the decoration is ours.
+     */
+    #urlbar[breakout][breakout-extend] {
+        box-shadow: none !important;
+    }
+
+    /*
+     * Exactly one frame, on one element. Everything else inside the urlbar is
+     * transparent so no second fill, pill or focus ring can appear over it.
+     */
+    #urlbar > #urlbar-background {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 1px solid var(--ph-line1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+    }
+
+    /* Focus = the frame turns amber. No ring, no glow, no second border. */
+    #urlbar[focused] > #urlbar-background,
+    #urlbar[open] > #urlbar-background,
+    #urlbar[usertyping] > #urlbar-background {
+        border: 1px solid var(--ph-amber) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    /*
+     * Firefox repaints the open urlbar's own border, so the amber focus frame
+     * is drawn as an outline on the field container instead -- same 1px, same
+     * position, and nothing downstream can suppress it.
+     */
+    #urlbar[focused] > #urlbar-input-container,
+    #urlbar[open] > #urlbar-input-container {
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    #urlbar,
+    #urlbar *:not(.urlbarView, .urlbarView *),
+    #urlbar-input-container,
+    #urlbar-input-container *,
+    .urlbar-input-box,
+    #urlbar-input {
+        appearance: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    #urlbar > #urlbar-background {
+        background-color: var(--ph-bg1) !important;
+    }
+
+    #urlbar-input-container {
+        padding-inline: 6px !important;
+    }
+
+    #urlbar-input,
+    .searchbar-textbox {
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.015em !important;
+        caret-color: var(--ph-amber) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #urlbar-input::placeholder,
+    .searchbar-textbox::placeholder {
+        color: var(--ph-fg2) !important;
+        opacity: 1 !important;
+    }
+
+    #urlbar-input::selection,
+    .searchbar-textbox::selection {
+        background-color: var(--ph-bg3) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #searchbar {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 1px solid var(--ph-line1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #searchbar:focus-within {
+        border-color: var(--ph-amber) !important;
+    }
+
+    /* No chiclet boxes: identity, search-mode and permission icons are bare. */
+    #identity-box,
+    #identity-box > .identity-box-button,
+    #tracking-protection-icon-container,
+    #trust-icon-container,
+    #urlbar-searchmode-switcher,
+    #urlbar-searchmode-switcher > *,
+    #urlbar-searchmode-switcher-dropmarker,
+    #notification-popup-box,
+    #urlbar-permissions-granted-icon,
+    #identity-permission-box {
+        appearance: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin-inline: 0 !important;
+        padding-inline: 2px !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    #identity-box:hover,
+    #identity-box > .identity-box-button:hover,
+    #tracking-protection-icon-container:hover,
+    #trust-icon-container:hover,
+    #urlbar-searchmode-switcher:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Page-action icons: fg1, square bg2 hover, nothing else. */
+    #page-action-buttons .urlbar-page-action,
+    #urlbar .urlbar-icon,
+    #urlbar-go-button,
+    #pageActionButton,
+    #star-button-box {
+        appearance: none !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg1) !important;
+        fill: var(--ph-fg1) !important;
+    }
+
+    #page-action-buttons .urlbar-page-action:hover,
+    #urlbar .urlbar-icon:hover,
+    #urlbar-go-button:hover,
+    #star-button-box:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+        fill: var(--ph-fg0) !important;
+    }
+
+    #identity-box[pageproxystate="invalid"] #identity-icon,
+    .notification-anchor-icon[showing] {
+        fill: var(--ph-yellow) !important;
+    }
+
+    /* ---- Toolbar buttons: square hover, never a circle ---------------- */
+
+    toolbarbutton,
+    toolbarbutton > .toolbarbutton-icon,
+    toolbarbutton > .toolbarbutton-badge-stack,
+    .toolbarbutton-1 > .toolbarbutton-icon,
+    .toolbarbutton-1 > .toolbarbutton-badge-stack,
+    .identity-box-button,
+    .urlbar-page-action,
+    .urlbar-icon,
+    .urlbar-icon-wrapper,
+    #urlbar-go-button,
+    #pageActionButton {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #nav-bar .toolbarbutton-1 {
+        color: var(--ph-fg1) !important;
+        margin: 0 !important;
+    }
+
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack {
+        background: transparent !important;
+        padding: 4px !important;
+    }
+
+    #nav-bar .toolbarbutton-1:is(:hover, [open]) > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1:is(:hover, [open]) > .toolbarbutton-badge-stack,
+    #TabsToolbar toolbarbutton:is(:hover, [open]) > .toolbarbutton-icon {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #nav-bar .toolbarbutton-1:is(:hover, [open], :focus-visible) {
+        color: var(--ph-fg0) !important;
+    }
+
+    #nav-bar .toolbarbutton-1[disabled] {
+        color: var(--ph-fg2) !important;
+    }
+
+    toolbarbutton:focus-visible,
+    .identity-box-button:focus-visible,
+    .urlbar-page-action:focus-visible,
+    .bookmark-item:focus-visible,
+    .subviewbutton:focus-visible,
+    menuitem:focus-visible {
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: -1px !important;
+    }
+
+    /* ---- Urlbar results dropdown -------------------------------------- */
+
+    .urlbarView {
+        width: auto !important;
+        margin-inline: 0 !important;
+        padding-block: 0 !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-top: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .urlbarView-body-inner {
+        border-top: 0 !important;
+    }
+
+    .urlbarView-row {
+        padding: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .urlbarView-row:last-of-type {
+        border-bottom: 0 !important;
+    }
+
+    .urlbarView-row-inner,
+    .urlbarView-no-wrap {
+        padding-block: 2px !important;
+        padding-inline-start: 6px !important;
+        border-radius: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    /* Firefox sizes rows from the icon box; shrink it to reach a compact row. */
+    .urlbarView-row > .urlbarView-row-inner > .urlbarView-no-wrap > .urlbarView-favicon,
+    .urlbarView-favicon,
+    .urlbarView-type-icon {
+        width: 13px !important;
+        height: 13px !important;
+        min-width: 0 !important;
+        margin-inline-end: 6px !important;
+    }
+
+    .urlbarView-row:not([type="tip"], [dynamicType]) {
+        --urlbarView-row-height: 22px !important;
+    }
+
+    .urlbarView-row:hover > .urlbarView-row-inner {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Selected row speaks amber in text, not in fill. */
+    .urlbarView-row[selected] > .urlbarView-row-inner,
+    .urlbarView-row[selected] {
+        background: var(--ph-bg2) !important;
+    }
+
+    .urlbarView-row[selected] .urlbarView-title,
+    .urlbarView-row[selected] .urlbarView-url,
+    .urlbarView-row[selected] .urlbarView-action,
+    .urlbarView-row[selected] .urlbarView-title-separator {
+        color: var(--ph-amber) !important;
+    }
+
+    .urlbarView-title {
+        color: var(--ph-fg0) !important;
+        font-weight: 400 !important;
+    }
+
+    .urlbarView-title > strong,
+    .urlbarView-title strong {
+        color: var(--ph-fg0) !important;
+        font-weight: 700 !important;
+    }
+
+    .urlbarView-url {
+        color: var(--ph-cyan) !important;
+    }
+
+    .urlbarView-action {
+        color: var(--ph-fg2) !important;
+    }
+
+    .urlbarView-title-separator {
+        color: var(--ph-line0) !important;
+    }
+
+    .urlbarView-type-icon,
+    .urlbarView-favicon {
+        opacity: 0.8 !important;
+    }
+
+    #urlbar .search-one-offs,
+    .search-one-offs {
+        background: var(--ph-bg1) !important;
+        border-top: var(--ph-quiet) !important;
+        padding-block: 2px !important;
+    }
+
+    .searchbar-engine-one-off-item {
+        border-radius: 0 !important;
+    }
+
+    .searchbar-engine-one-off-item:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    /* ---- Panels, menus, popups ---------------------------------------- */
+
+    panel,
+    menupopup,
+    #main-menubar menupopup,
+    #contentAreaContextMenu,
+    #tabContextMenu,
+    #appMenu-popup,
+    #widget-overflow,
+    #unified-extensions-panel,
+    #downloadsPanel,
+    #editBookmarkPanel,
+    #identity-popup,
+    #permission-popup,
+    #notification-popup,
+    #protections-popup,
+    #customizationui-widget-panel,
+    #sidebarMenu-popup {
+        --panel-background: var(--ph-bg1) !important;
+        --panel-color: var(--ph-fg0) !important;
+        --panel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --panel-shadow: none !important;
+        --panel-shadow-margin: 0 !important;
+        --panel-padding: 0 !important;
+        --menu-background-color: var(--ph-bg1) !important;
+        --menu-color: var(--ph-fg0) !important;
+        --menu-border-color: var(--ph-line1) !important;
+        --menuitem-hover-background-color: var(--ph-bg2) !important;
+        --menu-item-margin: 0 !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-menuitem-border-radius: 0 !important;
+        --panel-item-hover-bgcolor: var(--ph-bg2) !important;
+        --panel-item-active-bgcolor: var(--ph-bg3) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    panel::part(content),
+    menupopup::part(content) {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Native menupopups paint their own system fill; override the element. */
+    menupopup,
+    #contentAreaContextMenu,
+    #tabContextMenu,
+    #main-menubar menupopup,
+    menupopup > menu > menupopup {
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 2px 0 !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Arrow-panel arrows are decoration this theme does not use. */
+    panel::part(arrow),
+    panel::part(arrowbox) {
+        display: none !important;
+    }
+
+    panelview,
+    panelmultiview,
+    .panel-viewcontainer,
+    .panel-viewstack,
+    .panel-subview-body,
+    .panel-header,
+    .panel-footer,
+    #appMenu-mainView,
+    #widget-overflow-mainView {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .panel-header {
+        border-bottom: var(--ph-quiet) !important;
+        min-height: 0 !important;
+        padding: 2px !important;
+    }
+
+    .panel-header > h1,
+    .panel-header > h1 > span {
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    .panel-footer {
+        border-top: var(--ph-quiet) !important;
+    }
+
+    /* Compact rows: one text line, square, monospace. */
+    menu,
+    menuitem,
+    .subviewbutton,
+    .panel-banner-item,
+    toolbarbutton.subviewbutton {
+        appearance: none !important;
+        min-height: 0 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 3px 8px !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .subviewbutton > .toolbarbutton-text,
+    menuitem > .menu-text,
+    menu > .menu-text {
+        font-size: 11px !important;
+    }
+
+    :is(menu, menuitem, .subviewbutton, .panel-banner-item):is(:hover, [_moz-menuactive="true"], [open]):not([disabled]) {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+        border-radius: 0 !important;
+    }
+
+    /* Checked / selected rows: amber text, never a amber fill. */
+    :is(menuitem, .subviewbutton)[checked="true"],
+    :is(menuitem, .subviewbutton)[selected="true"],
+    menuitem[type="radio"][checked="true"],
+    menuitem[type="checkbox"][checked="true"] {
+        background: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    :is(menuitem, .subviewbutton):is([checked="true"], [selected="true"]):hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-amber-hi) !important;
+    }
+
+    :is(menu, menuitem, .subviewbutton)[disabled="true"] {
+        color: var(--ph-fg2) !important;
+        background: transparent !important;
+    }
+
+    menuseparator,
+    toolbarseparator,
+    .panel-subview-body > toolbarseparator,
+    #appMenu-multiView toolbarseparator {
+        appearance: none !important;
+        min-height: 0 !important;
+        height: 0 !important;
+        margin: 3px 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+    }
+
+    .menu-right,
+    .menu-accel,
+    menuitem > .menu-accel-container {
+        color: var(--ph-fg2) !important;
+    }
+
+    /* Panel buttons (downloads, bookmark star, identity, permissions). */
+    panel button,
+    panel .footer-button,
+    #editBookmarkPanel button,
+    #permission-popup button,
+    #notification-popup button,
+    #identity-popup button {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 3px 10px !important;
+        box-shadow: none !important;
+    }
+
+    panel button:hover,
+    panel .footer-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    panel button.primary,
+    panel button[default="true"],
+    panel .footer-button.primary {
+        background: transparent !important;
+        border: 1px solid var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    panel button.primary:hover,
+    panel .footer-button.primary:hover {
+        background: var(--ph-bg2) !important;
+        border-color: var(--ph-amber-hi) !important;
+        color: var(--ph-amber-hi) !important;
+    }
+
+    panel :is(input, textarea),
+    #editBookmarkPanel :is(input, textarea) {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    /* Downloads panel rows. */
+    #downloadsListBox,
+    #downloadsPanel-mainView,
+    #downloadsFooter {
+        background: var(--ph-bg1) !important;
+    }
+
+    richlistitem.download {
+        border-radius: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        margin: 0 !important;
+        padding: 4px 6px !important;
+        min-height: 0 !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    richlistitem.download:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    richlistitem.download[selected] .downloadTarget,
+    richlistitem.download[selected] {
+        color: var(--ph-amber) !important;
+        background: var(--ph-bg2) !important;
+    }
+
+    .downloadDetails,
+    .downloadProgress {
+        color: var(--ph-fg1) !important;
+    }
+
+    .downloadProgress::-moz-progress-bar {
+        background: var(--ph-amber) !important;
+    }
+
+    .downloadProgress {
+        border-radius: 0 !important;
+        background: var(--ph-bg3) !important;
+        height: 2px !important;
+    }
+
+    /* Extension popups: frame only, never touch the extension's own content. */
+    .webextension-popup-browser,
+    #unified-extensions-view {
+        background: var(--ph-bg1) !important;
+    }
+
+    #unified-extensions-item-row,
+    .unified-extensions-item {
+        border-radius: 0 !important;
+    }
+
+    /* Tab overflow / tab manager list. */
+    #tabbrowser-tabs .arrowscrollbox-overflow-start-indicator,
+    #tabbrowser-tabs .arrowscrollbox-overflow-end-indicator {
+        display: none !important;
+    }
+
+    #allTabsMenu-allTabsView .all-tabs-item {
+        border-radius: 0 !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+    }
+
+    #allTabsMenu-allTabsView .all-tabs-item:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    #allTabsMenu-allTabsView .all-tabs-item[selected] .all-tabs-button {
+        color: var(--ph-amber) !important;
+    }
+
+    /* Link-target status readout. */
+    #statuspanel-label {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        padding: 1px 6px !important;
+        min-height: 0 !important;
+    }
+
+    /* Notification bars inside chrome. */
+    notification-message,
+    .notification-message {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+    }
+
+    /* ---- Findbar: a thin strip at the bottom -------------------------- */
+
+    findbar {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-top: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        padding: 0 4px !important;
+        min-height: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    findbar > .findbar-container {
+        padding: 2px 0 !important;
+        min-height: 0 !important;
+    }
+
+    .findbar-container > .findbar-find-fast,
+    .findbar-find-fast {
+        margin: 0 !important;
+        padding: 0 4px !important;
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+    }
+
+    .findbar-textbox {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 20px !important;
+        margin: 0 4px !important;
+        padding: 1px 5px !important;
+        box-shadow: none !important;
+    }
+
+    .findbar-textbox:focus {
+        border-bottom: 2px solid var(--ph-amber) !important;
+        outline: none !important;
+    }
+
+    .findbar-textbox[status="notfound"] {
+        border-color: var(--ph-red) !important;
+        color: var(--ph-red) !important;
+        background: var(--ph-bg0) !important;
+    }
+
+    /* The match count is the findbar's state readout: amber. */
+    .found-matches,
+    .findbar-find-status[status="wrapped"],
+    .found-matches > label {
+        color: var(--ph-amber) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        margin-inline: 6px !important;
+    }
+
+    .findbar-find-status {
+        color: var(--ph-fg2) !important;
+        font-size: 11px !important;
+        margin-inline: 6px !important;
+    }
+
+    findbar toolbarbutton,
+    .findbar-button {
+        appearance: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+        margin: 0 !important;
+    }
+
+    findbar toolbarbutton:hover,
+    .findbar-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    .findbar-button[checked="true"] {
+        background: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    findbar checkbox {
+        font-size: 11px !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    /* ---- Sidebar ------------------------------------------------------ */
+
+    #sidebar-box,
+    #sidebar,
+    #sidebar-header,
+    sidebar-main,
+    #sidebar-main {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #sidebar-header {
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        padding: 3px 6px !important;
+        min-height: 0 !important;
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    #sidebar-box {
+        border-inline-end: var(--ph-hair) !important;
+    }
+
+    #sidebar-splitter {
+        appearance: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    #sidebar-search-container > search-textbox,
+    #sidebar-box search-textbox {
+        border-radius: 0 !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* ---- Scrollbars in chrome ---------------------------------------- */
+
+    * {
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
+    /* ---- Private browsing: magenta swaps in for amber ------------------ */
+
+    :root[privatebrowsingmode="temporary"] .tabbrowser-tab:is([selected], [multiselected]) > .tab-stack > .tab-background {
+        border-bottom-color: var(--ph-magenta) !important;
+    }
+
+    :root[privatebrowsingmode="temporary"] #urlbar[focused] > #urlbar-background,
+    :root[privatebrowsingmode="temporary"] #urlbar[open] > #urlbar-background {
+        border-bottom-color: var(--ph-magenta) !important;
+    }
+
+    /* ---- No motion when the OS asks for none -------------------------- */
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            transition-duration: 0s !important;
+            animation-duration: 0s !important;
+        }
+    }
+}
+
+/* ---------------------------------------------------------------------- *
+ * Library / Places — a separate chrome document, so it lives here.       *
+ * ---------------------------------------------------------------------- */
+
+@-moz-document url("chrome://browser/content/places/places.xhtml"),
+               url("chrome://browser/content/places/bookmarksSidebar.xhtml"),
+               url("chrome://browser/content/places/historySidebar.xhtml") {
+    :root {
+        --ph-bg0: #16181d;
+        --ph-bg1: #1c1f25;
+        --ph-bg2: #23272e;
+        --ph-bg3: #2c313a;
+        --ph-line0: #3a404a;
+        --ph-line1: #e6e9ed;
+        --ph-fg0: #e6e9ed;
+        --ph-fg1: #b7bec8;
+        --ph-fg2: #7b838f;
+        --ph-amber: #ffb340;
+        --ph-amber-hi: #ffc966;
+        --ph-hair: 1px solid var(--ph-line1);
+        --ph-quiet: 1px solid var(--ph-line0);
+        --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+
+        --lwt-accent-color: var(--ph-bg1) !important;
+        --lwt-text-color: var(--ph-fg0) !important;
+        --toolbar-bgcolor: var(--ph-bg1) !important;
+        --toolbar-color: var(--ph-fg0) !important;
+        --toolbarbutton-border-radius: 0 !important;
+        --toolbarbutton-hover-background: var(--ph-bg2) !important;
+        --button-border-radius: 0 !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --input-text-background-color: var(--ph-bg0) !important;
+        --input-text-border: 1px solid var(--ph-line1) !important;
+        --input-text-border-radius: 0 !important;
+        --input-text-color: var(--ph-fg0) !important;
+        --input-text-min-height: 22px !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --focus-outline-color: var(--ph-amber) !important;
+        --focus-outline-offset: -1px !important;
+        --icon-color: var(--ph-fg1) !important;
+        --border-radius-small: 0 !important;
+        --border-radius-medium: 0 !important;
+
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        color-scheme: dark !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
+    #places,
+    #placesView,
+    #placesViewsBox,
+    #contentView,
+    #placeContent,
+    #detailsDeck,
+    tree {
+        background: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #placesToolbox,
+    #placesToolbar {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        box-shadow: none !important;
+    }
+
+    #placesToolbar {
+        min-height: 28px !important;
+        max-height: 28px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-hair) !important;
+    }
+
+    #placesMenu > menu,
+    #placesToolbar > toolbarbutton {
+        appearance: none !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 4px 8px !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #placesMenu > menu:is(:hover, [open]),
+    #placesToolbar > toolbarbutton:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #searchFilter {
+        flex: 0 1 300px !important;
+        max-width: 300px !important;
+        margin: 3px 4px !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        --icon-color: var(--ph-fg1) !important;
+    }
+
+    #searchFilter:focus-within {
+        --input-text-border: 1px solid var(--ph-line1) !important;
+    }
+
+    #placesList {
+        min-width: 190px !important;
+        max-width: 320px !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    treecols,
+    treecol,
+    .tree-columnpicker-button {
+        appearance: none !important;
+        min-height: 22px !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+    }
+
+    splitter,
+    .tree-splitter {
+        appearance: none !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+    }
+
+    treechildren::-moz-tree-row {
+        min-height: 20px !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    treechildren::-moz-tree-row(hover) {
+        background: var(--ph-bg2) !important;
+    }
+
+    treechildren::-moz-tree-row(selected),
+    treechildren::-moz-tree-row(selected, focus) {
+        background: var(--ph-bg2) !important;
+    }
+
+    treechildren::-moz-tree-cell-text {
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+    }
+
+    treechildren::-moz-tree-cell-text(primary) {
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Selected row speaks amber in text, consistently with every other list. */
+    treechildren::-moz-tree-cell-text(selected),
+    treechildren::-moz-tree-cell-text(selected, focus),
+    treechildren::-moz-tree-cell-text(primary, selected) {
+        color: var(--ph-amber) !important;
+    }
+
+    #detailsPane {
+        min-height: 130px !important;
+        padding: 8px !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+        color: var(--ph-fg0) !important;
+        font-size: 11px !important;
+    }
+
+    #detailsPane :is(input[type="text"], textarea, menulist, button),
+    :is(input, textarea, menulist, button, search-textbox, moz-input-search) {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+        box-shadow: none !important;
+    }
+
+    :is(input, textarea, menulist, button):focus-visible {
+        border-bottom: 2px solid var(--ph-amber) !important;
+        outline: none !important;
+    }
+
+    button:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    panel,
+    menupopup {
+        --panel-background: var(--ph-bg1) !important;
+        --panel-color: var(--ph-fg0) !important;
+        --panel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --panel-shadow: none !important;
+        --panel-shadow-margin: 0 !important;
+        --menu-background-color: var(--ph-bg1) !important;
+        --menu-color: var(--ph-fg0) !important;
+        --menu-border-color: var(--ph-line1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    panel::part(content),
+    menupopup::part(content) {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    menu,
+    menuitem {
+        appearance: none !important;
+        min-height: 0 !important;
+        padding: 3px 8px !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    :is(menu, menuitem):is(:hover, [_moz-menuactive="true"], [open]) {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :is(menu, menuitem)[checked="true"] {
+        background: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    menuseparator {
+        appearance: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 3px 0 !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+    }
 }
