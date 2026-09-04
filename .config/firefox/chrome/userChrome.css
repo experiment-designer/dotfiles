@@ -411,6 +411,31 @@
         --urlbar-box-hover-text-color: var(--ph-fg0) !important;
         min-height: 26px !important;
         font-size: 11px !important;
+
+        /*
+         * Firefox 154 draws the urlbar frame entirely from these composite
+         * variables (browser/skin/urlbar-searchbar.css), and the focused
+         * border is the `-focused` pair -- not --toolbar-field-*-border-color,
+         * which only feeds them. With browser.nova.enabled=false (the default)
+         * --urlbar-background-border-focused falls back to the unfocused
+         * border and the focus colour arrives as an *outline*, so both have to
+         * be set or the field keeps Firefox's grey edge.
+         */
+        --urlbar-background-color: var(--ph-bg1) !important;
+        --urlbar-background-color-focus: var(--ph-bg1) !important;
+        --urlbar-background-border: 1px solid var(--ph-line1) !important;
+        --urlbar-background-border-focused: 1px solid var(--ph-amber) !important;
+        --urlbar-background-border-breakout: 1px solid var(--ph-amber) !important;
+        --urlbar-background-outline-focused: none !important;
+        --urlbar-background-border-radius: 0 !important;
+        --urlbar-background-box-shadow-breakout: none !important;
+        --urlbar-background-box-shadow-breakout-compact: none !important;
+        --urlbar-background-inset-breakout: 0 !important;
+        --urlbar-background-inset-breakout-compact: 0 !important;
+        --urlbar-input-container-border: 1px solid transparent !important;
+        --urlbar-input-container-outline-breakout: none !important;
+        --urlbar-input-container-outline-breakout-focused: none !important;
+        --toolbar-field-border-color-focus: var(--ph-amber) !important;
     }
 
     /*
@@ -425,7 +450,7 @@
      * Exactly one frame, on one element. Everything else inside the urlbar is
      * transparent so no second fill, pill or focus ring can appear over it.
      */
-    #urlbar > #urlbar-background {
+    #urlbar > .urlbar-background {
         appearance: none !important;
         background: var(--ph-bg1) !important;
         background-color: var(--ph-bg1) !important;
@@ -438,32 +463,27 @@
         opacity: 1 !important;
     }
 
-    /* Focus = the frame turns amber. No ring, no glow, no second border. */
-    #urlbar[focused] > #urlbar-background,
-    #urlbar[open] > #urlbar-background,
-    #urlbar[usertyping] > #urlbar-background {
+    /*
+     * Focus = the frame turns amber. No ring, no glow, no second border.
+     * Firefox 154 gates its own focus border on :not([suppress-focus-border])
+     * and moves the edge to [breakout-extend] once the results panel opens,
+     * so all three states are claimed here on the one element that draws it.
+     */
+    #urlbar[focused] > .urlbar-background,
+    #urlbar[open] > .urlbar-background,
+    #urlbar[usertyping] > .urlbar-background,
+    #urlbar[breakout-extend] > .urlbar-background {
         border: 1px solid var(--ph-amber) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         outline: none !important;
-    }
-
-    /*
-     * Firefox repaints the open urlbar's own border, so the amber focus frame
-     * is drawn as an outline on the field container instead -- same 1px, same
-     * position, and nothing downstream can suppress it.
-     */
-    #urlbar[focused] > #urlbar-input-container,
-    #urlbar[open] > #urlbar-input-container {
-        outline: 1px solid var(--ph-amber) !important;
-        outline-offset: 0 !important;
-        border-radius: 0 !important;
+        inset: 0 !important;
     }
 
     #urlbar,
     #urlbar *:not(.urlbarView, .urlbarView *),
-    #urlbar-input-container,
-    #urlbar-input-container *,
+    .urlbar-input-container,
+    .urlbar-input-container *,
     .urlbar-input-box,
     #urlbar-input {
         appearance: none !important;
@@ -474,11 +494,11 @@
         outline: none !important;
     }
 
-    #urlbar > #urlbar-background {
+    #urlbar > .urlbar-background {
         background-color: var(--ph-bg1) !important;
     }
 
-    #urlbar-input-container {
+    .urlbar-input-container {
         padding-inline: 6px !important;
     }
 
@@ -1228,8 +1248,8 @@
         border-bottom-color: var(--ph-magenta) !important;
     }
 
-    :root[privatebrowsingmode="temporary"] #urlbar[focused] > #urlbar-background,
-    :root[privatebrowsingmode="temporary"] #urlbar[open] > #urlbar-background {
+    :root[privatebrowsingmode="temporary"] #urlbar[focused] > .urlbar-background,
+    :root[privatebrowsingmode="temporary"] #urlbar[open] > .urlbar-background {
         border-bottom-color: var(--ph-magenta) !important;
     }
 
