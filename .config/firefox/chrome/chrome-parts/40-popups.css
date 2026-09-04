@@ -1,0 +1,337 @@
+/*
+ * Arrowpanels, app menu, context menus, downloads/identity/notification panels.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Panels, menus, popups ---------------------------------------- */
+
+    panel,
+    menupopup,
+    #main-menubar menupopup,
+    #contentAreaContextMenu,
+    #tabContextMenu,
+    #appMenu-popup,
+    #widget-overflow,
+    #unified-extensions-panel,
+    #downloadsPanel,
+    #editBookmarkPanel,
+    #identity-popup,
+    #permission-popup,
+    #notification-popup,
+    #protections-popup,
+    #customizationui-widget-panel,
+    #sidebarMenu-popup {
+        --panel-background: var(--ph-bg1) !important;
+        --panel-color: var(--ph-fg0) !important;
+        --panel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --panel-shadow: none !important;
+        --panel-shadow-margin: 0 !important;
+        --panel-padding: 0 !important;
+        --menu-background-color: var(--ph-bg1) !important;
+        --menu-color: var(--ph-fg0) !important;
+        --menu-border-color: var(--ph-line1) !important;
+        --menuitem-hover-background-color: var(--ph-bg2) !important;
+        --menu-item-margin: 0 !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-menuitem-border-radius: 0 !important;
+        --panel-item-hover-bgcolor: var(--ph-bg2) !important;
+        --panel-item-active-bgcolor: var(--ph-bg3) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    panel::part(content),
+    menupopup::part(content) {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Native menupopups paint their own system fill; override the element. */
+    menupopup,
+    #contentAreaContextMenu,
+    #tabContextMenu,
+    #main-menubar menupopup,
+    menupopup > menu > menupopup {
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 2px 0 !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Arrow-panel arrows are decoration this theme does not use. */
+    panel::part(arrow),
+    panel::part(arrowbox) {
+        display: none !important;
+    }
+
+    panelview,
+    panelmultiview,
+    .panel-viewcontainer,
+    .panel-viewstack,
+    .panel-subview-body,
+    .panel-header,
+    .panel-footer,
+    #appMenu-mainView,
+    #widget-overflow-mainView {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .panel-header {
+        border-bottom: var(--ph-quiet) !important;
+        min-height: 0 !important;
+        padding: 2px !important;
+    }
+
+    .panel-header > h1,
+    .panel-header > h1 > span {
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    .panel-footer {
+        border-top: var(--ph-quiet) !important;
+    }
+
+    /* Compact rows: one text line, square, monospace. */
+    menu,
+    menuitem,
+    .subviewbutton,
+    .panel-banner-item,
+    toolbarbutton.subviewbutton {
+        appearance: none !important;
+        min-height: 0 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 3px 8px !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .subviewbutton > .toolbarbutton-text,
+    menuitem > .menu-text,
+    menu > .menu-text {
+        font-size: 11px !important;
+    }
+
+    :is(menu, menuitem, .subviewbutton, .panel-banner-item):is(:hover, [_moz-menuactive="true"], [open]):not([disabled]) {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+        border-radius: 0 !important;
+    }
+
+    /* Checked / selected rows: amber text, never a amber fill. */
+    :is(menuitem, .subviewbutton)[checked="true"],
+    :is(menuitem, .subviewbutton)[selected="true"],
+    menuitem[type="radio"][checked="true"],
+    menuitem[type="checkbox"][checked="true"] {
+        background: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    :is(menuitem, .subviewbutton):is([checked="true"], [selected="true"]):hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-amber-hi) !important;
+    }
+
+    :is(menu, menuitem, .subviewbutton)[disabled="true"] {
+        color: var(--ph-fg2) !important;
+        background: transparent !important;
+    }
+
+    menuseparator,
+    toolbarseparator,
+    .panel-subview-body > toolbarseparator,
+    #appMenu-multiView toolbarseparator {
+        appearance: none !important;
+        min-height: 0 !important;
+        height: 0 !important;
+        margin: 3px 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+    }
+
+    .menu-right,
+    .menu-accel,
+    menuitem > .menu-accel-container {
+        color: var(--ph-fg2) !important;
+    }
+
+    /* Panel buttons (downloads, bookmark star, identity, permissions). */
+    panel button,
+    panel .footer-button,
+    #editBookmarkPanel button,
+    #permission-popup button,
+    #notification-popup button,
+    #identity-popup button {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 3px 10px !important;
+        box-shadow: none !important;
+    }
+
+    panel button:hover,
+    panel .footer-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    panel button.primary,
+    panel button[default="true"],
+    panel .footer-button.primary {
+        background: transparent !important;
+        border: 1px solid var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    panel button.primary:hover,
+    panel .footer-button.primary:hover {
+        background: var(--ph-bg2) !important;
+        border-color: var(--ph-amber-hi) !important;
+        color: var(--ph-amber-hi) !important;
+    }
+
+    panel :is(input, textarea),
+    #editBookmarkPanel :is(input, textarea) {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    /* Downloads panel rows. */
+    #downloadsListBox,
+    #downloadsPanel-mainView,
+    #downloadsFooter {
+        background: var(--ph-bg1) !important;
+    }
+
+    richlistitem.download {
+        border-radius: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        margin: 0 !important;
+        padding: 4px 6px !important;
+        min-height: 0 !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    richlistitem.download:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    richlistitem.download[selected] .downloadTarget,
+    richlistitem.download[selected] {
+        color: var(--ph-amber) !important;
+        background: var(--ph-bg2) !important;
+    }
+
+    .downloadDetails,
+    .downloadProgress {
+        color: var(--ph-fg1) !important;
+    }
+
+    .downloadProgress::-moz-progress-bar {
+        background: var(--ph-amber) !important;
+    }
+
+    .downloadProgress {
+        border-radius: 0 !important;
+        background: var(--ph-bg3) !important;
+        height: 2px !important;
+    }
+
+    /* Extension popups: frame only, never touch the extension's own content. */
+    .webextension-popup-browser,
+    #unified-extensions-view {
+        background: var(--ph-bg1) !important;
+    }
+
+    #unified-extensions-item-row,
+    .unified-extensions-item {
+        border-radius: 0 !important;
+    }
+
+    /* Tab overflow / tab manager list. */
+    #tabbrowser-tabs .arrowscrollbox-overflow-start-indicator,
+    #tabbrowser-tabs .arrowscrollbox-overflow-end-indicator {
+        display: none !important;
+    }
+
+    #allTabsMenu-allTabsView .all-tabs-item {
+        border-radius: 0 !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+    }
+
+    #allTabsMenu-allTabsView .all-tabs-item:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    #allTabsMenu-allTabsView .all-tabs-item[selected] .all-tabs-button {
+        color: var(--ph-amber) !important;
+    }
+
+    /* Link-target status readout. */
+    #statuspanel-label {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        padding: 1px 6px !important;
+        min-height: 0 !important;
+    }
+
+    /* Notification bars inside chrome. */
+    notification-message,
+    .notification-message {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+    }
+}

@@ -1,0 +1,205 @@
+/*
+ * Urlbar results dropdown: rows, selection, result-menu removal.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Urlbar results dropdown -------------------------------------- */
+
+    .urlbarView {
+        width: auto !important;
+        margin-inline: 0 !important;
+        padding-block: 0 !important;
+        background: var(--ph-bg1) !important;
+        border: var(--ph-hair) !important;
+        border-top: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .urlbarView-body-inner {
+        border-top: 0 !important;
+    }
+
+    .urlbarView-row {
+        padding: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .urlbarView-row:last-of-type {
+        border-bottom: 0 !important;
+    }
+
+    .urlbarView-row-inner,
+    .urlbarView-no-wrap {
+        padding-block: 2px !important;
+        padding-inline-start: 6px !important;
+        border-radius: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    /* Firefox sizes rows from the icon box; shrink it to reach a compact row. */
+    .urlbarView-row > .urlbarView-row-inner > .urlbarView-no-wrap > .urlbarView-favicon,
+    .urlbarView-favicon,
+    .urlbarView-type-icon {
+        width: 13px !important;
+        height: 13px !important;
+        min-width: 0 !important;
+        margin-inline-end: 6px !important;
+    }
+
+    .urlbarView-row:not([type="tip"], [dynamicType]) {
+        --urlbarView-row-height: 22px !important;
+    }
+
+    .urlbarView-row:hover > .urlbarView-row-inner {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Selected row speaks amber in text, not in fill. */
+    .urlbarView-row[selected] > .urlbarView-row-inner,
+    .urlbarView-row[selected] {
+        background: var(--ph-bg2) !important;
+    }
+
+    .urlbarView-row[selected] .urlbarView-title,
+    .urlbarView-row[selected] .urlbarView-url,
+    .urlbarView-row[selected] .urlbarView-action,
+    .urlbarView-row[selected] .urlbarView-title-separator {
+        color: var(--ph-amber) !important;
+    }
+
+    .urlbarView-title {
+        color: var(--ph-fg0) !important;
+        font-weight: 400 !important;
+    }
+
+    .urlbarView-title > strong,
+    .urlbarView-title strong {
+        color: var(--ph-fg0) !important;
+        font-weight: 700 !important;
+    }
+
+    .urlbarView-url {
+        color: var(--ph-cyan) !important;
+    }
+
+    /*
+     * The trailing "— Search with Google" / "Switch to Tab" label stays: it
+     * is the row's only type readout. Flat fg2 text, never a pill.
+     */
+    .urlbarView-action {
+        color: var(--ph-fg2) !important;
+        background: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        font-weight: 400 !important;
+    }
+
+    /*
+     * No per-row action buttons, in any state.
+     *
+     * Firefox 154 hangs a "⋯ in a circle" result-menu button off the end of
+     * every row on hover/selection: UrlbarView.mjs `#addRowButton({ name:
+     * "result-menu" })` builds a span with `.urlbarView-button
+     * .urlbarView-button-menu .urlbarView-button-result-menu` inside
+     * `.urlbarView-row-buttons`, tooltipped "Open menu"
+     * (`urlbar-result-menu-button` in browser.ftl), and clicking it opens the
+     * Dismiss / Learn more / Manage popup. The whole apparatus goes: the
+     * container, every button class inside it (result-menu, the split-button
+     * dropmarker, and the labelled block/help/tip buttons), and the popup.
+     */
+    .urlbarView-row-buttons,
+    .urlbarView-row > .urlbarView-row-buttons,
+    .urlbarView-row[has-menu-button] > .urlbarView-row-buttons,
+    .urlbarView-row:hover > .urlbarView-row-buttons,
+    .urlbarView-row[selected] > .urlbarView-row-buttons,
+    .urlbarView-splitbutton,
+    .urlbarView-splitbutton-main,
+    .urlbarView-splitbutton-dropmarker,
+    .urlbarView-button,
+    .urlbarView-button-menu,
+    .urlbarView-button-result-menu,
+    .urlbarView-button-block,
+    .urlbarView-button-help,
+    .urlbarView-button-tip,
+    .urlbarView-row:is(:hover, [selected], [descendant-selected], [row-selectable]:hover)
+        > .urlbarView-row-buttons > .urlbarView-button,
+    .urlbarView-row:is(:hover, [selected]) .urlbarView-button-result-menu,
+    .urlbarView-button-menu[aria-expanded="true"],
+    .urlbarView-button-result-menu[aria-expanded="true"],
+    .urlbarView-results > .urlbarView-row > .urlbarView-row-buttons
+        > .urlbarView-button-result-menu {
+        display: none !important;
+    }
+
+    /*
+     * Firefox reserves a right-hand gutter for those buttons
+     * (`.urlbarView-row-buttons { padding-inline-end: var(--space-large) }`
+     * plus per-button margins). With the buttons gone the row text takes it
+     * back; 6px trailing padding mirrors the 6px start padding above.
+     */
+    .urlbarView-row > .urlbarView-row-buttons {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+    }
+
+    .urlbarView-row-inner {
+        padding-inline-end: 6px !important;
+        margin-inline-end: 0 !important;
+    }
+
+    .urlbarView-row[has-menu-button] .urlbarView-explanation {
+        margin-inline-end: 0 !important;
+    }
+
+    /*
+     * The popup that button opened: a `panel-list` in UrlbarInput, a
+     * `menupopup` in SmartbarInput, both `.urlbarView-result-menu`. It never
+     * gets to exist.
+     */
+    #urlbar-result-menu,
+    .urlbarView-result-menu,
+    panel-list.urlbarView-result-menu,
+    menupopup.urlbarView-result-menu,
+    .urlbarView-result-menuitem {
+        display: none !important;
+    }
+
+    .urlbarView-title-separator {
+        color: var(--ph-line0) !important;
+    }
+
+    .urlbarView-type-icon,
+    .urlbarView-favicon {
+        opacity: 0.8 !important;
+    }
+
+    #urlbar .search-one-offs,
+    .search-one-offs {
+        background: var(--ph-bg1) !important;
+        border-top: var(--ph-quiet) !important;
+        padding-block: 2px !important;
+    }
+
+    .searchbar-engine-one-off-item {
+        border-radius: 0 !important;
+    }
+
+    .searchbar-engine-one-off-item:hover {
+        background: var(--ph-bg2) !important;
+    }
+}

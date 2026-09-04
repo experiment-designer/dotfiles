@@ -1,0 +1,304 @@
+/*
+ * Urlbar field, focus frame, identity/page-action icons, toolbar buttons.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Urlbar: a terminal input field, not a pill ------------------- */
+
+    #nav-bar-customization-target {
+        min-width: 0 !important;
+        max-width: none !important;
+        flex: 1 1 auto !important;
+    }
+
+    #urlbar-container {
+        min-width: 0 !important;
+        max-width: none !important;
+        width: auto !important;
+        flex: 1 1 auto !important;
+        /* 8px of air on each side, between the field and the two groups. */
+        margin-inline: 8px !important;
+        padding: 0 !important;
+        --urlbar-container-height: 26px !important;
+    }
+
+    /*
+     * Firefox's default nav-bar placements put a flexible `spring` on each
+     * side of the urlbar (CustomizableUI.sys.mjs `navbarPlacements`), which
+     * pushed ~120px of dead air between the button groups and the field. The
+     * field's own flex fills the row instead, so the only gap left is the 8px
+     * above.
+     */
+    #nav-bar toolbarspring,
+    #nav-bar toolbarpaletteitem[id*="special-spring"],
+    #nav-bar toolbaritem[id*="special-spring"],
+    #nav-bar #vertical-spacer {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        flex: 0 0 0 !important;
+    }
+
+    #urlbar,
+    #urlbar[focused],
+    #urlbar[open],
+    #urlbar[breakout],
+    #urlbar[breakout-extend] {
+        --urlbar-height: 26px !important;
+        --urlbar-min-height: 26px !important;
+        --toolbar-field-background-color: var(--ph-bg1) !important;
+        --toolbar-field-focus-background-color: var(--ph-bg1) !important;
+        --toolbar-field-color: var(--ph-fg0) !important;
+        --toolbar-field-focus-color: var(--ph-fg0) !important;
+        --toolbar-field-border-color: var(--ph-line1) !important;
+        --toolbar-field-focus-border-color: var(--ph-amber) !important;
+        --urlbar-box-bgcolor: var(--ph-bg1) !important;
+        --urlbar-box-focus-bgcolor: var(--ph-bg1) !important;
+        --urlbar-box-hover-bgcolor: var(--ph-bg2) !important;
+        --urlbar-box-active-bgcolor: var(--ph-bg3) !important;
+        --urlbar-box-text-color: var(--ph-fg0) !important;
+        --urlbar-box-hover-text-color: var(--ph-fg0) !important;
+        min-height: 26px !important;
+        font-size: 11px !important;
+
+        /*
+         * Firefox 154 draws the urlbar frame entirely from these composite
+         * variables (browser/skin/urlbar-searchbar.css), and the focused
+         * border is the `-focused` pair -- not --toolbar-field-*-border-color,
+         * which only feeds them. With browser.nova.enabled=false (the default)
+         * --urlbar-background-border-focused falls back to the unfocused
+         * border and the focus colour arrives as an *outline*, so both have to
+         * be set or the field keeps Firefox's grey edge.
+         */
+        --urlbar-background-color: var(--ph-bg1) !important;
+        --urlbar-background-color-focus: var(--ph-bg1) !important;
+        --urlbar-background-border: 1px solid var(--ph-line1) !important;
+        --urlbar-background-border-focused: 1px solid var(--ph-amber) !important;
+        --urlbar-background-border-breakout: 1px solid var(--ph-amber) !important;
+        --urlbar-background-outline-focused: none !important;
+        --urlbar-background-border-radius: 0 !important;
+        --urlbar-background-box-shadow-breakout: none !important;
+        --urlbar-background-box-shadow-breakout-compact: none !important;
+        --urlbar-background-inset-breakout: 0 !important;
+        --urlbar-background-inset-breakout-compact: 0 !important;
+        --urlbar-input-container-border: 1px solid transparent !important;
+        --urlbar-input-container-outline-breakout: none !important;
+        --urlbar-input-container-outline-breakout-focused: none !important;
+        --toolbar-field-border-color-focus: var(--ph-amber) !important;
+    }
+
+    /*
+     * Leave Firefox's breakout geometry alone -- overriding top/margin-top made
+     * the results view overlap the field. Only the decoration is ours.
+     */
+    #urlbar[breakout][breakout-extend] {
+        box-shadow: none !important;
+    }
+
+    /*
+     * Exactly one frame, on one element. Everything else inside the urlbar is
+     * transparent so no second fill, pill or focus ring can appear over it.
+     */
+    #urlbar > .urlbar-background {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 1px solid var(--ph-line1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+    }
+
+    /*
+     * Focus = the frame turns amber. No ring, no glow, no second border.
+     * Firefox 154 gates its own focus border on :not([suppress-focus-border])
+     * and moves the edge to [breakout-extend] once the results panel opens,
+     * so all three states are claimed here on the one element that draws it.
+     */
+    #urlbar[focused] > .urlbar-background,
+    #urlbar[open] > .urlbar-background,
+    #urlbar[usertyping] > .urlbar-background,
+    #urlbar[breakout-extend] > .urlbar-background {
+        border: 1px solid var(--ph-amber) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        inset: 0 !important;
+    }
+
+    #urlbar,
+    #urlbar *:not(.urlbarView, .urlbarView *),
+    .urlbar-input-container,
+    .urlbar-input-container *,
+    .urlbar-input-box,
+    #urlbar-input {
+        appearance: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    #urlbar > .urlbar-background {
+        background-color: var(--ph-bg1) !important;
+    }
+
+    .urlbar-input-container {
+        padding-inline: 6px !important;
+    }
+
+    #urlbar-input,
+    .searchbar-textbox {
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.015em !important;
+        caret-color: var(--ph-amber) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #urlbar-input::placeholder,
+    .searchbar-textbox::placeholder {
+        color: var(--ph-fg2) !important;
+        opacity: 1 !important;
+    }
+
+    #urlbar-input::selection,
+    .searchbar-textbox::selection {
+        background-color: var(--ph-bg3) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #searchbar {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 1px solid var(--ph-line1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #searchbar:focus-within {
+        border-color: var(--ph-amber) !important;
+    }
+
+    /* No chiclet boxes: identity, search-mode and permission icons are bare. */
+    #identity-box,
+    #identity-box > .identity-box-button,
+    #tracking-protection-icon-container,
+    #trust-icon-container,
+    #urlbar-searchmode-switcher,
+    #urlbar-searchmode-switcher > *,
+    #urlbar-searchmode-switcher-dropmarker,
+    #notification-popup-box,
+    #urlbar-permissions-granted-icon,
+    #identity-permission-box {
+        appearance: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin-inline: 0 !important;
+        padding-inline: 2px !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    #identity-box:hover,
+    #identity-box > .identity-box-button:hover,
+    #tracking-protection-icon-container:hover,
+    #trust-icon-container:hover,
+    #urlbar-searchmode-switcher:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Page-action icons: fg1, square bg2 hover, nothing else. */
+    #page-action-buttons .urlbar-page-action,
+    #urlbar .urlbar-icon,
+    #urlbar-go-button,
+    #pageActionButton,
+    #star-button-box {
+        appearance: none !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg1) !important;
+        fill: var(--ph-fg1) !important;
+    }
+
+    #page-action-buttons .urlbar-page-action:hover,
+    #urlbar .urlbar-icon:hover,
+    #urlbar-go-button:hover,
+    #star-button-box:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+        fill: var(--ph-fg0) !important;
+    }
+
+    #identity-box[pageproxystate="invalid"] #identity-icon,
+    .notification-anchor-icon[showing] {
+        fill: var(--ph-yellow) !important;
+    }
+
+    /* ---- Toolbar buttons: square hover, never a circle ---------------- */
+
+    toolbarbutton,
+    toolbarbutton > .toolbarbutton-icon,
+    toolbarbutton > .toolbarbutton-badge-stack,
+    .toolbarbutton-1 > .toolbarbutton-icon,
+    .toolbarbutton-1 > .toolbarbutton-badge-stack,
+    .identity-box-button,
+    .urlbar-page-action,
+    .urlbar-icon,
+    .urlbar-icon-wrapper,
+    #urlbar-go-button,
+    #pageActionButton {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #nav-bar .toolbarbutton-1 {
+        color: var(--ph-fg1) !important;
+        margin: 0 !important;
+    }
+
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack {
+        background: transparent !important;
+        padding: 4px !important;
+    }
+
+    #nav-bar .toolbarbutton-1:is(:hover, [open]) > .toolbarbutton-icon,
+    #nav-bar .toolbarbutton-1:is(:hover, [open]) > .toolbarbutton-badge-stack,
+    #TabsToolbar toolbarbutton:is(:hover, [open]) > .toolbarbutton-icon {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #nav-bar .toolbarbutton-1:is(:hover, [open], :focus-visible) {
+        color: var(--ph-fg0) !important;
+    }
+
+    #nav-bar .toolbarbutton-1[disabled] {
+        color: var(--ph-fg2) !important;
+    }
+
+    toolbarbutton:focus-visible,
+    .identity-box-button:focus-visible,
+    .urlbar-page-action:focus-visible,
+    .bookmark-item:focus-visible,
+    .subviewbutton:focus-visible,
+    menuitem:focus-visible {
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: -1px !important;
+    }
+}

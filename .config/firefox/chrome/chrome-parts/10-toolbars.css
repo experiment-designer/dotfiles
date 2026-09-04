@@ -1,0 +1,57 @@
+/*
+ * Toolbox chassis: navigator-toolbox, TabsToolbar, nav-bar, window controls.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Chassis ------------------------------------------------------ */
+
+    #navigator-toolbox,
+    #toolbar-menubar,
+    #TabsToolbar,
+    #nav-bar,
+    #PersonalToolbar,
+    #navigator-toolbox-background {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    #navigator-toolbox {
+        border: 0 !important;
+        border-bottom: var(--ph-hair) !important;
+    }
+
+    #TabsToolbar {
+        min-height: var(--ph-tab-row) !important;
+        max-height: var(--ph-tab-row) !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+    }
+
+    #nav-bar {
+        min-height: var(--ph-nav-row) !important;
+        max-height: var(--ph-nav-row) !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    #browser,
+    #tabbrowser-tabbox,
+    #appcontent,
+    #tabbrowser-tabpanels {
+        background: var(--ph-bg0) !important;
+    }
+
+    /* Window controls belong to the tab row only. */
+    #nav-bar > :is(.titlebar-buttonbox-container, .titlebar-spacer) {
+        display: none !important;
+    }
+}

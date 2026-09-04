@@ -1,0 +1,38 @@
+/*
+ * Chrome scrollbars, private-browsing palette swap, reduced motion.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Scrollbars in chrome ---------------------------------------- */
+
+    * {
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
+    /* ---- Private browsing: magenta swaps in for amber ------------------ */
+
+    :root[privatebrowsingmode="temporary"] .tabbrowser-tab:is([selected], [multiselected]) > .tab-stack > .tab-background {
+        border-bottom-color: var(--ph-magenta) !important;
+    }
+
+    :root[privatebrowsingmode="temporary"] #urlbar[focused] > .urlbar-background,
+    :root[privatebrowsingmode="temporary"] #urlbar[open] > .urlbar-background {
+        border-bottom-color: var(--ph-magenta) !important;
+    }
+
+    /* ---- No motion when the OS asks for none -------------------------- */
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            transition-duration: 0s !important;
+            animation-duration: 0s !important;
+        }
+    }
+}

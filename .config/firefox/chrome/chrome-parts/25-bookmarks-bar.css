@@ -1,0 +1,40 @@
+/*
+ * PersonalToolbar: hidden by default, revealed on toolbox hover.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Bookmarks toolbar: out of the way, revealed on toolbox hover. */
+    #PersonalToolbar {
+        appearance: none !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    #navigator-toolbox:hover #PersonalToolbar:not([collapsed="true"]),
+    #navigator-toolbox:focus-within #PersonalToolbar:not([collapsed="true"]) {
+        max-height: 24px !important;
+        min-height: 24px !important;
+        overflow: visible !important;
+        border-top: var(--ph-quiet) !important;
+    }
+
+    .bookmark-item {
+        border-radius: 0 !important;
+        padding: 1px 6px !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    .bookmark-item:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+}

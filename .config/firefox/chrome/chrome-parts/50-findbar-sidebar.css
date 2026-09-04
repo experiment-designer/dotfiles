@@ -1,0 +1,153 @@
+/*
+ * Findbar strip and sidebar.
+ *
+ * Part of the Phosphor chrome theme; loaded via @import from userChrome.css.
+ * Cascade order matters: keep this file's rules in their original order and
+ * do not move rules between part files.
+ */
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Findbar: a thin strip at the bottom -------------------------- */
+
+    findbar {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-top: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        padding: 0 4px !important;
+        min-height: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    findbar > .findbar-container {
+        padding: 2px 0 !important;
+        min-height: 0 !important;
+    }
+
+    .findbar-container > .findbar-find-fast,
+    .findbar-find-fast {
+        margin: 0 !important;
+        padding: 0 4px !important;
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+    }
+
+    .findbar-textbox {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 20px !important;
+        margin: 0 4px !important;
+        padding: 1px 5px !important;
+        box-shadow: none !important;
+    }
+
+    .findbar-textbox:focus {
+        border-bottom: 2px solid var(--ph-amber) !important;
+        outline: none !important;
+    }
+
+    .findbar-textbox[status="notfound"] {
+        border-color: var(--ph-red) !important;
+        color: var(--ph-red) !important;
+        background: var(--ph-bg0) !important;
+    }
+
+    /* The match count is the findbar's state readout: amber. */
+    .found-matches,
+    .findbar-find-status[status="wrapped"],
+    .found-matches > label {
+        color: var(--ph-amber) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        margin-inline: 6px !important;
+    }
+
+    .findbar-find-status {
+        color: var(--ph-fg2) !important;
+        font-size: 11px !important;
+        margin-inline: 6px !important;
+    }
+
+    findbar toolbarbutton,
+    .findbar-button {
+        appearance: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+        margin: 0 !important;
+    }
+
+    findbar toolbarbutton:hover,
+    .findbar-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    .findbar-button[checked="true"] {
+        background: transparent !important;
+        color: var(--ph-amber) !important;
+    }
+
+    findbar checkbox {
+        font-size: 11px !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    /* ---- Sidebar ------------------------------------------------------ */
+
+    #sidebar-box,
+    #sidebar,
+    #sidebar-header,
+    sidebar-main,
+    #sidebar-main {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #sidebar-header {
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        padding: 3px 6px !important;
+        min-height: 0 !important;
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+        color: var(--ph-fg1) !important;
+    }
+
+    #sidebar-box {
+        border-inline-end: var(--ph-hair) !important;
+    }
+
+    #sidebar-splitter {
+        appearance: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    #sidebar-search-container > search-textbox,
+    #sidebar-box search-textbox {
+        border-radius: 0 !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        color: var(--ph-fg0) !important;
+    }
+}

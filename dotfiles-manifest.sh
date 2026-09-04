@@ -31,6 +31,7 @@ FIREFOX_PROFILE_FILES=(
     "user.js"
     "chrome/userChrome.css"
     "chrome/userContent.css"
+    "chrome/chrome-parts"
 )
 
 USER_SCRIPTS=(
