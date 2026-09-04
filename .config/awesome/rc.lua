@@ -117,7 +117,7 @@ beautiful.taglist_squares_sel_empty = nil
 beautiful.taglist_squares_unsel_empty = nil
 
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
+terminal = "term"   -- bin/term: reuses the running alacritty, cold-starts if none
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -1382,6 +1382,20 @@ awful.rules.rules = {
      }
     },
 
+    -- Fresh terminals: float top-left at half the workarea. The generic rule
+    -- above still supplies border_width/raise, so the 2px border stays.
+    { rule = { class = "Alacritty" },
+      properties = { floating = true,
+                     titlebars_enabled = false,
+                     placement = awful.placement.top_left + awful.placement.no_offscreen },
+      callback = function(c)
+          local g = c.screen.workarea
+          c:geometry({ x = g.x, y = g.y,
+                       width  = math.floor(g.width  * 0.5),
+                       height = math.floor(g.height * 0.5) })
+      end
+    },
+
     -- Floating clients.
     { rule_any = {
         instance = {
@@ -1439,7 +1453,8 @@ client.connect_signal("manage", function (c)
     end
 
     -- Shrink default floating window size to 40% of screen
-    if c.floating or (c.first_tag and c.first_tag.layout == awful.layout.suit.floating) then
+    if c.class ~= "Alacritty"
+      and (c.floating or (c.first_tag and c.first_tag.layout == awful.layout.suit.floating)) then
         local sg = c.screen.geometry
         local w = math.floor(sg.width * 0.4)
         local h = math.floor(sg.height * 0.4)
