@@ -8,5 +8,5 @@ if ! pgrep -f "^Xvfb :$n " >/dev/null; then
     Xvfb ":$n" -screen 0 "${RICE_SHOT_GEOMETRY:-1920x1200x24}" +extension GLX >/dev/null 2>&1 &
     sleep 1
 fi
-DISPLAY=":$n" import -window root "$out" && blip shot
+DISPLAY=":$n" import -window root "$out"
 echo "$out"

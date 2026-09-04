@@ -25,3 +25,56 @@ user_pref("browser.tabs.tabmanager.enabled", false);
 // Preserve the existing hardware-accelerated video settings for this profile.
 user_pref("media.ffmpeg.vaapi.enabled", true);
 user_pref("media.hardware-video-decoding.force-enabled", true);
+
+// ---------------------------------------------------------------------------
+// Cold-start / first-paint tuning. Nothing here disables a security feature
+// (Safe Browsing, certificate checks and updates are all left alone); each
+// pref removes work Firefox would otherwise do while the first window is
+// still being built.
+// ---------------------------------------------------------------------------
+
+// Put a themed blank window on screen before the full chrome is ready, so the
+// first paint is not gated on session restore finishing.
+user_pref("browser.startup.blankWindow", true);
+
+// Restore tabs lazily: only the selected tab loads at startup, the rest wait
+// until they are clicked.
+user_pref("browser.sessionstore.restore_on_demand", true);
+
+// No "what's new" tab after an update and no onboarding flow on first run.
+// Dev Edition updates often, and each of those pages is an extra document
+// loaded during startup.
+user_pref("browser.startup.homepage_override.mstone", "ignore");
+user_pref("browser.aboutwelcome.enabled", false);
+
+// Skip the default-browser check and the add-on recommendation/Pocket
+// components that spin up during startup.
+user_pref("browser.shell.checkDefaultBrowser", false);
+user_pref("browser.discovery.enabled", false);
+user_pref("extensions.pocket.enabled", false);
+user_pref("extensions.getAddons.cache.enabled", false);
+
+// No experiment/study machinery at startup.
+user_pref("app.normandy.enabled", false);
+user_pref("app.shield.optoutstudies.enabled", false);
+
+// No telemetry pings, archives or data-reporting init during startup.
+user_pref("datareporting.policy.dataSubmissionEnabled", false);
+user_pref("datareporting.healthreport.uploadEnabled", false);
+user_pref("toolkit.telemetry.enabled", false);
+user_pref("toolkit.telemetry.unified", false);
+user_pref("toolkit.telemetry.archive.enabled", false);
+user_pref("browser.newtabpage.activity-stream.telemetry", false);
+user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
+
+// Render a skeleton UI before chrome is fully ready for faster perceived startup.
+user_pref("browser.startup.preXulSkeletonUI", true);
+
+// Save session state less frequently to reduce disk I/O overhead.
+user_pref("browser.sessionstore.interval", 60000);
+
+// Disable new tab discovery stream to eliminate remote content fetching.
+user_pref("browser.newtabpage.activity-stream.discoverystream.enabled", false);
+
+// Disable UI tour backend to skip onboarding tour checks.
+user_pref("browser.uitour.enabled", false);
