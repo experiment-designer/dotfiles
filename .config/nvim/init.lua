@@ -95,12 +95,12 @@ require("lazy").setup({
       require("lualine").setup({
         options = {
           theme = {
-            normal = mode("#ffb340"),
-            insert = mode("#5ed3f3"),
+            normal = mode("#5b9dff"),
+            insert = mode("#98c379"),
             visual = mode("#d67cff"),
             replace = mode("#ff4d6d"),
-            command = mode("#ffd866"),
-            terminal = mode("#5b9dff"),
+            command = mode("#e5c07b"),
+            terminal = mode("#5ed3f3"),
             inactive = {
               a = { bg = "#1c1f25", fg = "#7b838f" },
               b = { bg = "#1c1f25", fg = "#7b838f" },
