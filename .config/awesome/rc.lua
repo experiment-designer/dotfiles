@@ -46,7 +46,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/isolines-blue.svg"
+beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/bands.svg"
 
 -- Phosphor: a sharp terminal palette shared by every desktop surface.
 local palette = {
@@ -1524,7 +1524,7 @@ end)
 
 -- {{{ Autostart
 awful.spawn.with_shell("xbindkeys")
-awful.spawn.with_shell("tmux -L btop has-session -t btop 2>/dev/null || tmux -L btop new-session -d -s btop -x 200 -y 60 \"exec btop\"")
+awful.spawn({"/home/guy/dotfiles/bin/htop", "--daemon"}, false)
 apply_keyboard_layout()
 ensure_keyboard_layout()
 -- }}}
