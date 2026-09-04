@@ -247,20 +247,9 @@ end
 local weather_views = {}
 local weather_timer
 local weather_refreshing = false
+local weather_has_reading = false
 local weather_details = "Weather data is loading…"
-
--- geo lookup then forecast, emitting "temp|wmo_code|city" on one line
-local weather_command = { "/bin/sh", "-c", [[
-    set -e
-    geo=$(curl -sf --max-time 8 https://ipinfo.io/json)
-    loc=$(printf '%s' "$geo" | grep -o '"loc": *"[^"]*"' | cut -d'"' -f4)
-    city=$(printf '%s' "$geo" | grep -o '"city": *"[^"]*"' | cut -d'"' -f4)
-    lat=${loc%,*}; lon=${loc#*,}
-    wx=$(curl -sf --max-time 8 "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,weather_code")
-    temp=$(printf '%s' "$wx" | grep -o '"temperature_2m": *[-0-9.]*' | grep -o '[-0-9.]*$')
-    code=$(printf '%s' "$wx" | grep -o '"weather_code": *[0-9]*' | grep -o '[0-9]*$')
-    printf '%s|%s|%s\n' "$temp" "$code" "$city"
-]] }
+local weather_cache_file = (os.getenv("XDG_CACHE_HOME") or (os.getenv("HOME") .. "/.cache")) .. "/awesome-weather-location"
 
 -- WMO weather codes → icon + label
 local wmo_conditions = {
@@ -284,19 +273,85 @@ local function trim(value)
     return value and value:match("^%s*(.-)%s*$") or nil
 end
 
-local function update_weather()
-    if weather_refreshing then
-        return
+local function read_weather_cache()
+    local f = io.open(weather_cache_file, "r")
+    if not f then return nil, nil end
+    local content = f:read("*l")
+    f:close()
+    if not content then return nil, nil end
+    content = content:gsub("[\r\n]", "")
+    local lat, lon, rest = content:match("^([^,]+),([^,]+),?(.*)$")
+    if not (lat and lon) then return nil, nil end
+    local city, epoch = rest:match("^(.*),([0-9]+)$")
+    if not (city and epoch) then
+        city = rest
+        epoch = nil
     end
-    weather_refreshing = true
+    return { lat = trim(lat), lon = trim(lon), city = trim(city) or "" }, tonumber(epoch)
+end
 
-    awful.spawn.easy_async(weather_command, function(stdout, stderr, _, exit_code)
+local function is_weather_cache_fresh()
+    local loc, epoch = read_weather_cache()
+    if not loc then return false end
+    if epoch then
+        return (os.time() - epoch) < 7 * 86400
+    end
+    local p = io.popen(string.format("stat -c %%Y %q 2>/dev/null", weather_cache_file))
+    if not p then return false end
+    local out = p:read("*l")
+    p:close()
+    local mtime = tonumber(out)
+    return mtime and ((os.time() - mtime) < 7 * 86400) or false
+end
+
+local function write_weather_cache(lat, lon, city)
+    local dir = weather_cache_file:match("(.+)/[^/]+$")
+    if dir then
+        os.execute(string.format("mkdir -p %q", dir))
+    end
+    local f = io.open(weather_cache_file, "w")
+    if f then
+        f:write(string.format("%s,%s,%s\n", lat, lon, city or ""))
+        f:close()
+    end
+end
+
+-- Geolocation on startup: read cache first, skip ipinfo if younger than 7 days
+local weather_loc = nil
+local cached_startup = read_weather_cache()
+if cached_startup and is_weather_cache_fresh() then
+    weather_loc = cached_startup
+end
+
+local function show_weather_unavailable(error_message)
+    weather_details = "Weather unavailable"
+    if error_message and error_message ~= "" then
+        weather_details = weather_details .. "\n" .. error_message
+    end
+    weather_details = weather_details .. "\nClick to retry"
+
+    for _, view in ipairs(weather_views) do
+        view.icon:set_markup(string.format("<span foreground='%s'>☁️</span>", palette.cyan))
+        view.temperature:set_text("--°")
+        view.tooltip:set_text(weather_details)
+    end
+end
+
+local function fetch_open_meteo(loc)
+    local url = string.format(
+        "https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current=temperature_2m,weather_code",
+        loc.lat, loc.lon
+    )
+    awful.spawn.easy_async({ "curl", "-sf", "--max-time", "8", url }, function(stdout, stderr, _, exit_code)
         weather_refreshing = false
-        local temp, code, location = stdout:match("^([^|]+)|([^|]+)|([^\r\n]*)")
+        local temp = stdout and stdout:match('"temperature_2m"%s*:%s*([-0-9.]+)')
+        local code = stdout and stdout:match('"weather_code"%s*:%s*([0-9]+)')
 
-        temp = tonumber(trim(temp))
-        code = tonumber(trim(code))
-        location = trim(location)
+        temp = tonumber(temp)
+        code = tonumber(code)
+
+        local location = trim(loc.city)
+        if location == "" then location = nil end
 
         local wmo = wmo_conditions[code]
         local icon = wmo and wmo[1]
@@ -304,21 +359,14 @@ local function update_weather()
         local temperature = temp and string.format("%.0f°C", temp)
 
         if exit_code ~= 0 or not temperature then
-            local error_message = trim(stderr)
-            weather_details = "Weather unavailable"
-            if error_message and error_message ~= "" then
-                weather_details = weather_details .. "\n" .. error_message
-            end
-            weather_details = weather_details .. "\nClick to retry"
-
-            for _, view in ipairs(weather_views) do
-                view.icon:set_markup(string.format("<span foreground='%s'>☁️</span>", palette.cyan))
-                view.temperature:set_text("--°")
-                view.tooltip:set_text(weather_details)
+            -- Keep previous reading on screen, retry next tick
+            if not weather_has_reading then
+                show_weather_unavailable(trim(stderr))
             end
             return
         end
 
+        weather_has_reading = true
         weather_details = string.format(
             "%s\n%s\nUpdated %s • click to refresh",
             condition or "Current weather",
@@ -331,6 +379,48 @@ local function update_weather()
             view.icon:set_markup(string.format("<span foreground='%s'>%s</span>", weather_color, icon or "☁️"))
             view.temperature:set_text(temperature)
             view.tooltip:set_text(weather_details)
+        end
+    end)
+end
+
+local function update_weather()
+    if weather_refreshing then
+        return
+    end
+    weather_refreshing = true
+
+    if weather_loc and is_weather_cache_fresh() then
+        fetch_open_meteo(weather_loc)
+        return
+    end
+
+    awful.spawn.easy_async({ "curl", "-sf", "--max-time", "8", "https://ipinfo.io/json" }, function(stdout, stderr, _, exit_code)
+        local loc = (exit_code == 0 and stdout) and stdout:match('"loc"%s*:%s*"([^"]+)"') or nil
+        local city = (exit_code == 0 and stdout) and stdout:match('"city"%s*:%s*"([^"]+)"') or nil
+        local lat, lon
+        if loc then
+            lat, lon = loc:match("^([^,]+),([^,]+)$")
+        end
+
+        if lat and lon then
+            weather_loc = { lat = lat, lon = lon, city = city or "" }
+            write_weather_cache(lat, lon, city)
+            fetch_open_meteo(weather_loc)
+            return
+        end
+
+        -- If ipinfo fails, fall back to cached location even if older than 7 days
+        local fallback = read_weather_cache()
+        if fallback then
+            weather_loc = fallback
+            fetch_open_meteo(weather_loc)
+            return
+        end
+
+        -- Only show unavailable when there is no cache at all
+        weather_refreshing = false
+        if not weather_has_reading then
+            show_weather_unavailable(trim(stderr))
         end
     end)
 end
