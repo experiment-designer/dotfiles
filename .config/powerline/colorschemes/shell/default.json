@@ -27,7 +27,7 @@
     },
     "mode": {
       "fg": "ph_bg0",
-      "bg": "ph_lime",
+      "bg": "ph_amber",
       "attrs": [
         "bold"
       ]
@@ -55,17 +55,17 @@
       "attrs": []
     },
     "branch": {
-      "fg": "ph_lime",
-      "bg": "ph_bg2",
-      "attrs": []
-    },
-    "branch_dirty": {
       "fg": "ph_amber",
       "bg": "ph_bg2",
       "attrs": []
     },
+    "branch_dirty": {
+      "fg": "ph_yellow",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
     "branch_clean": {
-      "fg": "ph_lime",
+      "fg": "ph_amber",
       "bg": "ph_bg2",
       "attrs": []
     },
@@ -84,7 +84,7 @@
       ]
     },
     "exit_success": {
-      "fg": "ph_lime",
+      "fg": "ph_amber",
       "bg": "ph_bg1",
       "attrs": []
     },

@@ -83,28 +83,28 @@ require("lazy").setup({
      "nvim-tree/nvim-web-devicons",
    },
     config = function()
-      -- Phosphor palette: structure is near-white on near-black; state is lime
+      -- Phosphor palette: structure is near-white on near-black; state is amber
       local function mode(accent)
         return {
-          a = { bg = accent, fg = "#07080a", gui = "bold" },
-          b = { bg = "#1c2027", fg = "#e6e9ed" },
-          c = { bg = "#0d0f12", fg = "#9aa1ab" },
+          a = { bg = accent, fg = "#16181d", gui = "bold" },
+          b = { bg = "#2c313a", fg = "#e6e9ed" },
+          c = { bg = "#1c1f25", fg = "#b7bec8" },
         }
       end
 
       require("lualine").setup({
         options = {
           theme = {
-            normal = mode("#c3f542"),
+            normal = mode("#ffb340"),
             insert = mode("#5ed3f3"),
             visual = mode("#d67cff"),
             replace = mode("#ff4d6d"),
-            command = mode("#ffb340"),
+            command = mode("#ffd866"),
             terminal = mode("#5b9dff"),
             inactive = {
-              a = { bg = "#0d0f12", fg = "#5b626c" },
-              b = { bg = "#0d0f12", fg = "#5b626c" },
-              c = { bg = "#0d0f12", fg = "#5b626c" },
+              a = { bg = "#1c1f25", fg = "#7b838f" },
+              b = { bg = "#1c1f25", fg = "#7b838f" },
+              c = { bg = "#1c1f25", fg = "#7b838f" },
             },
           },
           globalstatus = true,

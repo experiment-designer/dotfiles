@@ -25,7 +25,7 @@
     },
     "warning:regular": {
       "fg": "ph_bg0",
-      "bg": "ph_amber",
+      "bg": "ph_yellow",
       "attrs": [
         "bold"
       ]
@@ -38,7 +38,7 @@
       ]
     },
     "critical:success": {
-      "fg": "ph_lime",
+      "fg": "ph_amber",
       "bg": "ph_bg1",
       "attrs": []
     },
@@ -100,7 +100,7 @@
       "attrs": []
     },
     "weather_condition_hot": {
-      "fg": "ph_amber",
+      "fg": "ph_yellow",
       "bg": "ph_bg1",
       "attrs": []
     },
@@ -178,7 +178,7 @@
       "attrs": []
     },
     "battery_full": {
-      "fg": "ph_lime",
+      "fg": "ph_amber",
       "bg": "ph_bg1",
       "attrs": []
     },
@@ -200,17 +200,17 @@
       ]
     },
     "branch": {
-      "fg": "ph_lime",
-      "bg": "ph_bg2",
-      "attrs": []
-    },
-    "branch_dirty": {
       "fg": "ph_amber",
       "bg": "ph_bg2",
       "attrs": []
     },
+    "branch_dirty": {
+      "fg": "ph_yellow",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
     "branch_clean": {
-      "fg": "ph_lime",
+      "fg": "ph_amber",
       "bg": "ph_bg2",
       "attrs": []
     },
