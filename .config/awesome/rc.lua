@@ -46,7 +46,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/bands.svg"
+beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/skyline.svg"
 
 -- Phosphor: a sharp terminal palette shared by every desktop surface.
 local palette = {
