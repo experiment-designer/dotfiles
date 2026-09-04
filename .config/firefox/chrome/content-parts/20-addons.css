@@ -147,10 +147,12 @@
         --button-min-height: 24px !important;
     }
 
-    /* Sidebar categories are <button class="category"> and the generic button
-     * rule in 00-tokens.css frames each one; kill it with a stronger selector. */
-    categories-box .category,
-    categories-box button.category {
+    /* Sidebar categories are <moz-page-nav-button> elements (NOT .category),
+     * so the framed pill is that widget's own button part. 10-preferences.css
+     * neutralises the identical element for about:preferences; do the same
+     * here: transparent part, no border, amber left edge when selected. */
+    categories-box moz-page-nav-button,
+    categories-box moz-page-nav-button::part(button) {
         appearance: none !important;
         background-color: transparent !important;
         border: 0 !important;
@@ -161,22 +163,22 @@
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
         letter-spacing: 0.05em !important;
-        margin: 0 !important;
         min-height: 24px !important;
-        padding: 3px 10px !important;
         text-transform: uppercase !important;
     }
 
-    categories-box .category:hover {
+    categories-box moz-page-nav-button:hover::part(button) {
         background-color: var(--ph-bg2) !important;
         border-color: transparent !important;
-        border-inline-start-color: transparent !important;
         color: var(--ph-fg0) !important;
     }
 
-    categories-box .category[selected] {
-        background-color: transparent !important;
+    categories-box moz-page-nav-button[selected] {
         border-inline-start-color: var(--ph-amber) !important;
+    }
+
+    categories-box moz-page-nav-button[selected]::part(button) {
+        background-color: transparent !important;
         color: var(--ph-amber) !important;
     }
 
@@ -206,6 +208,26 @@
         --panel-item-badge-inset-inline-start: 8px !important;
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
+    }
+
+    /* Direct part styling: panel-item is a content-document custom element, so
+     * its exported button part IS reachable here. Force the icon into an 8px
+     * gutter and push the label clear of it. */
+    panel-item::part(button) {
+        background-position: 8px center !important;
+        background-repeat: no-repeat !important;
+        background-size: 14px 14px !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 24px !important;
+        padding-block: 4px !important;
+        padding-inline: 28px 12px !important;
+    }
+
+    panel-item::part(button):hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
     }
 
     /* --- Card hover: bg2 lift behind a hard hairline ------------------- */
