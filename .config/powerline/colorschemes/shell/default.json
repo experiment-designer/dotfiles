@@ -1,16 +1,125 @@
 {
-	"name": "Default color scheme for shell prompts",
-	"groups": {
-		"hostname":         { "fg": "brightyellow", "bg": "mediumorange", "attrs": [] },
-		"environment":      { "fg": "white", "bg": "darkestgreen", "attrs": [] },
-		"mode":             { "fg": "gray2", "bg": "brightorange", "attrs": ["bold"] },
-		"attached_clients": { "fg": "white", "bg": "darkestgreen", "attrs": [] }
-	},
-	"mode_translations": {
-		"vicmd": {
-			"groups": {
-				"mode": {"fg": "gray2", "bg": "white", "attrs": ["bold"]}
-			}
-		}
-	}
+  "name": "Default color scheme for shell prompts",
+  "groups": {
+    "hostname": {
+      "fg": "ph_fg0",
+      "bg": "ph_bg2",
+      "attrs": [
+        "bold"
+      ]
+    },
+    "user": {
+      "fg": "ph_fg0",
+      "bg": "ph_bg2",
+      "attrs": [
+        "bold"
+      ]
+    },
+    "environment": {
+      "fg": "ph_fg1",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
+    "virtualenv": {
+      "fg": "ph_fg1",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
+    "mode": {
+      "fg": "ph_bg0",
+      "bg": "ph_lime",
+      "attrs": [
+        "bold"
+      ]
+    },
+    "attached_clients": {
+      "fg": "ph_fg2",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "cwd": {
+      "fg": "ph_fg0",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "cwd:current_folder": {
+      "fg": "ph_fg0",
+      "bg": "ph_bg1",
+      "attrs": [
+        "bold"
+      ]
+    },
+    "cwd:divider": {
+      "fg": "ph_fg2",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "branch": {
+      "fg": "ph_lime",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
+    "branch_dirty": {
+      "fg": "ph_amber",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
+    "branch_clean": {
+      "fg": "ph_lime",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
+    "branch:divider": {
+      "fg": "ph_line0",
+      "bg": "ph_bg2",
+      "attrs": []
+    },
+    "stash": "branch_dirty",
+    "stash:divider": "branch:divider",
+    "exit_fail": {
+      "fg": "ph_bg0",
+      "bg": "ph_red",
+      "attrs": [
+        "bold"
+      ]
+    },
+    "exit_success": {
+      "fg": "ph_lime",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "jobnum": {
+      "fg": "ph_cyan",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "time": {
+      "fg": "ph_fg1",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "background": {
+      "fg": "ph_fg1",
+      "bg": "ph_bg1",
+      "attrs": []
+    },
+    "background:divider": {
+      "fg": "ph_line0",
+      "bg": "ph_bg1",
+      "attrs": []
+    }
+  },
+  "mode_translations": {
+    "vicmd": {
+      "groups": {
+        "mode": {
+          "fg": "ph_bg0",
+          "bg": "ph_magenta",
+          "attrs": [
+            "bold"
+          ]
+        }
+      }
+    }
+  }
 }

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# rice-shot N OUT.png            screenshot virtual display :N (starts Xvfb :N if needed)
+# Launch apps into it with:  DISPLAY=:N some-app &
+# Never touches the live display, so ricing can be verified without interrupting anyone.
+set -eu
+n=$1 out=$2
+if ! pgrep -f "^Xvfb :$n " >/dev/null; then
+    Xvfb ":$n" -screen 0 "${RICE_SHOT_GEOMETRY:-1920x1200x24}" +extension GLX >/dev/null 2>&1 &
+    sleep 1
+fi
+DISPLAY=":$n" import -window root "$out"
+echo "$out"
