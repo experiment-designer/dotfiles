@@ -67,6 +67,17 @@ local palette = {
     red        = "#ff4d6d",
 }
 
+for _, k in ipairs({
+    "layout_tile", "layout_tileleft", "layout_tilebottom", "layout_tiletop",
+    "layout_fairv", "layout_fairh", "layout_spiral", "layout_dwindle",
+    "layout_max", "layout_fullscreen", "layout_magnifier", "layout_floating",
+    "layout_cornernw", "layout_cornerne", "layout_cornersw", "layout_cornerse",
+}) do
+    if beautiful[k] then
+        beautiful[k] = gears.color.recolor_image(beautiful[k], palette.blue)
+    end
+end
+
 beautiful.font = "InputMono Nerd Font 9"
 beautiful.bg_normal = palette.bar
 beautiful.bg_focus = palette.surface_2
@@ -1032,7 +1043,17 @@ awful.screen.connect_for_each_screen(function(s)
         ),
         palette.surface
     )
-    local layout = make_module(s.mylayoutbox, palette.surface, 8, 8)
+    local layout = make_module(
+        wibox.widget {
+            s.mylayoutbox,
+            top = 7,
+            bottom = 7,
+            widget = wibox.container.margin,
+        },
+        palette.surface,
+        8,
+        8
+    )
     s.mycpuwidget, s.mymemorywidget = make_system_widgets()
     s.myweatherwidget = make_weather_widget()
     s.mybatterywidget = make_battery_widget()
