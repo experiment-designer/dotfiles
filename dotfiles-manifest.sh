@@ -17,6 +17,8 @@ HOME_DOTFILES=(
 CONFIG_DIRS=(
     "alacritty"
     "awesome"
+    "chromium-phosphor-theme"
+    "fontconfig"
     "htop"
     "nvim"
     "powerline"

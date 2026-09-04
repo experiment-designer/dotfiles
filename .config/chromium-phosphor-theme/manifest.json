@@ -1,0 +1,76 @@
+{
+  "manifest_version": 3,
+  "name": "Phosphor",
+  "version": "1.0",
+  "theme": {
+    "colors": {
+      "frame": [
+        22,
+        24,
+        29
+      ],
+      "frame_inactive": [
+        22,
+        24,
+        29
+      ],
+      "toolbar": [
+        28,
+        31,
+        37
+      ],
+      "tab_background_text": [
+        183,
+        190,
+        200
+      ],
+      "tab_text": [
+        230,
+        233,
+        237
+      ],
+      "bookmark_text": [
+        230,
+        233,
+        237
+      ],
+      "ntp_background": [
+        22,
+        24,
+        29
+      ],
+      "ntp_text": [
+        230,
+        233,
+        237
+      ],
+      "omnibox_background": [
+        22,
+        24,
+        29
+      ],
+      "omnibox_text": [
+        230,
+        233,
+        237
+      ],
+      "toolbar_button_icon": [
+        183,
+        190,
+        200
+      ],
+      "toolbar_text": [
+        230,
+        233,
+        237
+      ]
+    },
+    "tints": {
+      "buttons": [
+        -1,
+        -1,
+        -1
+      ]
+    }
+  }
+}

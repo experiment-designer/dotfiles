@@ -32,34 +32,66 @@ export GEMINI_API_KEY=YOUR_KEY_HERE
 export XAI_API_KEY=YOUR_KEY_HERE
 export OPENAI_API_KEY=YOUR_KEY_HERE
 
-# Powerline stuff
-# Keep the daemon for fast prompt rendering, but only start it when needed.
-# Powerline's generic binding also starts Python three times to discover this
-# known prompt/tmux setup; answer those checks cheaply and use its compiled
-# daemon client directly. The stock discovery path remains as a fallback.
-if (( $+commands[powerline] )); then
-    if ! pgrep -u "$EUID" -f '[/]powerline-daemon( |$)' >/dev/null; then
-        powerline-daemon -q
+# Prompt: native zsh, single line, no plugins and no external commands per
+# prompt beyond vcs_info's own git calls.
+setopt PROMPT_SUBST
+autoload -Uz vcs_info add-zsh-hook
+
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' max-exports 2
+zstyle ':vcs_info:*' unstagedstr '*'
+zstyle ':vcs_info:*' stagedstr '*'
+# First export is the branch, second is the dirty marker (kept separate so a
+# repo with both staged and unstaged work still prints a single '*').
+zstyle ':vcs_info:git:*' formats       '%b'    '%u%c'
+zstyle ':vcs_info:git:*' actionformats '%b|%a' '%u%c'
+
+typeset -g _prompt_git=''
+
+# Amber chevron in vi insert mode, magenta in normal mode, red after a failure.
+function _prompt_chevron {
+    local mode='#ffb340'
+    [[ ${KEYMAP:-viins} == vicmd ]] && mode='#d67cff'
+    print -r -- "%(?.%F{$mode}.%F{#ff4d6d})❯%f"
+}
+
+function _prompt_build {
+    local host=''
+    [[ -n $SSH_CONNECTION ]] && host='%F{#7b838f}%n@%m %f'
+    PROMPT="${host}%F{#b7bec8}%~%f${_prompt_git} $(_prompt_chevron) "
+    RPROMPT=''
+}
+
+function _prompt_precmd {
+    vcs_info
+    if [[ -z ${vcs_info_msg_0_} ]]; then
+        _prompt_git=''
+    elif [[ -n ${vcs_info_msg_1_} ]]; then
+        _prompt_git=" %F{#ffb340}${vcs_info_msg_0_}*%f"
+    else
+        _prompt_git=" %F{#b7bec8}${vcs_info_msg_0_}%f"
     fi
+    _prompt_build
+}
+add-zsh-hook precmd _prompt_precmd
 
-    POWERLINE_CONFIG_COMMAND=/usr/bin/true
-    POWERLINE_COMMAND=powerline
-    . /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
-    unset POWERLINE_CONFIG_COMMAND
-else
-    . /usr/lib/python3.14/site-packages/powerline/bindings/zsh/powerline.zsh
-fi
+# Recolour the chevron the moment the vi keymap changes.
+function zle-keymap-select { _prompt_build; zle reset-prompt }
+function zle-line-init     { _prompt_build; zle reset-prompt }
+zle -N zle-keymap-select
+zle -N zle-line-init
 
-# Keep the active Powerline prompt rich, but collapse prompts in scrollback to a
-# quiet marker once a command is accepted (Powerlevel10k calls this transient
+# Keep the live prompt rich, but collapse prompts in scrollback to a quiet grey
+# chevron once a command is accepted (Powerlevel10k calls this transient
 # prompt). PS1 is restored before the command runs, so the next prompt is full.
-function powerline-transient-accept-line {
+function transient-accept-line {
     emulate -L zsh
 
     local full_ps1="$PS1"
     local full_rps1="$RPS1"
 
-    PS1='%F{#ffb340}❯%f '
+    PS1='%F{#7b838f}❯%f '
     RPS1=''
     zle reset-prompt
 
@@ -68,10 +100,10 @@ function powerline-transient-accept-line {
     zle .accept-line
 }
 
-zle -N powerline-transient-accept-line
+zle -N transient-accept-line
 for keymap in emacs viins vicmd; do
-    bindkey -M "$keymap" '^M' powerline-transient-accept-line
-    bindkey -M "$keymap" '^J' powerline-transient-accept-line
+    bindkey -M "$keymap" '^M' transient-accept-line
+    bindkey -M "$keymap" '^J' transient-accept-line
 done
 unset keymap
 
