@@ -1751,18 +1751,18 @@ textarea::selection {
         color: #e6e9ed !important;
     }
 
-    /* Inner wrappers must not paint a second frame over the box. */
-    .RNNXgb .SDkEP,
-    .RNNXgb .a4bIc,
-    .RNNXgb .dRYYxd,
-    .RNNXgb .emcav,
-    #searchform .sbtc > div,
-    .A8SBwf .SDkEP {
+    /* Nothing inside the box paints its own (white) surface or second frame.
+       Structural, because .RNNXgb/.SDkEP-style names churn every few months. */
+    #searchform *,
+    form[role="search"] *,
+    .RNNXgb *,
+    .A8SBwf * {
         background: transparent !important;
         background-color: transparent !important;
-        border: 0 !important;
+        background-image: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        color: #e6e9ed !important;
     }
 
     form[role="search"] textarea,
@@ -1780,6 +1780,51 @@ textarea::selection {
         color: #e6e9ed !important;
         font-family: "InputMono Nerd Font", monospace !important;
         font-size: 13px !important;
+    }
+
+    /* Structural fallback: Google frequently ships the box without
+       role="search"/.RNNXgb, so walk up from the query field itself. */
+    div:has(> textarea[name="q"]),
+    div:has(> div > textarea[name="q"]),
+    div:has(> div > div > textarea[name="q"]),
+    div:has(> div > div > div > textarea[name="q"]),
+    div:has(> input[name="q"]),
+    div:has(> div > input[name="q"]),
+    div:has(> div > div > input[name="q"]),
+    header *,
+    #searchbox * {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    form:has(textarea[name="q"]),
+    form:has(input[name="q"]) {
+        background-color: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    form:has(textarea[name="q"]) *,
+    form:has(input[name="q"]) * {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    /* Last resort: any text field anywhere on the page. */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+        background-color: #1c1f25 !important;
+        border-radius: 0 !important;
+        color: #e6e9ed !important;
     }
 
     form[role="search"] textarea::placeholder,
@@ -1886,8 +1931,10 @@ textarea::selection {
     [data-sncf] em,
     #search em,
     #search b {
-        color: #ffd866 !important;
+        background: transparent !important;
+        color: #e6e9ed !important;
         font-style: normal !important;
+        font-weight: 600 !important;
     }
 
     /* --- secondary / meta text ---------------------------------------- */
@@ -1987,8 +2034,40 @@ textarea::selection {
         color: #ffb340 !important;
     }
 
+    /* Chips are not always anchors, so colour the whole row structurally. */
+    #hdtb *,
+    #hdtbMenus *,
+    [role="navigation"] *,
+    div[role="list"] * {
+        background-color: transparent !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #b7bec8 !important;
+    }
+
+    [role="navigation"] [aria-current],
+    [role="navigation"] [aria-current] *,
+    [role="navigation"] [aria-selected="true"],
+    [role="navigation"] [aria-selected="true"] *,
+    div[role="list"] [aria-current],
+    div[role="list"] [aria-current] *,
+    .hdtb-msel,
+    .hdtb-msel *,
+    .YmvwI {
+        color: #ffb340 !important;
+    }
+
+    [role="navigation"] [aria-current],
+    [role="navigation"] [aria-selected="true"],
+    div[role="list"] [aria-current],
+    .hdtb-msel {
+        border-bottom: 2px solid #ffb340 !important;
+    }
+
     .hdtb-mitem:hover,
-    [role="navigation"] a:hover {
+    [role="navigation"] a:hover,
+    [role="navigation"] a:hover * {
         color: #e6e9ed !important;
     }
 
@@ -2066,14 +2145,75 @@ textarea::selection {
     }
 
     /* --- everything else that still paints a light card ---------------- */
-    #search [style*="rgb(255, 255, 255)"],
-    #search [style*="#fff"],
+    /* Any element carrying its own inline paint or a gradient fade. */
+    #main [style*="background"],
+    #main [style*="gradient"],
+    #cnt [style*="background"],
+    #rhs [style*="background"],
+    #search mark,
+    #main mark,
+    #main .fade,
+    #main [class*="fade"] {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Notice / promo cards that sit outside the result list (the pale-yellow
+       "results in English?" box and friends). Structural, not class-based. */
+    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search),
+    #main div[jsname]:not(#rso *):not(#search *),
+    #main aside,
+    #main [role="complementary"],
+    #topstuff,
+    #topstuff div,
     #rhs .kp-blk,
     #rhs .g,
     #rhs [data-hveid] {
+        background: transparent !important;
         background-color: transparent !important;
+        background-image: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    /* Their contents inherit Google's dark-on-light text, so re-tier it. */
+    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search) > *,
+    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search) span,
+    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search) div,
+    #topstuff * {
+        color: #e6e9ed !important;
+    }
+
+    #main div[data-ved]:not(#rso *):not(#search *) a,
+    #topstuff a {
+        color: #5b9dff !important;
+    }
+
+    /* Shimmer / skeleton placeholders load as bright pills — hide the paint. */
+    #main div:empty,
+    #main [class*="shimmer"],
+    #main [class*="skeleton"],
+    #main [class*="placeholder"] {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* Inline code chips inside AI overviews / snippets. */
+    #main code,
+    #main pre,
+    #main kbd,
+    #main samp {
+        background-color: #23272e !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
     }
 
     #rhs .kp-blk,
@@ -2089,6 +2229,29 @@ textarea::selection {
 
     #search a:visited {
         color: #d67cff !important;
+    }
+
+    /* The query field must beat both Google and Firefox's UA field paint. */
+    header textarea[name="q"],
+    header input[name="q"],
+    form textarea[name="q"],
+    form input[name="q"],
+    textarea[name="q"],
+    input[name="q"],
+    form:has(textarea[name="q"]) textarea,
+    form:has(input[name="q"]) input {
+        appearance: none !important;
+        -moz-appearance: none !important;
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        background-image: none !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        caret-color: #ffb340 !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 13px !important;
     }
 
     /* --- scrollbars, per the rest of this file -------------------------- */
