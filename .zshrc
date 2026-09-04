@@ -209,3 +209,34 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
 # pnpm end
+
+# --- blip: audible notification for long-running commands -------------------
+# preexec stores the start time + command name; precmd blips if the command ran
+# for >= $BLIP_MIN_SECONDS and is not an interactive/foreground program.
+BLIP_MIN_SECONDS=${BLIP_MIN_SECONDS:-15}
+BLIP_IGNORE_CMDS=(vim nvim less man htop btop ssh claude codex agy python ipython zsh bash tmux)
+
+_blip_preexec() {
+  _blip_start=$SECONDS
+  _blip_cmd=${${(z)1}[1]:t}
+}
+
+_blip_precmd() {
+  local st=$?
+  [[ -z $_blip_start ]] && return
+  local elapsed=$(( SECONDS - _blip_start ))
+  local cmd=$_blip_cmd
+  unset _blip_start _blip_cmd
+  (( elapsed >= BLIP_MIN_SECONDS )) || return
+  (( ${BLIP_IGNORE_CMDS[(Ie)$cmd]} )) && return
+  if (( st == 0 )); then
+    ~/dotfiles/bin/blip tick
+  else
+    ~/dotfiles/bin/blip err
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook preexec _blip_preexec
+add-zsh-hook precmd _blip_precmd
+# --- end blip ---------------------------------------------------------------
