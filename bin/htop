@@ -1,3 +1,13 @@
 #!/bin/sh
-# ponytail: htop cannot draw line graphs or custom colours; btop can.
-exec btop "$@"
+# ponytail: htop cannot draw line graphs or custom colours; btop can. btop stays alive in a
+# private tmux server so its graphs keep history between launches; q detaches instead of quitting.
+sock=btop
+tmux -L "$sock" has-session -t btop 2>/dev/null || {
+    tmux -L "$sock" new-session -d -s btop -x 200 -y 60 "exec btop"
+    tmux -L "$sock" set -g status off
+    tmux -L "$sock" set -g mouse on
+    tmux -L "$sock" bind -n q detach-client
+    tmux -L "$sock" set -g default-terminal "tmux-256color"
+    tmux -L "$sock" set -ga terminal-overrides ",*:Tc"
+}
+exec tmux -L "$sock" attach -t btop
