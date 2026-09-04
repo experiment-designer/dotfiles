@@ -91,4 +91,39 @@
     #warningButton {
         font-family: var(--ph-font) !important;
     }
+
+    /* about:config's CSP blocks the data: URI check/dot glyphs that
+     * 00-tokens.css paints on input[type=checkbox|radio], so a checked box
+     * arrived as a bare amber fill and a checked radio as a bare amber
+     * border — on/off was unreadable. Draw the indicator with box-shadow
+     * instead (no image load). Overrides 00-tokens.css, which we do not own. */
+    input[type="checkbox"],
+    input[type="radio"] {
+        background-image: none !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+    }
+
+    input[type="checkbox"]:checked,
+    input[type="radio"]:checked {
+        background-color: var(--ph-bg0) !important;
+        border-color: var(--ph-amber) !important;
+        box-shadow: inset 0 0 0 3px var(--ph-amber) !important;
+    }
+
+    /* The stock warning triangle is an off-palette orange; recolour it to
+     * the palette's warning yellow. */
+    #warningIcon,
+    .warning-icon {
+        -moz-context-properties: fill !important;
+        fill: var(--ph-yellow) !important;
+    }
+
+    /* The empty/initial state ships a full-colour Firefox illustration —
+     * the only saturated blue on the page. */
+    .config-background,
+    #prefs-empty-search,
+    #main {
+        background-image: none !important;
+    }
 }

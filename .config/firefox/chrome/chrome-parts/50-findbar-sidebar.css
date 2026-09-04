@@ -151,3 +151,116 @@
         color: var(--ph-fg0) !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- QA round 1 fixes --------------------------------------------- */
+
+    /* The findbar container still inherited the default dark panel fill. */
+    findbar,
+    findbar > .findbar-container,
+    .findbar-container,
+    findbar hbox,
+    findbar .findbar-closebutton {
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+    findbar .findbar-closebutton {
+        appearance: none !important;
+        border: 0 !important;
+        padding: 2px 6px !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        -moz-context-properties: fill !important;
+        fill: var(--ph-fg1) !important;
+    }
+
+    findbar .findbar-closebutton:hover {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    /* "Phrase not found" must read red, including the status label. */
+    .findbar-find-status[status="notfound"],
+    findbar[status="notfound"] .findbar-find-status {
+        color: var(--ph-red) !important;
+    }
+
+    /* Highlight-all / match-case toggles: amber when on, square always. */
+    findbar toolbarbutton[checked="true"],
+    findbar checkbox[checked="true"] {
+        background: transparent !important;
+        border-radius: 0 !important;
+        color: var(--ph-amber) !important;
+        -moz-context-properties: fill !important;
+        fill: var(--ph-amber) !important;
+    }
+
+    findbar checkbox .checkbox-check {
+        appearance: none !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        background: var(--ph-bg0) !important;
+    }
+
+    findbar checkbox[checked="true"] .checkbox-check {
+        background: var(--ph-amber) !important;
+        border-color: var(--ph-amber) !important;
+    }
+
+    /* Sidebar tree rows: compact, square, amber selection text. */
+    #sidebar-box tree,
+    #sidebar-box treechildren,
+    #bookmarksPanel,
+    #history-panel,
+    #sidebar-panel-header {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #sidebar-box treechildren::-moz-tree-row {
+        border-radius: 0 !important;
+        background: transparent !important;
+        min-height: 18px !important;
+    }
+
+    #sidebar-box treechildren::-moz-tree-row(hover) {
+        background: var(--ph-bg2) !important;
+    }
+
+    #sidebar-box treechildren::-moz-tree-row(selected) {
+        background: var(--ph-bg3) !important;
+    }
+
+    #sidebar-box treechildren::-moz-tree-cell-text {
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    #sidebar-box treechildren::-moz-tree-cell-text(selected) {
+        color: var(--ph-amber) !important;
+    }
+
+    #sidebar-header > toolbarbutton,
+    #sidebar-close,
+    #sidebar-switcher-target {
+        appearance: none !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 1px 5px !important;
+    }
+
+    #sidebar-switcher-target:hover,
+    #sidebar-close:hover {
+        background: var(--ph-bg2) !important;
+    }
+}

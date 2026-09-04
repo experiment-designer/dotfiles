@@ -9,13 +9,22 @@
 @-moz-document url("chrome://browser/content/browser.xhtml") {
     /* ---- Urlbar results dropdown -------------------------------------- */
 
+    /*
+     * The results panel sits *inside* the urlbar's own frame element
+     * (.urlbar-background spans field + results once [breakout-extend] is
+     * set). Firefox insets it with a margin so that frame stays visible;
+     * margin-inline:0 painted straight over it and the dropdown lost every
+     * edge. 1px of inset gives the amber focus frame its left/right/bottom
+     * back, and the panel therefore carries no border of its own -- never two
+     * frames on one element.
+     */
     .urlbarView {
         width: auto !important;
-        margin-inline: 0 !important;
+        margin-inline: 1px !important;
+        margin-block-end: 1px !important;
         padding-block: 0 !important;
         background: var(--ph-bg1) !important;
-        border: var(--ph-hair) !important;
-        border-top: 0 !important;
+        border: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         font-family: var(--ph-font) !important;
@@ -47,14 +56,32 @@
         height: auto !important;
     }
 
-    /* Firefox sizes rows from the icon box; shrink it to reach a compact row. */
+    /*
+     * Firefox sizes rows from the icon box; shrink it to reach a compact row.
+     * The box is a FIXED gutter every row keeps, so all result text shares one
+     * left edge. 60-icons.css hides the search-engine favicon art
+     * (`display:none` on [type="search"] rows) -- that also removed the box and
+     * left those rows' text 19px to the left of every other row. Keep the box,
+     * hide only the art.
+     */
     .urlbarView-row > .urlbarView-row-inner > .urlbarView-no-wrap > .urlbarView-favicon,
     .urlbarView-favicon,
     .urlbarView-type-icon {
         width: 13px !important;
         height: 13px !important;
-        min-width: 0 !important;
+        min-width: 13px !important;
         margin-inline-end: 6px !important;
+        flex: 0 0 13px !important;
+    }
+
+    .urlbarView-row[type="search"]
+        > .urlbarView-row-inner > .urlbarView-no-wrap > .urlbarView-favicon,
+    .urlbarView-row[type="search"] .urlbarView-favicon {
+        display: flex !important;
+        visibility: hidden !important;
+        width: 13px !important;
+        min-width: 13px !important;
+        flex: 0 0 13px !important;
     }
 
     .urlbarView-row:not([type="tip"], [dynamicType]) {
@@ -75,7 +102,9 @@
     .urlbarView-row[selected] .urlbarView-title,
     .urlbarView-row[selected] .urlbarView-url,
     .urlbarView-row[selected] .urlbarView-action,
-    .urlbarView-row[selected] .urlbarView-title-separator {
+    .urlbarView-row[selected] .urlbarView-title-separator,
+    .urlbarView-row[selected] .urlbarView-title strong,
+    .urlbarView-row[selected] .urlbarView-url strong {
         color: var(--ph-amber) !important;
     }
 
@@ -179,6 +208,25 @@
         display: none !important;
     }
 
+    /*
+     * Group headings ("Firefox Suggest", "Search suggestions") ship with their
+     * own inline padding and a non-monospace label; they were sitting 6px to
+     * the left of every row's text. Same 6px gutter, fg2, hairline above.
+     */
+    .urlbarView-group-heading,
+    .urlbarView-row[label]::before,
+    .urlbarView-row-label,
+    .urlbarView-label {
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        font-weight: 400 !important;
+        color: var(--ph-fg2) !important;
+        background: none !important;
+        padding: 3px 6px 2px !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+
     .urlbarView-title-separator {
         color: var(--ph-line0) !important;
     }
@@ -193,13 +241,43 @@
         background: var(--ph-bg1) !important;
         border-top: var(--ph-quiet) !important;
         padding-block: 2px !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        color: var(--ph-fg1) !important;
     }
 
-    .searchbar-engine-one-off-item {
+    .search-one-offs > .search-panel-one-offs-header,
+    .search-panel-header,
+    .search-panel-one-offs-container {
+        background: transparent !important;
+        border: 0 !important;
+        color: var(--ph-fg2) !important;
+        padding-inline: 4px !important;
+        min-height: 0 !important;
+    }
+
+    .searchbar-engine-one-off-item,
+    .search-setting-button {
+        appearance: none !important;
+        background: transparent !important;
+        border: 0 !important;
         border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg1) !important;
+        min-height: 0 !important;
+        padding: 2px 6px !important;
+        margin: 0 !important;
     }
 
-    .searchbar-engine-one-off-item:hover {
+    .searchbar-engine-one-off-item:hover,
+    .search-setting-button:hover {
         background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    .searchbar-engine-one-off-item[selected],
+    .searchbar-engine-one-off-item:active {
+        background: var(--ph-bg3) !important;
+        color: var(--ph-amber) !important;
     }
 }

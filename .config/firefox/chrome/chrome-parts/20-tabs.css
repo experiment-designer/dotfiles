@@ -97,6 +97,19 @@
         font-weight: 500 !important;
     }
 
+    /*
+     * Long titles fade out instead of butting into the separator. Firefox only
+     * sets [textoverflow] when the label actually overflows, so an untruncated
+     * title keeps its full ink.
+     */
+    .tab-label-container[textoverflow] {
+        mask-image: linear-gradient(to left, transparent, black 2em) !important;
+    }
+
+    .tab-label-container[textoverflow][dir="rtl"] {
+        mask-image: linear-gradient(to right, transparent, black 2em) !important;
+    }
+
     .tab-icon-image,
     .tab-icon-pending {
         width: 13px !important;
@@ -158,6 +171,42 @@
     .tab-icon-sound {
         border-radius: 0 !important;
         fill: var(--ph-amber) !important;
+    }
+
+    /*
+     * Unfocused window. Firefox fades the toolbox and, on some builds, drops
+     * the tab's visual-selection attribute, so the active tab loses its bg0
+     * fill, its line1 frame and the amber edge, and the favicons grey out.
+     * The strip must read identically whether or not the window has focus.
+     */
+    #navigator-toolbox:-moz-window-inactive,
+    #TabsToolbar:-moz-window-inactive,
+    #tabbrowser-tabs:-moz-window-inactive,
+    #tabbrowser-arrowscrollbox:-moz-window-inactive,
+    .tabbrowser-tab:-moz-window-inactive,
+    .tabbrowser-tab:-moz-window-inactive > .tab-stack,
+    .tabbrowser-tab:-moz-window-inactive > .tab-stack > .tab-background {
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    .tabbrowser-tab:not([selected], [multiselected], [visuallyselected]):-moz-window-inactive
+        > .tab-stack > .tab-background {
+        background-color: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+    }
+
+    .tabbrowser-tab:is([selected], [multiselected], [visuallyselected]):-moz-window-inactive
+        > .tab-stack > .tab-background {
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-bottom: 2px solid var(--ph-amber) !important;
+    }
+
+    .tabbrowser-tab:is([selected], [multiselected], [visuallyselected]):-moz-window-inactive
+        .tab-content {
+        color: var(--ph-fg0) !important;
     }
 
     /* ---- Clutter removal --------------------------------------------- */

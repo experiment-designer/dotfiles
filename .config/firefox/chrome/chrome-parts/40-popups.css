@@ -335,3 +335,152 @@
         min-height: 0 !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- QA round 1 fixes --------------------------------------------- */
+
+    /* Native menupopups were still painting a GTK-derived grey (#36363a):
+     * the fill lives on the popup's inner scroll box, not the host. */
+    menupopup > .menupopup-arrowscrollbox,
+    menupopup .menupopup-arrowscrollbox,
+    menupopup > arrowscrollbox,
+    menupopup::part(content),
+    menupopup::part(scrollbox),
+    #contentAreaContextMenu > .menupopup-arrowscrollbox,
+    #tabContextMenu > .menupopup-arrowscrollbox {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    menupopup {
+        --panel-background: var(--ph-bg1) !important;
+        --menu-background-color: var(--ph-bg1) !important;
+        --menupopup-shadow: none !important;
+        -moz-window-shadow: none !important;
+        color-scheme: dark !important;
+    }
+
+    /* No gradients anywhere in panel chrome (the FxA "sync" rainbow strip). */
+    #appMenu-popup toolbarbutton,
+    #appMenu-popup toolbaritem,
+    #appMenu-popup vbox,
+    #appMenu-popup hbox,
+    #appMenu-popup separator,
+    #appMenu-fxa-container,
+    #appMenu-fxa-container > *,
+    #appMenu-fxa-status2,
+    #fxa-menu-header,
+    #PanelUI-fxa-menu toolbarbutton,
+    #unified-extensions-panel toolbaritem,
+    panel .panel-header {
+        background-image: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+    #appMenu-fxa-container,
+    #appMenu-fxa-status2 {
+        border-bottom: var(--ph-quiet) !important;
+        border-top: 0 !important;
+    }
+
+    /* Header action buttons ("Sign In") are toolbarbuttons, not <button>. */
+    panel toolbarbutton.panel-button,
+    .panel-header toolbarbutton,
+    #appMenu-fxa-status2 > toolbarbutton,
+    #fxa-manage-account-button,
+    #appMenu-fxa-label2 {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        padding: 2px 8px !important;
+        box-shadow: none !important;
+    }
+
+    /* Zoom / fullscreen controls: square, flat, no pill. */
+    #appMenu-zoomReduce-button,
+    #appMenu-zoomEnlarge-button,
+    #appMenu-zoomReset-button,
+    #appMenu-fullscreen-button,
+    #appMenu-zoom-controls > toolbarbutton,
+    .panel-info-button,
+    toolbaritem[id$="-controls"] > toolbarbutton {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        padding: 1px 6px !important;
+        margin: 0 2px !important;
+        box-shadow: none !important;
+    }
+
+    #appMenu-zoom-controls > toolbarbutton:hover,
+    .panel-info-button:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    /* Menu and panel icons read as secondary text, never coloured. */
+    menuitem > .menu-icon,
+    menu > .menu-icon,
+    .subviewbutton > .toolbarbutton-icon,
+    .panel-header > toolbarbutton > .toolbarbutton-icon,
+    menupopup .menu-right {
+        -moz-context-properties: fill, fill-opacity !important;
+        fill: var(--ph-fg1) !important;
+        fill-opacity: 1 !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* The FxA "sync" rainbow strip is painted on a toolbarseparator's
+     * background-image, which `separator` does not match in XUL. */
+    #appMenu-popup toolbarseparator,
+    #appMenu-multiView toolbarseparator,
+    panel toolbarseparator,
+    menupopup toolbarseparator,
+    toolbarseparator {
+        background-image: none !important;
+        background-color: transparent !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Round 2: the popup fill lives on the anonymous scroll box child, whose
+     * class/part name is not reliably matchable — target any non-item child. */
+    menupopup > *:not(menuitem):not(menu):not(menuseparator):not(panel) {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* The FxA strip is drawn as a pseudo-element gradient. */
+    #appMenu-popup *::before,
+    #appMenu-popup *::after,
+    #appMenu-fxa-container::before,
+    #appMenu-fxa-container::after,
+    #appMenu-popup box,
+    #appMenu-popup image {
+        background-image: none !important;
+        border-image: none !important;
+    }
+}

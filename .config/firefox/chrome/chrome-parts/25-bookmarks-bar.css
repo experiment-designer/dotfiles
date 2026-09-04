@@ -17,13 +17,7 @@
         border: 0 !important;
     }
 
-    #navigator-toolbox:hover #PersonalToolbar:not([collapsed="true"]),
-    #navigator-toolbox:focus-within #PersonalToolbar:not([collapsed="true"]) {
-        max-height: 24px !important;
-        min-height: 24px !important;
-        overflow: visible !important;
-        border-top: var(--ph-quiet) !important;
-    }
+    /* No hover-reveal: 70-layout-surfaces.css hides PersonalToolbar outright. */
 
     .bookmark-item {
         border-radius: 0 !important;

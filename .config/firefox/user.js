@@ -77,3 +77,6 @@ user_pref("browser.newtabpage.activity-stream.discoverystream.enabled", false);
 
 // Disable UI tour backend to skip onboarding tour checks.
 user_pref("browser.uitour.enabled", false);
+
+// Use in-content menupopups so userChrome.css can style context menus.
+user_pref("widget.gtk.native-context-menus", false);
