@@ -1,6 +1,6 @@
 #!/bin/bash
 # blip NAME - play a short freedesktop notification sound.
-# Gates: BLIP=0 disables; optional BLIP_RATE_LIMIT; quiet hours 23:00-08:00 (err exempt);
+# Gates: BLIP=0 disables; optional BLIP_RATE_LIMIT; quiet hours only with BLIP_QUIET_HOURS=1;
 #        optional per-name cooldown $BLIP_COOLDOWN_<NAME> seconds (default 0).
 # Volume: $BLIP_VOLUME (default 0.35). Never blocks the caller.
 
@@ -63,9 +63,9 @@ SOUND="$SOUND_DIR/$FILE_NAME"
 # Kill switch.
 [ "$BLIP" = "0" ] && exit 0
 
-# Quiet hours 23:00-08:00, errors excepted.
+# Quiet hours 23:00-08:00 (errors excepted) only when BLIP_QUIET_HOURS=1; off by default.
 HOUR=$(date +%-H)
-if [ "$NAME" != "err" ] && { [ "$HOUR" -ge 23 ] || [ "$HOUR" -lt 8 ]; }; then
+if [ "${BLIP_QUIET_HOURS:-0}" = 1 ] && [ "$NAME" != "err" ] && { [ "$HOUR" -ge 23 ] || [ "$HOUR" -lt 8 ]; }; then
     exit 0
 fi
 
