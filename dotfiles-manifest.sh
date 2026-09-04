@@ -17,6 +17,7 @@ HOME_DOTFILES=(
 CONFIG_DIRS=(
     "alacritty"
     "awesome"
+    "htop"
     "nvim"
     "powerline"
     "wezterm"
@@ -32,7 +33,9 @@ FIREFOX_PROFILE_FILES=(
 
 USER_SCRIPTS=(
     "BMT.sh"
+    "bin/rice-shot"
     "bin/brightness-step"
+    "bin/htop"
 )
 
 XORG_CONFIGS=(
