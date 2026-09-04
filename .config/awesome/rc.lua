@@ -1478,6 +1478,14 @@ end)
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
 end)
+client.connect_signal("property::urgent", function(c)
+    if c.urgent then
+        awful.spawn({"/home/guy/dotfiles/bin/blip", "attn"}, false)
+    end
+end)
+awesome.connect_signal("startup", function()
+    awful.spawn({"/home/guy/dotfiles/bin/blip", "start"}, false)
+end)
 -- }}}
 
 -- {{{ Autostart
