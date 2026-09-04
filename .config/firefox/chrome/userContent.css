@@ -1099,15 +1099,20 @@
 }
 
 /* ====================================================================== *
- * about:newtab / about:home — a bare canvas and one framed field.        *
+ * about:newtab / about:home — a terminal prompt on a bare canvas.        *
+ *                                                                        *
+ * The field itself is <content-search-handoff-ui>, a lit custom element  *
+ * whose button/input/placeholder live in a CLOSED-to-CSS shadow root     *
+ * with no ::part(). Only two levers reach inside: the                    *
+ * --content-search-handoff-ui-* custom properties it declares on :host,  *
+ * and inherited design tokens (--space-*, --font-size-root). Everything  *
+ * else — prompt, placeholder text, hairline — is drawn in the light DOM  *
+ * on .search-wrapper / .search-inner-wrapper.                            *
  * ====================================================================== */
 
 @-moz-document url("about:newtab"), url("about:home"), url("about:privatebrowsing") {
     :root,
-    body,
-    .outer-wrapper,
-    main,
-    .base-content-fallback {
+    body {
         background-color: var(--ph-bg0) !important;
         background-image: none !important;
         color: var(--ph-fg0) !important;
@@ -1124,20 +1129,114 @@
         --newtab-link-secondary-color: var(--ph-fg1) !important;
         --newtab-icon-primary-color: var(--ph-fg1) !important;
         --newtab-wordmark-color: var(--ph-fg2) !important;
+        /* The engine favicon is set as an inline style on <body> by the
+         * handoff controller; an !important author rule still beats it. */
+        --newtab-search-icon: none !important;
     }
 
-    /* Everything except the search field goes away. */
+    /* Inner wrappers must not paint, or they cover the glyph behind them. */
+    .outer-wrapper,
+    main,
+    .base-content-fallback {
+        background-color: transparent !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* The field: no chrome of its own, no icon, no radius, no shadow. */
+    content-search-handoff-ui {
+        --content-search-handoff-ui-background-color: transparent !important;
+        --content-search-handoff-ui-color: var(--ph-fg0) !important;
+        --content-search-handoff-ui-fill: var(--ph-fg2) !important;
+        --content-search-handoff-ui-caret-color: var(--ph-amber) !important;
+        --content-search-handoff-ui-border-width: 0 !important;
+        --content-search-handoff-ui-border-radius: 0 !important;
+        --content-search-handoff-ui-engine-icon: none !important;
+        --content-search-handoff-ui-unfocused-border-color: transparent !important;
+        --content-search-handoff-ui-fakefocus-border-color: transparent !important;
+        --content-search-handoff-ui-fakefocus-box-shadow-inner: transparent !important;
+        --content-search-handoff-ui-fakefocus-box-shadow-outer: transparent !important;
+
+        /* The shadow button reserves 2 * --space-xlarge for the icon it no
+         * longer has, and .fake-textbox is offset by --space-xsmall. */
+        --space-xlarge: 0px !important;
+        --space-small: 0px !important;
+        --space-xsmall: 0px !important;
+
+        /* .fake-textbox hard-codes font-size: var(--font-size-root), which is
+         * the only way to suppress the built-in "Search with …" placeholder;
+         * ours is drawn on .search-inner-wrapper::after instead. */
+        --font-size-root: 0px !important;
+
+        align-items: center !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 22px !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+}
+
+@-moz-document url("about:newtab"), url("about:home") {
+    /* No scrollbars: the page is exactly one screen. */
+    :root,
+    body {
+        overflow: hidden !important;
+        scrollbar-width: none !important;
+    }
+
+    /*
+     * body must not paint: body is not a stacking context, so the glyph below
+     * (z-index: -1) resolves against :root and would land *under* a painted
+     * body background. :root carries the canvas colour instead.
+     */
+    body {
+        background-color: transparent !important;
+    }
+
+    /* A giant dim glyph, behind everything, lower right. */
+    body::before {
+        color: var(--ph-bg2);
+        content: "❯_";
+        font-family: var(--ph-font);
+        font-size: 360px;
+        inset-block-end: -3vh;
+        inset-inline-end: 3vw;
+        line-height: 1;
+        pointer-events: none;
+        position: fixed;
+        user-select: none;
+        z-index: -1;
+    }
+
+    /* Everything but the prompt line goes away. */
     .logo-and-wordmark,
+    .logo-and-wordmark-wrapper,
+    .wordmark,
+    .logo,
     .top-sites,
     .top-sites-list,
+    .edit-topsites-button,
+    .edit-topsites,
+    .section-top-bar,
+    .context-menu-button,
+    .customize-menu,
+    #customize-menu,
+    .personalizeButtonWrapper,
+    .personalize-button,
+    .open-customization-button,
     section.collapsible-section,
     .ds-outer-wrapper-breakpoint-override,
     .discovery-stream,
     .ds-navigation,
     .ds-layout,
+    .sections-list,
     .weatherWidget,
     .weather,
     #weather,
+    .widget-container,
     .body-wrapper > section,
     .ASRouterButton,
     .info-icon,
@@ -1145,88 +1244,66 @@
         display: none !important;
     }
 
+    /* The prompt line: left-aligned in a 720px column, 38% down the page. */
+    /* Fixed, so neither .outer-wrapper's padding nor the flex centring of
+     * main can drag the line off the 38% mark. */
     .search-wrapper {
+        align-items: center !important;
+        display: flex !important;
+        inset-block-start: 38vh !important;
+        inset-inline: 0 !important;
+        margin: 0 auto !important;
+        max-width: 720px !important;
         padding: 0 !important;
-        margin-block: 22vh 0 !important;
+        position: fixed !important;
+        width: 88vw !important;
     }
 
+    .search-wrapper::before {
+        color: var(--ph-amber);
+        content: "~ ❯ ";
+        flex: 0 0 auto;
+        font-family: var(--ph-font);
+        font-size: 22px;
+        line-height: 34px;
+        user-select: none;
+        white-space: pre;
+    }
+
+    /* The hairline sits under the field only, not under the prompt. */
     .search-inner-wrapper {
         border: 0 !important;
-        height: auto !important;
-        max-width: 560px !important;
-    }
-
-    /* The one framed field on the page. */
-    .search-handoff-button,
-    .search-wrapper input,
-    .fake-editable {
-        appearance: none !important;
-        background-color: var(--ph-bg0) !important;
-        background-image: none !important;
-        border: var(--ph-hair) !important;
+        border-block-end: 1px solid var(--ph-line1) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
-        color: var(--ph-fg0) !important;
-        font-family: var(--ph-font) !important;
-        font-size: 12px !important;
-        height: 30px !important;
-        padding: 0 10px !important;
-        text-align: start !important;
+        display: flex !important;
+        flex: 1 1 auto !important;
+        height: 34px !important;
+        margin: 0 !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
     }
 
-    .search-handoff-button:focus,
-    .search-handoff-button:focus-visible,
-    .search-wrapper input:focus {
-        border-bottom: 2px solid var(--ph-amber) !important;
-        box-shadow: none !important;
-        outline: none !important;
+    /* Our own placeholder, since the real one lives in the shadow root. */
+    .search-inner-wrapper::after {
+        color: var(--ph-fg2);
+        content: "search or url";
+        font-family: var(--ph-font);
+        font-size: 22px;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        line-height: 34px;
+        pointer-events: none;
+        position: absolute;
+        user-select: none;
     }
 
-    .search-handoff-button .fake-caret {
-        background-color: var(--ph-amber) !important;
-    }
-
-    /*
-     * The engine favicon (Google, by default) is the only colour left on an
-     * otherwise empty page, so the handoff button loses its artwork entirely.
-     */
-    .search-wrapper .search-button,
-    .search-handoff-button::before,
-    .search-handoff-button .icon,
-    .search-wrapper .logo,
-    .search-inner-wrapper .search-button,
-    .search-handoff-button img,
-    .search-wrapper input + .search-button {
-        display: none !important;
-    }
-
-    .search-handoff-button,
-    .search-wrapper input {
-        background-image: none !important;
-        padding-inline-start: 10px !important;
-    }
-
-    /* Personalize stays reachable, at fg2, out of the way. */
-    .personalize-button,
-    #customize-menu {
-        background-color: transparent !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        color: var(--ph-fg2) !important;
-        fill: var(--ph-fg2) !important;
-        font-size: 11px !important;
-    }
-
-    .personalize-button:hover {
-        background-color: var(--ph-bg2) !important;
-        color: var(--ph-fg0) !important;
-    }
-
-    .customize-menu {
-        background-color: var(--ph-bg1) !important;
-        border-inline-start: var(--ph-hair) !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
+    /* Handing off to the URL bar sets [fakefocus] on the host: drop the
+     * placeholder so the amber caret stands alone. */
+    .search-inner-wrapper:has(content-search-handoff-ui[fakefocus])::after {
+        content: "" !important;
     }
 }
 
@@ -1696,8 +1773,7 @@ textarea::selection {
  * only the query input is monospace.                                     *
  * ====================================================================== */
 
-@-moz-document domain(google.com), domain(google.co.il),
-               regexp("https?://www\\.google\\.[a-z.]+/search.*") {
+@-moz-document regexp("https?://www\\.google\\.[a-z.]+/(search|webhp)\\?.*") {
 
     /* --- canvas ------------------------------------------------------- */
     html,
@@ -2258,5 +2334,73 @@ textarea::selection {
     * {
         scrollbar-width: thin !important;
         scrollbar-color: #7b838f transparent !important;
+    }
+}
+
+/* ====================================================================== *
+ * Google homepage — deliberately minimal.                                *
+ * The results-page rules above frame the form and its wrappers; on the    *
+ * homepage those same elements are full-width layout containers, so the   *
+ * frames came out as two huge nested boxes. Here: canvas, text, links,    *
+ * the search pill itself and the two buttons. No wrapper frames.          *
+ * ====================================================================== */
+
+@-moz-document regexp("https?://www\\.google\\.[a-z.]+/?(\\?.*)?") {
+
+    /* --- canvas ------------------------------------------------------- */
+    html,
+    body {
+        background: #16181d !important;
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #7b838f transparent !important;
+    }
+
+    a {
+        color: #5b9dff !important;
+    }
+
+    /* --- the search pill: the field's direct parent, one level only ---- */
+    div:has(> textarea[name="q"]),
+    div:has(> input[name="q"]) {
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    textarea[name="q"],
+    input[name="q"] {
+        appearance: none !important;
+        -moz-appearance: none !important;
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        caret-color: #ffb340 !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 13px !important;
+    }
+
+    textarea[name="q"]::placeholder,
+    input[name="q"]::placeholder {
+        color: #7b838f !important;
+    }
+
+    /* --- "Google Search" / "I'm Feeling Lucky" ------------------------- */
+    input[type="submit"],
+    input[name="btnK"],
+    input[name="btnI"] {
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
     }
 }
