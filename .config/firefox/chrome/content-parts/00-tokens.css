@@ -185,7 +185,10 @@
         --toggle-track-border-color: var(--ph-line1) !important;
         --toggle-dot-background-color: var(--ph-fg1) !important;
         --toggle-dot-background-color-on-pressed: var(--ph-bg0) !important;
-        --toggle-dot-margin: 2px !important;
+        --toggle-border-width: 1px !important;
+        --toggle-dot-margin: 1px !important;
+        --toggle-dot-height: 10px !important;
+        --toggle-dot-width: 10px !important;
         --toggle-height: 14px !important;
         --toggle-width: 28px !important;
 
@@ -492,28 +495,50 @@
     /* Toggles become square switches. */
     moz-toggle::part(button) {
         appearance: none !important;
-        width: 28px !important;
-        height: 14px !important;
-        background-color: var(--ph-bg0) !important;
-        border: var(--ph-hair) !important;
+        align-items: center !important;
+        background-color: var(--ph-bg2) !important;
+        border: 1px solid var(--ph-line0) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        height: 14px !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        width: 28px !important;
+    }
+
+    moz-toggle:hover::part(button) {
+        background-color: var(--ph-bg3) !important;
+        border-color: var(--ph-line1) !important;
     }
 
     moz-toggle[pressed]::part(button) {
-        background-color: var(--ph-bg0) !important;
-        border-color: var(--ph-amber) !important;
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-line0) !important;
     }
 
-    moz-toggle::part(dot) {
+    moz-toggle[pressed]:hover::part(button) {
+        background-color: var(--ph-bg3) !important;
+        border-color: var(--ph-line1) !important;
+    }
+
+    /* The knob is .toggle-button::before inside moz-toggle's shadow root —
+     * there is no ::part(dot). Reach it through the exported button part. */
+    moz-toggle::part(button)::before {
+        background-color: var(--ph-fg1) !important;
         border-radius: 0 !important;
-        background-color: var(--ph-fg2) !important;
-        width: 8px !important;
-        height: 8px !important;
+        content: "" !important;
+        display: block !important;
+        height: 10px !important;
+        margin: 0 1px !important;
+        translate: 0 !important;
+        width: 10px !important;
     }
 
-    moz-toggle[pressed]::part(dot) {
+    moz-toggle[pressed]::part(button)::before {
         background-color: var(--ph-amber) !important;
+        translate: 14px !important;
     }
 
     input[type="range"] {

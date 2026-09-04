@@ -484,3 +484,44 @@
         border-image: none !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Text selection inside panel fields was the OS blue. */
+    panel ::selection,
+    #editBookmarkPanel ::selection,
+    panel input::selection,
+    #editBookmarkPanel input::selection {
+        background: var(--ph-bg3) !important;
+        color: var(--ph-amber) !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Protections panel shipped a purple illustration block: drop the art,
+     * keep the text on bg1. */
+    #protections-popup-message,
+    .protections-popup-message,
+    #protections-popup-messaging-system-message,
+    #protections-popup-mainView > .panel-header ~ vbox {
+        background: var(--ph-bg1) !important;
+        background-image: none !important;
+        background-color: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        border: 0 !important;
+        border-bottom: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        padding: 4px 8px !important;
+    }
+
+    .protections-popup-illustration,
+    #protections-popup-message > image,
+    #protections-popup-message image {
+        display: none !important;
+    }
+
+    #protections-popup-message description,
+    #protections-popup-message label {
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+    }
+}

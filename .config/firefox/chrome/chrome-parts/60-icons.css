@@ -553,6 +553,54 @@
         border-radius: 0 !important;
     }
 
+    /* ---- Overflow scroll arrows + list-all-tabs ----------------------- */
+
+    /*
+     * The scroll buttons live in the arrowscrollbox shadow root, so they are
+     * only reachable through ::part(). Same 14px / 1.5px stroke line language
+     * as every other chrome icon; hover is a square bg2, never a pill.
+     */
+    #tabbrowser-arrowscrollbox::part(scrollbutton-up),
+    #tabbrowser-arrowscrollbox::part(scrollbutton-down),
+    #alltabs-button {
+        -moz-context-properties: fill, stroke !important;
+        fill: none !important;
+        stroke: var(--ph-fg1) !important;
+        appearance: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 4px 6px !important;
+        background: transparent !important;
+    }
+
+    #tabbrowser-arrowscrollbox::part(scrollbutton-up) {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M9 2.5 L4.5 7 L9 11.5'/%3E%3C/svg%3E") !important;
+    }
+
+    #tabbrowser-arrowscrollbox::part(scrollbutton-down) {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M5 2.5 L9.5 7 L5 11.5'/%3E%3C/svg%3E") !important;
+    }
+
+    #alltabs-button,
+    #alltabs-button > .toolbarbutton-badge-stack > .toolbarbutton-icon,
+    #alltabs-button > .toolbarbutton-icon {
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%23b7bec8' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M2.5 5 L7 9.5 L11.5 5'/%3E%3C/svg%3E") !important;
+        border-radius: 0 !important;
+    }
+
+    #tabbrowser-arrowscrollbox::part(scrollbutton-up):hover,
+    #tabbrowser-arrowscrollbox::part(scrollbutton-down):hover,
+    #alltabs-button:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    #tabbrowser-arrowscrollbox::part(scrollbutton-up)[disabled],
+    #tabbrowser-arrowscrollbox::part(scrollbutton-down)[disabled] {
+        stroke: var(--ph-fg2) !important;
+        opacity: 1 !important;
+    }
+
     /* ---- Tab favicons: monochrome, but still meaningful --------------- */
 
     .tab-icon-image,

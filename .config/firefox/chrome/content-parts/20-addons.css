@@ -136,10 +136,21 @@
         border-radius: 0 !important;
     }
 
+    /* categories-box renders into light DOM, but the generic button tokens in
+     * 00-tokens.css still frame each row; neutralise them on the container. */
+    categories-box {
+        --button-background-color: transparent !important;
+        --button-background-color-hover: var(--ph-bg2) !important;
+        --button-border: 0 !important;
+        --button-border-color: transparent !important;
+        --button-border-color-hover: transparent !important;
+        --button-min-height: 24px !important;
+    }
+
     /* Sidebar categories are <button class="category"> and the generic button
      * rule in 00-tokens.css frames each one; kill it with a stronger selector. */
-    #categories .category,
-    categories-box .category {
+    categories-box .category,
+    categories-box button.category {
         appearance: none !important;
         background-color: transparent !important;
         border: 0 !important;
@@ -156,7 +167,6 @@
         text-transform: uppercase !important;
     }
 
-    #categories .category:hover,
     categories-box .category:hover {
         background-color: var(--ph-bg2) !important;
         border-color: transparent !important;
@@ -164,7 +174,6 @@
         color: var(--ph-fg0) !important;
     }
 
-    #categories .category[selected],
     categories-box .category[selected] {
         background-color: transparent !important;
         border-inline-start-color: var(--ph-amber) !important;
@@ -220,56 +229,6 @@
     panel-item[disabled]::part(button) {
         color: var(--ph-fg2) !important;
         opacity: 1 !important;
-    }
-
-    /* --- Enable/disable switch ---------------------------------------- *
-     * The knob is .toggle-button::before inside the shadow root, not a
-     * ::part(dot) — 00-tokens.css targets ::part(dot), which matches
-     * nothing, so the switch rendered as an empty hairline box.          */
-    moz-toggle::part(button) {
-        appearance: none !important;
-        align-items: center !important;
-        background-color: var(--ph-bg2) !important;
-        border: 1px solid var(--ph-line0) !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        height: 14px !important;
-        min-height: 0 !important;
-        padding: 0 !important;
-        width: 28px !important;
-    }
-
-    moz-toggle::part(button)::before {
-        background-color: var(--ph-fg1) !important;
-        border-radius: 0 !important;
-        content: "" !important;
-        display: block !important;
-        height: 10px !important;
-        margin: 0 1px !important;
-        translate: 0 !important;
-        width: 10px !important;
-    }
-
-    moz-toggle:hover::part(button) {
-        background-color: var(--ph-bg3) !important;
-        border-color: var(--ph-line1) !important;
-    }
-
-    moz-toggle[pressed]::part(button) {
-        background-color: var(--ph-bg2) !important;
-        border-color: var(--ph-line0) !important;
-    }
-
-    moz-toggle[pressed]::part(button)::before {
-        background-color: var(--ph-amber) !important;
-        translate: 14px !important;
-    }
-
-    moz-toggle[pressed]:hover::part(button) {
-        background-color: var(--ph-bg3) !important;
-        border-color: var(--ph-line1) !important;
     }
 
     /* --- Card hover: bg2 lift behind a hard hairline ------------------- */
