@@ -1,6 +1,6 @@
 #!/bin/bash
 # blip NAME - play a short freedesktop notification sound.
-# Gates: BLIP=0 disables; 2s global rate limit; quiet hours 23:00-08:00 (err exempt);
+# Gates: BLIP=0 disables; optional BLIP_RATE_LIMIT; quiet hours 23:00-08:00 (err exempt);
 #        optional per-name cooldown $BLIP_COOLDOWN_<NAME> seconds (default 0).
 # Volume: $BLIP_VOLUME (default 0.35). Never blocks the caller.
 
@@ -80,12 +80,14 @@ if [ "$COOLDOWN" -gt 0 ] 2>/dev/null && [ -f "$NAME_STAMP" ]; then
     [ $((NOW - NAME_LAST)) -lt "$COOLDOWN" ] && exit 0
 fi
 
-# Global rate limit: at most one blip per 2 seconds.
+# Global rate limit: BLIP_RATE_LIMIT seconds between any two blips (default 0 = off;
+# the user wants quick actions to make quick sounds).
 STAMP="${XDG_RUNTIME_DIR:-/tmp}/blip.last"
-if [ -f "$STAMP" ]; then
+RATE="${BLIP_RATE_LIMIT:-0}"
+if [ "$RATE" -gt 0 ] && [ -f "$STAMP" ]; then
     LAST=$(stat -c %Y "$STAMP" 2>/dev/null || echo 0)
     NOW=$(date +%s)
-    [ $((NOW - LAST)) -lt 2 ] && exit 0
+    [ $((NOW - LAST)) -lt "$RATE" ] && exit 0
 fi
 touch "$STAMP" 2>/dev/null
 touch "$NAME_STAMP" 2>/dev/null
