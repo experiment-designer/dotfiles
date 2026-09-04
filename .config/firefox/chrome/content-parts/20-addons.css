@@ -151,6 +151,31 @@
      * so the framed pill is that widget's own button part. 10-preferences.css
      * neutralises the identical element for about:preferences; do the same
      * here: transparent part, no border, amber left edge when selected. */
+    /* Scoped shotgun: whichever inherited var draws the per-item frame, kill it
+     * inside the nav-button subtree only (safe — does not leak to other boxes). */
+    categories-box moz-page-nav-button {
+        --page-nav-button-background-color: transparent !important;
+        --page-nav-button-background-color-hover: var(--ph-bg2) !important;
+        --page-nav-button-background-color-selected: transparent !important;
+        --page-nav-button-border-color: transparent !important;
+        --page-nav-button-border-color-hover: transparent !important;
+        --page-nav-button-border-radius: 0 !important;
+        --page-nav-button-border-radius-focused: 0 !important;
+        --page-nav-button-text-color: var(--ph-fg1) !important;
+        --page-nav-button-text-color-hover: var(--ph-fg0) !important;
+        --page-nav-button-text-color-selected: var(--ph-amber) !important;
+        --page-nav-button-indicator-background-color: var(--ph-amber) !important;
+        --button-border: 0 !important;
+        --button-border-color: transparent !important;
+        --border-color: transparent !important;
+        --border-color-interactive: transparent !important;
+        --border-color-selected: var(--ph-amber) !important;
+        --in-content-button-border-color: transparent !important;
+        --border-radius-medium: 0 !important;
+        --border-radius-small: 0 !important;
+        --button-border-radius: 0 !important;
+    }
+
     categories-box moz-page-nav-button,
     categories-box moz-page-nav-button::part(button) {
         appearance: none !important;
@@ -200,12 +225,17 @@
         padding-block: 2px !important;
     }
 
+    /* Icon/label overlap: the icon is a background-image on the shadow button
+     * sized by var(--icon-size). ::part() does not reach it here, so shrink the
+     * icon to nothing via the inherited var and pull the label to a small pad —
+     * a flush, icon-less menu beats a collided one. */
     panel-item {
-        --icon-size: 14px !important;
-        --panel-menuitem-padding-inline: 8px !important;
+        --icon-size: 0px !important;
+        --panel-menuitem-padding-inline: 10px !important;
         --panel-item-button-padding: 4px 12px !important;
-        --panel-item-button-padding-inline-start: 28px !important;
-        --panel-item-badge-inset-inline-start: 8px !important;
+        --panel-item-button-padding-inline-start: 12px !important;
+        --panel-item-badge-inset-inline-start: 4px !important;
+        --space-xxlarge: 12px !important;
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
     }
