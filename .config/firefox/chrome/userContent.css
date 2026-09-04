@@ -1687,3 +1687,413 @@ textarea::selection {
     background-color: #2c313a !important;
     color: #e6e9ed !important;
 }
+
+/* ====================================================================== *
+ * Google search results — Phosphor over Google's own dark theme.         *
+ * Google's class names churn, so lean on structure (a h3, cite,          *
+ * [role=heading], #search a:visited h3) and keep only the few stable     *
+ * class hooks as belt-and-braces. Content keeps Google's sans stack;     *
+ * only the query input is monospace.                                     *
+ * ====================================================================== */
+
+@-moz-document domain(google.com), domain(google.co.il),
+               regexp("https?://www\\.google\\.[a-z.]+/search.*") {
+
+    /* --- canvas ------------------------------------------------------- */
+    html,
+    body,
+    #main,
+    #cnt,
+    #rcnt,
+    #center_col,
+    #search,
+    #rso,
+    #appbar,
+    #topabar,
+    #botstuff,
+    #foot,
+    #footcnt,
+    .main,
+    .e24Kjd,
+    [role="main"] {
+        background: #16181d !important;
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #7b838f transparent !important;
+    }
+
+    /* --- header / search box ------------------------------------------ */
+    #searchform,
+    form[role="search"],
+    form[action*="/search"],
+    .RNNXgb,
+    #searchform .sbtc,
+    #tsf,
+    .A8SBwf {
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    header,
+    #searchbox,
+    .sfbg,
+    .Kg7oJc,
+    .o3j9tf {
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    /* Inner wrappers must not paint a second frame over the box. */
+    .RNNXgb .SDkEP,
+    .RNNXgb .a4bIc,
+    .RNNXgb .dRYYxd,
+    .RNNXgb .emcav,
+    #searchform .sbtc > div,
+    .A8SBwf .SDkEP {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    form[role="search"] textarea,
+    form[role="search"] input[type="text"],
+    #searchform textarea,
+    textarea[name="q"],
+    input[name="q"],
+    .gLFyf {
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        caret-color: #ffb340 !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 13px !important;
+    }
+
+    form[role="search"] textarea::placeholder,
+    #searchform textarea::placeholder,
+    input[name="q"]::placeholder {
+        color: #7b838f !important;
+    }
+
+    /* --- result blocks ------------------------------------------------ */
+    #search .g,
+    #search .MjjYud,
+    #search .kvH3mc,
+    #rso > div,
+    #rso > div > div,
+    #search div[data-hveid],
+    #search div[jscontroller][data-hveid],
+    .ULSxyf,
+    .Ww4FFb,
+    .eKjLze,
+    .g,
+    .MjjYud {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    /* One hairline per result, drawn on the outermost result wrapper. */
+    #rso > div.MjjYud,
+    #rso > div.g,
+    #rso > div.ULSxyf,
+    #search > div > div > div[data-hveid] {
+        border-bottom: 1px solid #3a404a !important;
+        padding-bottom: 14px !important;
+        padding-top: 14px !important;
+    }
+
+    #rso > div.MjjYud:last-child,
+    #rso > div.g:last-child {
+        border-bottom: 0 !important;
+    }
+
+    /* --- result titles ------------------------------------------------ */
+    #search h3,
+    #search a h3,
+    #search .LC20lb,
+    #search [role="heading"],
+    h3.LC20lb,
+    a h3,
+    .LC20lb,
+    .DKV0Md {
+        background: transparent !important;
+        color: #5b9dff !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+    }
+
+    #search a:visited h3,
+    #search a:visited .LC20lb,
+    a:visited h3,
+    a:visited .LC20lb,
+    #search a:visited [role="heading"] {
+        color: #d67cff !important;
+    }
+
+    #search a:hover h3,
+    #search a:hover .LC20lb,
+    a:hover h3,
+    a:hover .LC20lb {
+        text-decoration: underline !important;
+    }
+
+    /* --- URL / breadcrumb line ---------------------------------------- */
+    cite,
+    #search cite,
+    .byrV5b,
+    .TbwUpd,
+    .qLRx3b,
+    .iUh30,
+    .tjvcx,
+    .VuuXrf,
+    .ylgVCe {
+        background: transparent !important;
+        color: #b7bec8 !important;
+        font-style: normal !important;
+    }
+
+    /* --- snippets ------------------------------------------------------ */
+    .VwiC3b,
+    .IsZvec,
+    [data-sncf],
+    [data-sncf] *,
+    span[style*="-webkit-line-clamp"],
+    .MUxGbd,
+    .lyLwlc,
+    .yDYNvb {
+        background: transparent !important;
+        color: #e6e9ed !important;
+    }
+
+    .VwiC3b em,
+    [data-sncf] em,
+    #search em,
+    #search b {
+        color: #ffd866 !important;
+        font-style: normal !important;
+    }
+
+    /* --- secondary / meta text ---------------------------------------- */
+    #result-stats,
+    #resultStats,
+    .LEwnzc,
+    .Sqrs4e,
+    .fG8Fp,
+    .ChPIuf,
+    .f,
+    .st,
+    .r0bn4c,
+    small,
+    time {
+        background: transparent !important;
+        color: #b7bec8 !important;
+    }
+
+    /* --- "People also ask" / accordions -------------------------------- */
+    .related-question-pair,
+    .wQiwMc,
+    .cbphWd,
+    .iDjcJe,
+    .JolIg,
+    .dnXCYb,
+    .JCzEY,
+    div[jsname="Cpkphb"],
+    div[jsname="yEVEwb"],
+    .Wt5Tfe,
+    .kno-ftr {
+        background: transparent !important;
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    .related-question-pair,
+    .wQiwMc > div,
+    div[jsname="Cpkphb"] {
+        border-bottom: 1px solid #3a404a !important;
+    }
+
+    .related-question-pair [role="heading"],
+    .related-question-pair .iDjcJe,
+    .wQiwMc [role="heading"] {
+        color: #e6e9ed !important;
+        font-weight: 500 !important;
+    }
+
+    /* --- top filter chips / tool tabs ---------------------------------- */
+    #hdtb,
+    #hdtbMenus,
+    #hdtb-msb,
+    .crJ18e,
+    .KP7LCb,
+    [role="navigation"],
+    .IUOThf {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .hdtb-mitem,
+    .hdtb-mitem a,
+    [role="navigation"] a,
+    .crJ18e a,
+    .LatpMc,
+    .NZmxZe,
+    .nPDzT,
+    div[role="list"] > div > a {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-bottom: 2px solid transparent !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #b7bec8 !important;
+        text-decoration: none !important;
+    }
+
+    .hdtb-mitem.hdtb-msel,
+    .hdtb-msel,
+    .hdtb-mitem[aria-selected="true"],
+    [role="navigation"] a[aria-current],
+    [role="navigation"] a[aria-selected="true"],
+    .LatpMc[aria-current],
+    div[role="list"] a[aria-selected="true"],
+    .YmvwI,
+    .NZmxZe.pv0mfb {
+        background: transparent !important;
+        background-color: transparent !important;
+        border-bottom: 2px solid #ffb340 !important;
+        border-radius: 0 !important;
+        color: #ffb340 !important;
+    }
+
+    .hdtb-mitem:hover,
+    [role="navigation"] a:hover {
+        color: #e6e9ed !important;
+    }
+
+    /* --- buttons ------------------------------------------------------- */
+    button,
+    .gb_Ic,
+    [role="button"],
+    input[type="submit"],
+    input[type="button"],
+    .Tg7LZd,
+    .M2vV3 {
+        background: #1c1f25 !important;
+        background-color: #1c1f25 !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+    }
+
+    button:hover,
+    [role="button"]:hover {
+        background-color: #23272e !important;
+    }
+
+    /* The magnifier / mic / lens icon buttons inside the box stay bare. */
+    form[role="search"] button,
+    #searchform button,
+    .RNNXgb button,
+    .RNNXgb [role="button"],
+    form[role="search"] [role="button"] {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+    }
+
+    /* --- pagination ---------------------------------------------------- */
+    #foot,
+    #xjs #foot,
+    table#nav,
+    .AaVjTc,
+    .SJajHc {
+        background: #16181d !important;
+        background-color: #16181d !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .AaVjTc a,
+    .AaVjTc td,
+    table#nav a,
+    table#nav td,
+    #nav a,
+    .SJajHc a,
+    .fl {
+        background: transparent !important;
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        color: #b7bec8 !important;
+        text-decoration: none !important;
+    }
+
+    .AaVjTc td.YyVfkd,
+    .AaVjTc .YyVfkd,
+    table#nav td.cur,
+    #nav .cur,
+    .YyVfkd {
+        color: #ffb340 !important;
+        font-weight: 600 !important;
+    }
+
+    .AaVjTc a:hover,
+    table#nav a:hover {
+        color: #e6e9ed !important;
+        text-decoration: underline !important;
+    }
+
+    /* --- everything else that still paints a light card ---------------- */
+    #search [style*="rgb(255, 255, 255)"],
+    #search [style*="#fff"],
+    #rhs .kp-blk,
+    #rhs .g,
+    #rhs [data-hveid] {
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #rhs .kp-blk,
+    #rhs > div > div {
+        border: 1px solid #3a404a !important;
+    }
+
+    /* --- links elsewhere on the page ----------------------------------- */
+    #search a,
+    #botstuff a {
+        color: #5b9dff !important;
+    }
+
+    #search a:visited {
+        color: #d67cff !important;
+    }
+
+    /* --- scrollbars, per the rest of this file -------------------------- */
+    * {
+        scrollbar-width: thin !important;
+        scrollbar-color: #7b838f transparent !important;
+    }
+}
