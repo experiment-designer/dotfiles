@@ -205,8 +205,8 @@ end
 local function make_labeled_widget(icon, widget)
     return wibox.widget {
         {
-            text = icon,
-            font = "InputMono Nerd Font 11",
+            markup = string.format("<span foreground='%s'>%s</span>", palette.blue, gears.string.xml_escape(icon)),
+            font = "InputMono Nerd Font 9",
             widget = wibox.widget.textbox,
         },
         widget,
@@ -287,7 +287,7 @@ local function update_weather()
             weather_details = weather_details .. "\nClick to retry"
 
             for _, view in ipairs(weather_views) do
-                view.icon:set_text("☁️")
+                view.icon:set_markup(string.format("<span foreground='%s'>☁️</span>", palette.cyan))
                 view.temperature:set_text("--°")
                 view.tooltip:set_text(weather_details)
             end
@@ -301,8 +301,9 @@ local function update_weather()
             os.date("%H:%M")
         )
 
+        local weather_color = (code and code <= 2) and palette.amber or palette.cyan
         for _, view in ipairs(weather_views) do
-            view.icon:set_text(icon or "☁️")
+            view.icon:set_markup(string.format("<span foreground='%s'>%s</span>", weather_color, icon or "☁️"))
             view.temperature:set_text(temperature)
             view.tooltip:set_text(weather_details)
         end
@@ -311,8 +312,8 @@ end
 
 local function make_weather_widget()
     local icon = wibox.widget {
-        text = "☁️",
-        font = "InputMono Nerd Font 11",
+        markup = string.format("<span foreground='%s'>☁️</span>", palette.cyan),
+        font = "InputMono Nerd Font 9",
         widget = wibox.widget.textbox,
     }
     local temperature = wibox.widget {
@@ -396,14 +397,13 @@ local function battery_icon(capacity, status)
 end
 
 local function battery_color(capacity, status)
-    if status == "Charging" then
-        return palette.cyan
-    elseif capacity <= 15 then
-        return palette.red
-    elseif capacity <= 35 then
+    if status == "Charging" or capacity > 40 then
+        return palette.sage
+    elseif capacity >= 15 then
         return palette.amber
+    else
+        return palette.red
     end
-    return palette.sage
 end
 
 local function format_duration(minutes)
@@ -465,8 +465,8 @@ local function update_battery()
                 color,
                 icon
             ))
-            local percent_text = string.format("<b>%d%%</b>", capacity)
-            if capacity <= 7 then
+            local percent_text = string.format("%d%%", capacity)
+            if capacity <= 15 then
                 percent_text = string.format(
                     "<span foreground='%s'>%s</span>",
                     palette.red,
@@ -502,7 +502,7 @@ end
 
 local function make_battery_widget()
     local icon = wibox.widget {
-        font = "InputMono Nerd Font 12",
+        font = "InputMono Nerd Font 9",
         widget = wibox.widget.textbox,
     }
     local percent = wibox.widget {
@@ -588,11 +588,6 @@ local function read_all(path)
 end
 
 local function resource_color(usage, normal, warning_at, critical_at)
-    if usage >= critical_at then
-        return palette.red
-    elseif usage >= warning_at then
-        return palette.amber
-    end
     return normal
 end
 
@@ -637,9 +632,6 @@ local function update_system_stats()
     local load_line = read_first_line("/proc/loadavg") or ""
     local load_1, load_5, load_15 =
         load_line:match("^(%S+)%s+(%S+)%s+(%S+)")
-
-    local cpu_color = resource_color(cpu_usage, palette.secondary, 70, 90)
-    local mem_color = resource_color(mem_usage, palette.secondary, 75, 90)
     local cpu_details = string.format(
         "CPU %d%%\nLoad  %s  %s  %s\nClick to open htop",
         cpu_usage,
@@ -655,26 +647,29 @@ local function update_system_stats()
         mem_total / 1048576
     )
 
+    local cpu_icon_color = cpu_usage > 90 and palette.red or palette.cyan
+    local mem_icon_color = mem_usage > 90 and palette.red or palette.violet
+
     for _, view in ipairs(system_views) do
         view.cpu_icon:set_markup(string.format(
             "<span foreground='%s'></span>",
-            cpu_color
+            cpu_icon_color
         ))
-        view.cpu_value:set_markup(string.format("<b>%d%%</b>", cpu_usage))
+        view.cpu_value:set_markup(string.format("%d%%", cpu_usage))
         view.cpu_tooltip:set_text(cpu_details)
 
         view.mem_icon:set_markup(string.format(
             "<span foreground='%s'>󰍛</span>",
-            mem_color
+            mem_icon_color
         ))
-        view.mem_value:set_markup(string.format("<b>%d%%</b>", mem_usage))
+        view.mem_value:set_markup(string.format("%d%%", mem_usage))
         view.mem_tooltip:set_text(mem_details)
     end
 end
 
 local function make_resource_capsule()
     local icon = wibox.widget {
-        font = "InputMono Nerd Font 11",
+        font = "InputMono Nerd Font 9",
         widget = wibox.widget.textbox,
     }
     local value = wibox.widget {
@@ -867,13 +862,16 @@ end
 local function update_tag_widget(self, t, index)
     local summary, clients = tag_client_summary(t)
     local number = self:get_children_by_id("number_role")[1]
-    local number_color = t.selected and palette.green
+    local number_color = t.urgent and palette.red
+        or t.selected and palette.green
         or #clients > 0 and palette.foreground
         or palette.muted
     local underline = self:get_children_by_id("underline_role")[1]
     if underline then
-        underline.color = t.selected and palette.green
-            or (t.urgent and palette.red or palette.bar)
+        underline.color = t.urgent and palette.red
+            or t.selected and palette.green
+            or #clients > 0 and palette.foreground
+            or palette.bar
     end
 
     number:set_markup(string.format(
@@ -992,11 +990,11 @@ awful.screen.connect_for_each_screen(function(s)
         style = {
             shape = gears.shape.rectangle,
             bg_normal = palette.bar,
-            fg_normal = palette.secondary,
+            fg_normal = palette.foreground,
             bg_focus = palette.bar,
             fg_focus = palette.foreground,
             bg_minimize = palette.bar,
-            fg_minimize = palette.muted,
+            fg_minimize = palette.secondary,
             shape_border_width = 0,
             shape_border_width_focus = 0,
         },
@@ -1027,9 +1025,10 @@ awful.screen.connect_for_each_screen(function(s)
     tray:set_visible(s == screen.primary)
     local clock = make_module(
         wibox.widget.textclock(
-            "<span foreground='" .. palette.secondary .. "'>%a %d %b  </span>" ..
-            "<span font='InputMono Nerd Font Bold 11' foreground='" ..
-                palette.green .. "'>%H:%M</span>"
+            "<span font='InputMono Nerd Font 9' foreground='" .. palette.blue .. "'>󰥔 </span>" ..
+            "<span font='InputMono Nerd Font 9' foreground='" .. palette.secondary .. "'>%a %d %b  </span>" ..
+            "<span font='InputMono Nerd Font 9' foreground='" ..
+                palette.foreground .. "'>%H:%M</span>"
         ),
         palette.surface
     )
