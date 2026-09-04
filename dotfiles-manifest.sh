@@ -21,7 +21,6 @@ CONFIG_DIRS=(
     "fontconfig"
     "htop"
     "nvim"
-    "powerline"
     "wezterm"
 )
 
