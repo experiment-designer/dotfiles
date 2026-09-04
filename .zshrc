@@ -59,7 +59,7 @@ function powerline-transient-accept-line {
     local full_ps1="$PS1"
     local full_rps1="$RPS1"
 
-    PS1='%F{#c3f542}❯%f '
+    PS1='%F{#ffb340}❯%f '
     RPS1=''
     zle reset-prompt
 

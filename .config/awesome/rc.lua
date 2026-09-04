@@ -50,26 +50,27 @@ beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/phosphor.svg"
 
 -- Phosphor: a sharp terminal palette shared by every desktop surface.
 local palette = {
-    canvas     = "#07080a",
-    bar        = "#0d0f12",
-    surface    = "#14171c",
-    surface_2  = "#1c2027",
-    border     = "#262b33",
+    canvas     = "#16181d",
+    bar        = "#1c1f25",
+    surface    = "#23272e",
+    surface_2  = "#2c313a",
+    border     = "#3a404a",
     foreground = "#e6e9ed",
-    secondary  = "#9aa1ab",
-    muted      = "#5b626c",
-    green      = "#c3f542",
+    secondary  = "#b7bec8",
+    muted      = "#7b838f",
+    green      = "#ffb340",
+    sage       = "#98c379",
     cyan       = "#5ed3f3",
     blue       = "#5b9dff",
     violet     = "#d67cff",
-    amber      = "#ffb340",
+    amber      = "#ffd866",
     red        = "#ff4d6d",
 }
 
 beautiful.font = "InputMono Nerd Font 9"
 beautiful.bg_normal = palette.bar
 beautiful.bg_focus = palette.surface_2
-beautiful.bg_urgent = "#2a1017"
+beautiful.bg_urgent = "#3a1c24"
 beautiful.fg_normal = palette.foreground
 beautiful.fg_focus = "#e6e9ed"
 beautiful.fg_urgent = palette.red
@@ -105,7 +106,7 @@ beautiful.taglist_squares_sel_empty = nil
 beautiful.taglist_squares_unsel_empty = nil
 
 -- This is used later as the default terminal and editor to run.
-terminal = "wezterm"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -402,7 +403,7 @@ local function battery_color(capacity, status)
     elseif capacity <= 35 then
         return palette.amber
     end
-    return palette.green
+    return palette.sage
 end
 
 local function format_duration(minutes)

@@ -17,32 +17,35 @@ config.font = wezterm.font_with_fallback {
 }
 config.font_size = 11.0
 
--- Colors ported from ~/dotfiles/.config/alacritty/alacritty.toml.
+-- Phosphor palette — see ~/dotfiles/palette.md (mirrors alacritty.toml).
 config.colors = {
-  foreground = '#ffffff',
-  background = '#1c1c1c',
-  cursor_bg = '#ffffff',
-  cursor_fg = '#1c1c1c',
-  cursor_border = '#ffffff',
+  foreground = '#f4f6f8',
+  background = '#16181d',
+  cursor_bg = '#ffb340',
+  cursor_fg = '#16181d',
+  cursor_border = '#ffb340',
+  selection_bg = '#2c313a',
+  selection_fg = 'none',
+  split = '#e6e9ed',
   ansi = {
-    '#303030', -- black
-    '#d75f00', -- red
-    '#005f00', -- green
-    '#ffaf00', -- yellow
-    '#666666', -- blue
-    '#d75f00', -- magenta
-    '#87d75f', -- cyan
-    '#ffffff', -- white
+    '#23272e', -- black
+    '#ff4d6d', -- red
+    '#98c379', -- green
+    '#ffb340', -- yellow
+    '#5b9dff', -- blue
+    '#d67cff', -- magenta
+    '#5ed3f3', -- cyan
+    '#dfe3e8', -- white
   },
   brights = {
-    '#444444',
-    '#ff8700',
-    '#87d75f',
-    '#ffaf00',
-    '#87afff',
-    '#ff8700',
-    '#87d7ff',
-    '#ffffff',
+    '#7b838f',
+    '#ff7a90',
+    '#b3d98f',
+    '#ffc966',
+    '#82b6ff',
+    '#e3a0ff',
+    '#8ee3fa',
+    '#f4f6f8',
   },
 }
 

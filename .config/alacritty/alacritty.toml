@@ -1,55 +1,55 @@
 # Phosphor palette — see ~/dotfiles/palette.md
 
 [colors.primary]
-background = "#07080a"
+background = "#16181d"
 foreground = "#e6e9ed"
 
 [colors.cursor]
-cursor = "#c3f542"
-text = "#07080a"
+cursor = "#ffb340"
+text = "#16181d"
 
 [colors.vi_mode_cursor]
 cursor = "#5ed3f3"
-text = "#07080a"
+text = "#16181d"
 
 [colors.selection]
-background = "#1c2027"
+background = "#2c313a"
 text = "CellForeground"
 
 [colors.search.matches]
-background = "#ffb340"
-foreground = "#07080a"
+background = "#ffd866"
+foreground = "#16181d"
 
 [colors.search.focused_match]
-background = "#c3f542"
-foreground = "#07080a"
+background = "#ffb340"
+foreground = "#16181d"
 
 [colors.footer_bar]
-background = "#0d0f12"
-foreground = "#9aa1ab"
+background = "#1c1f25"
+foreground = "#b7bec8"
 
 [colors.hints.start]
-background = "#c3f542"
-foreground = "#07080a"
+background = "#ffb340"
+foreground = "#16181d"
 
 [colors.hints.end]
-background = "#1c2027"
-foreground = "#c3f542"
+background = "#2c313a"
+foreground = "#ffb340"
 
 [colors.normal]
-black = "#14171c"
+black = "#23272e"
 red = "#ff4d6d"
-green = "#c3f542"
+green = "#98c379"
 yellow = "#ffb340"
 blue = "#5b9dff"
 magenta = "#d67cff"
 cyan = "#5ed3f3"
-white = "#c9ced6"
+white = "#dfe3e8"
 
 [colors.bright]
-black = "#5b626c"
+black = "#7b838f"
 red = "#ff7a90"
-green = "#d9ff70"
+green = "#b3d98f"
 yellow = "#ffc966"
 blue = "#82b6ff"
 magenta = "#e3a0ff"
