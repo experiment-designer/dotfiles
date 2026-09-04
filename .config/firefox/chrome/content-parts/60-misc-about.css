@@ -1,0 +1,459 @@
+/* about:blank, about:protections, diagnostics, error pages, view-source, reader, pdf.js — part of userContent.css; see ../userContent.css for load order. */
+
+/* ====================================================================== *
+ * about:blank — the canvas must be bg0, not white.                       *
+ * ====================================================================== */
+
+@-moz-document url("about:blank"), url("about:newtab?"), url("about:srcdoc") {
+    :root,
+    html,
+    body {
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+    }
+}
+
+/* ====================================================================== *
+ * about:protections                                                      *
+ * ====================================================================== */
+
+@-moz-document url("about:protections") {
+    body,
+    #report-content {
+        background-color: var(--ph-bg0) !important;
+        background-image: none !important;
+    }
+
+    .new-banner .wrapper,
+    #manage-protections,
+    .card,
+    .card-body {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .card:hover {
+        border-color: var(--ph-line1) !important;
+    }
+
+    .card-title,
+    .card-header {
+        color: var(--ph-fg0) !important;
+        font-size: 12px !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    #graph-wrapper,
+    #graph {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+    }
+
+    .graph-bar,
+    .graph-wrapper-bar {
+        border-radius: 0 !important;
+    }
+
+    .graph-bar:hover {
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: -1px !important;
+    }
+
+    #legend,
+    .legend-item {
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+    }
+
+    .icon,
+    .lock-image {
+        border-radius: 0 !important;
+    }
+}
+
+/* ====================================================================== *
+ * Data-heavy diagnostics pages: tables and hairlines only.               *
+ * ====================================================================== */
+
+@-moz-document url("about:support"), url("about:profiles"), url("about:telemetry"),
+               url("about:networking"), url("about:processes"), url("about:memory"),
+               url("about:serviceworkers"), url("about:policies"), url("about:studies"),
+               url("about:unloads"), url("about:compat"), url("about:logins"),
+               url("about:certificate"), url("about:crashes"), url("about:cache") {
+    body,
+    .page-section,
+    .profile {
+        background-color: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    :where(table, tree, .card, .profile, .page-section) {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .profile:has(.default) {
+        border-color: var(--ph-amber) !important;
+    }
+
+    login-list,
+    login-list-lit-item {
+        background-color: var(--ph-bg1) !important;
+        border-radius: 0 !important;
+    }
+
+    login-list-lit-item[selected] {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-amber) !important;
+    }
+}
+
+/* ====================================================================== *
+ * Error pages                                                            *
+ * ====================================================================== */
+
+@-moz-document url-prefix("about:neterror"), url-prefix("about:certerror"),
+               url-prefix("about:httpsonlyerror"), url-prefix("about:blocked"),
+               url-prefix("about:tabcrashed"), url("about:mozilla") {
+    body {
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+    }
+
+    :where(.title, .title-text) {
+        color: #e6e9ed !important;
+        font-size: 14px !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+    }
+
+    :where(.neterror-card, .certificate-section, .card, #errorPageContainer) {
+        background-color: #1c1f25 !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .error-code,
+    #errorShortDesc {
+        color: #b7bec8 !important;
+        font-size: 11px !important;
+    }
+
+    .error-code {
+        color: #ff4d6d !important;
+    }
+}
+
+/* ====================================================================== *
+ * view-source — bg0 page, fg2 line numbers.                             *
+ * ====================================================================== */
+
+@-moz-document url-prefix("view-source:") {
+    html,
+    body,
+    pre {
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 12px !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #7b838f transparent !important;
+    }
+
+    /* Line numbers are structure, not content. */
+    .line-number,
+    span[id^="line"]::before,
+    pre[id]::before {
+        color: #7b838f !important;
+        background-color: #16181d !important;
+        border-inline-end: 1px solid #3a404a !important;
+        padding-inline-end: 6px !important;
+        margin-inline-end: 8px !important;
+    }
+
+    .start-tag,
+    .end-tag {
+        color: #5b9dff !important;
+    }
+
+    .attribute-name {
+        color: #ffb340 !important;
+    }
+
+    .attribute-value {
+        color: #5ed3f3 !important;
+    }
+
+    .comment {
+        color: #7b838f !important;
+        font-style: normal !important;
+    }
+
+    .cdata {
+        color: #d67cff !important;
+    }
+
+    .doctype {
+        color: #ffb340 !important;
+        font-style: normal !important;
+    }
+
+    a {
+        color: #5ed3f3 !important;
+        text-decoration: none !important;
+    }
+
+    ::selection {
+        background-color: #2c313a !important;
+        color: #e6e9ed !important;
+    }
+}
+
+/* ====================================================================== *
+ * Reader mode — dark, monospace-framed, hairline rules.                 *
+ * ====================================================================== */
+
+@-moz-document url-prefix("about:reader") {
+    :root,
+    body,
+    body.dark,
+    body.light,
+    body.sepia,
+    body.auto {
+        --main-background: #16181d !important;
+        --main-foreground: #e6e9ed !important;
+        --toolbar-bgcolor: #1c1f25 !important;
+        --popup-bgcolor: #1c1f25 !important;
+        --selected-background: #2c313a !important;
+        --link-foreground: #5ed3f3 !important;
+        --link-visited-foreground: #d67cff !important;
+        --grey-90-a10: #3a404a !important;
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #7b838f transparent !important;
+    }
+
+    .container,
+    .moz-reader-content {
+        background-color: #16181d !important;
+        color: #e6e9ed !important;
+    }
+
+    .reader-header,
+    .header {
+        border-bottom: 1px solid #3a404a !important;
+    }
+
+    .reader-domain,
+    .credits,
+    .reader-estimated-time {
+        color: #b7bec8 !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+    }
+
+    .reader-title {
+        color: #e6e9ed !important;
+    }
+
+    .moz-reader-content a {
+        color: #5ed3f3 !important;
+    }
+
+    .moz-reader-content blockquote {
+        border-inline-start: 2px solid #ffb340 !important;
+        color: #b7bec8 !important;
+        padding-inline-start: 12px !important;
+    }
+
+    .moz-reader-content :is(pre, code) {
+        background-color: #1c1f25 !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+    }
+
+    .moz-reader-content hr {
+        border: 0 !important;
+        border-top: 1px solid #3a404a !important;
+    }
+
+    .toolbar,
+    .toolbar-container,
+    .reader-toolbar {
+        background-color: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .toolbar button,
+    .toolbar-button {
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        color: #b7bec8 !important;
+    }
+
+    .toolbar button:hover {
+        background-color: #23272e !important;
+    }
+
+    .toolbar button.selected,
+    .toolbar button[aria-checked="true"] {
+        background-color: transparent !important;
+        color: #ffb340 !important;
+        box-shadow: inset 2px 0 0 #ffb340 !important;
+    }
+
+    .dropdown-popup {
+        background-color: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+}
+
+/* ====================================================================== *
+ * pdf.js viewer — toolbar and sidebar only; the page render is untouched.*
+ * ====================================================================== */
+
+@-moz-document url-prefix("resource://pdf.js/") {
+    :root {
+        --toolbar-height: 26px !important;
+        --toolbar-bg-color: #1c1f25 !important;
+        --toolbar-fg-color: #e6e9ed !important;
+        --toolbar-border-color: #e6e9ed !important;
+        --toolbar-icon-bg-color: #b7bec8 !important;
+        --toolbar-icon-hover-bg-color: #e6e9ed !important;
+        --sidebar-bg-color: #1c1f25 !important;
+        --sidebar-border-color: #3a404a !important;
+        --field-bg-color: #16181d !important;
+        --field-color: #e6e9ed !important;
+        --field-border-color: #e6e9ed !important;
+        --main-color: #e6e9ed !important;
+        --body-bg-color: #16181d !important;
+        --separator-color: #3a404a !important;
+        --doorhanger-bg-color: #1c1f25 !important;
+        --doorhanger-border-color: #e6e9ed !important;
+        --doorhanger-hover-bg-color: #23272e !important;
+        --doorhanger-hover-color: #e6e9ed !important;
+        --button-hover-color: #23272e !important;
+        --toggled-btn-bg-color: #23272e !important;
+        --toggled-btn-color: #ffb340 !important;
+        --progressBar-color: #ffb340 !important;
+        --progressBar-bg-color: #2c313a !important;
+        --dir-indicator-color: #ffb340 !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #7b838f transparent !important;
+    }
+
+    #outerContainer,
+    #viewerContainer {
+        background-color: #16181d !important;
+    }
+
+    #toolbarContainer,
+    #toolbarViewer,
+    .toolbar {
+        background-color: #1c1f25 !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-bottom: 1px solid #e6e9ed !important;
+        box-shadow: none !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+    }
+
+    .toolbarButton,
+    .secondaryToolbarButton,
+    #sidebarToggleButton,
+    .dropdownToolbarButton {
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #b7bec8 !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+    }
+
+    .toolbarButton:hover,
+    .secondaryToolbarButton:hover {
+        background-color: #23272e !important;
+        color: #e6e9ed !important;
+    }
+
+    .toolbarButton.toggled {
+        background-color: transparent !important;
+        color: #ffb340 !important;
+    }
+
+    #pageNumber,
+    .toolbarField,
+    #scaleSelect,
+    .dropdownToolbarButton > select {
+        appearance: none !important;
+        background-color: #16181d !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+    }
+
+    #sidebarContainer,
+    #sidebarContent {
+        background-color: #1c1f25 !important;
+        border-inline-end: 1px solid #3a404a !important;
+    }
+
+    #findbar,
+    .doorHanger,
+    .doorHangerRight,
+    #secondaryToolbar {
+        background-color: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #findResultsCount,
+    .findResultsCount {
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        color: #ffb340 !important;
+    }
+
+    .page,
+    #thumbnailView .thumbnail > .thumbnailSelectionRing {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .thumbnail.selected > .thumbnailSelectionRing {
+        outline: 1px solid #ffb340 !important;
+        outline-offset: -1px !important;
+    }
+}
+
+/* Editable-field selection stays on-palette on every page. */
+[contenteditable]::selection,
+input::selection,
+textarea::selection {
+    background-color: #2c313a !important;
+    color: #e6e9ed !important;
+}

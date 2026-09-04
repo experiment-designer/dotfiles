@@ -1,0 +1,138 @@
+/* about:addons — part of userContent.css; see ../userContent.css for load order. */
+
+/* ====================================================================== *
+ * about:addons                                                           *
+ * ====================================================================== */
+
+@-moz-document url("about:addons") {
+    #categories,
+    #sidebar {
+        background-color: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        padding-block: 6px !important;
+    }
+
+    #sidebar .category {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-inline-start: 2px solid transparent !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.05em !important;
+        margin: 0 !important;
+        min-height: 24px !important;
+        padding-inline: 10px !important;
+        text-transform: uppercase !important;
+    }
+
+    #sidebar .category:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    #sidebar .category[selected] {
+        background-color: transparent !important;
+        border-inline-start-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    .sticky-container,
+    .main-heading {
+        background-color: var(--ph-bg0) !important;
+        border-bottom: var(--ph-quiet) !important;
+        box-shadow: none !important;
+    }
+
+    .addon.card,
+    addon-card > .card,
+    recommended-addon-card > .card {
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin-block-end: 6px !important;
+        padding: 8px !important;
+    }
+
+    .addon.card:hover {
+        border-color: var(--ph-line1) !important;
+    }
+
+    /* An expanded card is the current one: amber hairline, no fill. */
+    addon-card[expanded] > .addon.card {
+        background-color: var(--ph-bg1) !important;
+        border-color: var(--ph-amber) !important;
+    }
+
+    .addon-name,
+    .addon-name-link {
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+    }
+
+    .addon-description,
+    .addon-detail-row {
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+    }
+
+    .list-section-heading,
+    .header-name {
+        color: var(--ph-fg1) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+    }
+
+    .category-badge,
+    .addon-badge,
+    .tag {
+        background-color: transparent !important;
+        border: 1px solid var(--ph-line0) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-size: 10px !important;
+        padding: 0 4px !important;
+    }
+
+    .tab-group,
+    .addon-detail-rows {
+        background-color: var(--ph-bg1) !important;
+        border-bottom: var(--ph-quiet) !important;
+    }
+
+    button.tab-button {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-bottom: 2px solid transparent !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+    }
+
+    button.tab-button:hover {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    button.tab-button[selected] {
+        background-color: transparent !important;
+        border-bottom-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    .disco-card-head img,
+    .addon-icon {
+        border-radius: 0 !important;
+    }
+}
