@@ -1,0 +1,87 @@
+# Phosphor theme for btop
+# Main background, empty for terminal default, need to be also set if you want colors in the graphs
+theme[main_bg]="#16181d"
+
+# Main text color
+theme[main_fg]="#e6e9ed"
+
+# Title color for boxes
+theme[title]="#e6e9ed"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#ffb340"
+
+# Background color of selected item in processes box
+theme[selected_bg]="#2c313a"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#ffb340"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#7b838f"
+
+# Color of text appearing on top of graphs, i.e uptime and current network
+theme[graph_text]="#b7bec8"
+
+# Background color of the percentage meters
+theme[meter_bg]="#23272e"
+
+# Misc colors for processes box including mini cpu graphs, details memory graph and process status
+theme[proc_misc]="#5ed3f3"
+
+# Cpu box outline color
+theme[cpu_box]="#3a404a"
+
+# Memory/disks box outline color
+theme[mem_box]="#3a404a"
+
+# Net box outline color
+theme[net_box]="#3a404a"
+
+# Processes box outline color
+theme[proc_box]="#3a404a"
+
+# Box divider line and small boxes line color
+theme[div_line]="#3a404a"
+
+# Temperature graph colors
+theme[temp_start]="#98c379"
+theme[temp_mid]="#ffd866"
+theme[temp_end]="#ff4d6d"
+
+# CPU graph colors
+theme[cpu_start]="#5ed3f3"
+theme[cpu_mid]="#5b9dff"
+theme[cpu_end]="#ffb340"
+
+# Mem colors
+theme[free_start]="#98c379"
+theme[free_mid]="#98c379"
+theme[free_end]="#98c379"
+
+theme[cached_start]="#5b9dff"
+theme[cached_mid]="#5b9dff"
+theme[cached_end]="#5b9dff"
+
+theme[available_start]="#5ed3f3"
+theme[available_mid]="#5ed3f3"
+theme[available_end]="#5ed3f3"
+
+theme[used_start]="#ffb340"
+theme[used_mid]="#ffb340"
+theme[used_end]="#ff4d6d"
+
+# Download graph colors
+theme[download_start]="#5ed3f3"
+theme[download_mid]="#5b9dff"
+theme[download_end]="#d67cff"
+
+# Upload graph colors
+theme[upload_start]="#ffb340"
+theme[upload_mid]="#ffb340"
+theme[upload_end]="#ff4d6d"
+
+# Process box color gradient for threads, mem and cpu usage
+theme[process_start]="#5ed3f3"
+theme[process_mid]="#5b9dff"
+theme[process_end]="#ffb340"
