@@ -69,7 +69,7 @@ builtin_box_drawing = true
 
 [font.normal]
 family = "InputMono Nerd Font"
-style = "Regular"
+style = "Medium"
 
 [font.bold]
 family = "InputMono Nerd Font"
