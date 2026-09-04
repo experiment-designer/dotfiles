@@ -46,7 +46,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/contours.svg"
+beautiful.wallpaper = os.getenv("HOME").."/.config/awesome/themes/isolines-blue.svg"
 
 -- Phosphor: a sharp terminal palette shared by every desktop surface.
 local palette = {
@@ -89,7 +89,7 @@ beautiful.border_width = 2
 beautiful.border_normal = palette.border
 beautiful.border_focus = "#e6e9ed"
 beautiful.border_marked = palette.green
-beautiful.useless_gap = 6
+beautiful.useless_gap = 3
 beautiful.gap_single_client = true
 beautiful.taglist_shape = gears.shape.rectangle
 beautiful.tasklist_shape = gears.shape.rectangle
