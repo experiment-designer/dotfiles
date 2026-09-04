@@ -1143,7 +1143,13 @@
         color: var(--ph-fg0) !important;
     }
 
-    /* The field: no chrome of its own, no icon, no radius, no shadow. */
+    /* The field: no chrome of its own, no icon, no radius, no shadow.
+     * <content-search-handoff-ui> is a Lit element with no ::part, so the
+     * only lever on .search-handoff-button inside its shadow root is the
+     * set of custom properties it reads. It reads more than its own
+     * --content-search-handoff-ui-* namespace: the raised look came from
+     * `box-shadow: var(--box-shadow-level-3)`, a *global* design-system
+     * token, which is why the box survived every namespaced override. */
     content-search-handoff-ui {
         --content-search-handoff-ui-background-color: transparent !important;
         --content-search-handoff-ui-color: var(--ph-fg0) !important;
@@ -1157,6 +1163,16 @@
         --content-search-handoff-ui-fakefocus-box-shadow-inner: transparent !important;
         --content-search-handoff-ui-fakefocus-box-shadow-outer: transparent !important;
 
+        /* The box itself: .search-handoff-button's drop shadow, and the
+         * background/radius tokens the page feeds into the namespace above. */
+        --box-shadow-level-2: none !important;
+        --box-shadow-level-3: none !important;
+        --box-shadow-level-4: none !important;
+        --newtab-background-color-secondary: transparent !important;
+        --newtab-primary-action-background-dimmed: transparent !important;
+        --border-radius-circle: 0 !important;
+        --border-radius-medium: 0 !important;
+
         /* The shadow button reserves 2 * --space-xlarge for the icon it no
          * longer has, and .fake-textbox is offset by --space-xsmall. */
         --space-xlarge: 0px !important;
@@ -1168,14 +1184,88 @@
          * ours is drawn on .search-inner-wrapper::after instead. */
         --font-size-root: 0px !important;
 
-        align-items: center !important;
-        background: transparent !important;
+        /* Vertical alignment. .fake-caret is a 17px block with margin-top:
+         * -17px, so it lands on .fake-textbox's line box — which collapses to
+         * nothing at font-size 0 unless line-height is set explicitly. Pin
+         * line-height to the caret's own 17px and the caret sits exactly on
+         * the (invisible) text line; stretch the button over the full 40px
+         * field so the button centres that line, putting caret, placeholder
+         * and the amber prefix all on one baseline at 20px. */
+        align-items: stretch !important;
+        height: 40px !important;
+        line-height: 17px !important;
+
+        background: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
         box-shadow: none !important;
+        outline: none !important;
         color: var(--ph-fg0) !important;
         font-family: var(--ph-font) !important;
         font-size: 22px !important;
         flex: 1 1 auto !important;
         min-width: 0 !important;
+    }
+
+    /* userContent.css is a *user-origin* sheet, so — unlike an author sheet —
+     * it cascades **into shadow trees**, and user-origin !important outranks
+     * author !important. That is exactly why the box survived: the generic
+     * :where(button, input[type="button"], …) rule in the about:* block above
+     * reaches .search-handoff-button inside this element's shadow root and
+     * repaints it with --ph-bg1 + --ph-quiet, beating the shadow sheet's own
+     * background/border (and so beating every --content-search-handoff-ui-*
+     * token we set). The same reach is the cure: style the shadow parts. */
+    .search-handoff-button,
+    .search-handoff-button:hover,
+    .search-handoff-button:focus,
+    .search-handoff-button:focus-visible,
+    .search-handoff-button:active,
+    #newtab-search-text {
+        appearance: none !important;
+        -moz-appearance: none !important;
+        background: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        height: 40px !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* The invisible <input> that actually takes the keystrokes. */
+    .fake-editable,
+    .fake-editable:focus {
+        background: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        padding: 0 !important;
+    }
+
+    /* One baseline for all three marks. .fake-caret is a block that follows
+     * .fake-textbox with margin-top: -<its own height>, so it lands on the
+     * text line only when the two agree; the button then centres that line in
+     * its 40px box — the same 40px line box the amber prefix and the
+     * placeholder use, so all three end up centred on the field's midline. */
+    .fake-textbox {
+        font-size: 0 !important;
+        line-height: 22px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .fake-caret {
+        height: 22px !important;
+        margin-top: -22px !important;
+        inset-inline-start: 0 !important;
+        background: var(--ph-amber) !important;
     }
 }
 
@@ -1265,20 +1355,23 @@
         flex: 0 0 auto;
         font-family: var(--ph-font);
         font-size: 22px;
-        line-height: 34px;
+        line-height: 40px;
         user-select: none;
         white-space: pre;
     }
 
     /* The hairline sits under the field only, not under the prompt. */
     .search-inner-wrapper {
+        align-items: center !important;
+        background: none !important;
+        background-color: transparent !important;
         border: 0 !important;
         border-block-end: 1px solid var(--ph-line1) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         display: flex !important;
         flex: 1 1 auto !important;
-        height: 34px !important;
+        height: 40px !important;
         margin: 0 !important;
         max-width: none !important;
         min-width: 0 !important;
@@ -1294,7 +1387,7 @@
         font-size: 22px;
         inset-block-start: 0;
         inset-inline-start: 0;
-        line-height: 34px;
+        line-height: 40px;
         pointer-events: none;
         position: absolute;
         user-select: none;
@@ -1763,644 +1856,4 @@ input::selection,
 textarea::selection {
     background-color: #2c313a !important;
     color: #e6e9ed !important;
-}
-
-/* ====================================================================== *
- * Google search results — Phosphor over Google's own dark theme.         *
- * Google's class names churn, so lean on structure (a h3, cite,          *
- * [role=heading], #search a:visited h3) and keep only the few stable     *
- * class hooks as belt-and-braces. Content keeps Google's sans stack;     *
- * only the query input is monospace.                                     *
- * ====================================================================== */
-
-@-moz-document regexp("https?://www\\.google\\.[a-z.]+/(search|webhp)\\?.*") {
-
-    /* --- canvas ------------------------------------------------------- */
-    html,
-    body,
-    #main,
-    #cnt,
-    #rcnt,
-    #center_col,
-    #search,
-    #rso,
-    #appbar,
-    #topabar,
-    #botstuff,
-    #foot,
-    #footcnt,
-    .main,
-    .e24Kjd,
-    [role="main"] {
-        background: #16181d !important;
-        background-color: #16181d !important;
-        color: #e6e9ed !important;
-        scrollbar-width: thin !important;
-        scrollbar-color: #7b838f transparent !important;
-    }
-
-    /* --- header / search box ------------------------------------------ */
-    #searchform,
-    form[role="search"],
-    form[action*="/search"],
-    .RNNXgb,
-    #searchform .sbtc,
-    #tsf,
-    .A8SBwf {
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        border: 1px solid #e6e9ed !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    header,
-    #searchbox,
-    .sfbg,
-    .Kg7oJc,
-    .o3j9tf {
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    /* Nothing inside the box paints its own (white) surface or second frame.
-       Structural, because .RNNXgb/.SDkEP-style names churn every few months. */
-    #searchform *,
-    form[role="search"] *,
-    .RNNXgb *,
-    .A8SBwf * {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    form[role="search"] textarea,
-    form[role="search"] input[type="text"],
-    #searchform textarea,
-    textarea[name="q"],
-    input[name="q"],
-    .gLFyf {
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        caret-color: #ffb340 !important;
-        color: #e6e9ed !important;
-        font-family: "InputMono Nerd Font", monospace !important;
-        font-size: 13px !important;
-    }
-
-    /* Structural fallback: Google frequently ships the box without
-       role="search"/.RNNXgb, so walk up from the query field itself. */
-    div:has(> textarea[name="q"]),
-    div:has(> div > textarea[name="q"]),
-    div:has(> div > div > textarea[name="q"]),
-    div:has(> div > div > div > textarea[name="q"]),
-    div:has(> input[name="q"]),
-    div:has(> div > input[name="q"]),
-    div:has(> div > div > input[name="q"]),
-    header *,
-    #searchbox * {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    form:has(textarea[name="q"]),
-    form:has(input[name="q"]) {
-        background-color: #1c1f25 !important;
-        border: 1px solid #e6e9ed !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    form:has(textarea[name="q"]) *,
-    form:has(input[name="q"]) * {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    /* Last resort: any text field anywhere on the page. */
-    input:not([type="checkbox"]):not([type="radio"]),
-    textarea,
-    select {
-        background-color: #1c1f25 !important;
-        border-radius: 0 !important;
-        color: #e6e9ed !important;
-    }
-
-    form[role="search"] textarea::placeholder,
-    #searchform textarea::placeholder,
-    input[name="q"]::placeholder {
-        color: #7b838f !important;
-    }
-
-    /* --- result blocks ------------------------------------------------ */
-    #search .g,
-    #search .MjjYud,
-    #search .kvH3mc,
-    #rso > div,
-    #rso > div > div,
-    #search div[data-hveid],
-    #search div[jscontroller][data-hveid],
-    .ULSxyf,
-    .Ww4FFb,
-    .eKjLze,
-    .g,
-    .MjjYud {
-        background: transparent !important;
-        background-color: transparent !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    /* One hairline per result, drawn on the outermost result wrapper. */
-    #rso > div.MjjYud,
-    #rso > div.g,
-    #rso > div.ULSxyf,
-    #search > div > div > div[data-hveid] {
-        border-bottom: 1px solid #3a404a !important;
-        padding-bottom: 14px !important;
-        padding-top: 14px !important;
-    }
-
-    #rso > div.MjjYud:last-child,
-    #rso > div.g:last-child {
-        border-bottom: 0 !important;
-    }
-
-    /* --- result titles ------------------------------------------------ */
-    #search h3,
-    #search a h3,
-    #search .LC20lb,
-    #search [role="heading"],
-    h3.LC20lb,
-    a h3,
-    .LC20lb,
-    .DKV0Md {
-        background: transparent !important;
-        color: #5b9dff !important;
-        font-weight: 600 !important;
-        text-decoration: none !important;
-    }
-
-    #search a:visited h3,
-    #search a:visited .LC20lb,
-    a:visited h3,
-    a:visited .LC20lb,
-    #search a:visited [role="heading"] {
-        color: #d67cff !important;
-    }
-
-    #search a:hover h3,
-    #search a:hover .LC20lb,
-    a:hover h3,
-    a:hover .LC20lb {
-        text-decoration: underline !important;
-    }
-
-    /* --- URL / breadcrumb line ---------------------------------------- */
-    cite,
-    #search cite,
-    .byrV5b,
-    .TbwUpd,
-    .qLRx3b,
-    .iUh30,
-    .tjvcx,
-    .VuuXrf,
-    .ylgVCe {
-        background: transparent !important;
-        color: #b7bec8 !important;
-        font-style: normal !important;
-    }
-
-    /* --- snippets ------------------------------------------------------ */
-    .VwiC3b,
-    .IsZvec,
-    [data-sncf],
-    [data-sncf] *,
-    span[style*="-webkit-line-clamp"],
-    .MUxGbd,
-    .lyLwlc,
-    .yDYNvb {
-        background: transparent !important;
-        color: #e6e9ed !important;
-    }
-
-    .VwiC3b em,
-    [data-sncf] em,
-    #search em,
-    #search b {
-        background: transparent !important;
-        color: #e6e9ed !important;
-        font-style: normal !important;
-        font-weight: 600 !important;
-    }
-
-    /* --- secondary / meta text ---------------------------------------- */
-    #result-stats,
-    #resultStats,
-    .LEwnzc,
-    .Sqrs4e,
-    .fG8Fp,
-    .ChPIuf,
-    .f,
-    .st,
-    .r0bn4c,
-    small,
-    time {
-        background: transparent !important;
-        color: #b7bec8 !important;
-    }
-
-    /* --- "People also ask" / accordions -------------------------------- */
-    .related-question-pair,
-    .wQiwMc,
-    .cbphWd,
-    .iDjcJe,
-    .JolIg,
-    .dnXCYb,
-    .JCzEY,
-    div[jsname="Cpkphb"],
-    div[jsname="yEVEwb"],
-    .Wt5Tfe,
-    .kno-ftr {
-        background: transparent !important;
-        background-color: transparent !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    .related-question-pair,
-    .wQiwMc > div,
-    div[jsname="Cpkphb"] {
-        border-bottom: 1px solid #3a404a !important;
-    }
-
-    .related-question-pair [role="heading"],
-    .related-question-pair .iDjcJe,
-    .wQiwMc [role="heading"] {
-        color: #e6e9ed !important;
-        font-weight: 500 !important;
-    }
-
-    /* --- top filter chips / tool tabs ---------------------------------- */
-    #hdtb,
-    #hdtbMenus,
-    #hdtb-msb,
-    .crJ18e,
-    .KP7LCb,
-    [role="navigation"],
-    .IUOThf {
-        background: transparent !important;
-        background-color: transparent !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    .hdtb-mitem,
-    .hdtb-mitem a,
-    [role="navigation"] a,
-    .crJ18e a,
-    .LatpMc,
-    .NZmxZe,
-    .nPDzT,
-    div[role="list"] > div > a {
-        background: transparent !important;
-        background-color: transparent !important;
-        border: 0 !important;
-        border-bottom: 2px solid transparent !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #b7bec8 !important;
-        text-decoration: none !important;
-    }
-
-    .hdtb-mitem.hdtb-msel,
-    .hdtb-msel,
-    .hdtb-mitem[aria-selected="true"],
-    [role="navigation"] a[aria-current],
-    [role="navigation"] a[aria-selected="true"],
-    .LatpMc[aria-current],
-    div[role="list"] a[aria-selected="true"],
-    .YmvwI,
-    .NZmxZe.pv0mfb {
-        background: transparent !important;
-        background-color: transparent !important;
-        border-bottom: 2px solid #ffb340 !important;
-        border-radius: 0 !important;
-        color: #ffb340 !important;
-    }
-
-    /* Chips are not always anchors, so colour the whole row structurally. */
-    #hdtb *,
-    #hdtbMenus *,
-    [role="navigation"] *,
-    div[role="list"] * {
-        background-color: transparent !important;
-        background-image: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #b7bec8 !important;
-    }
-
-    [role="navigation"] [aria-current],
-    [role="navigation"] [aria-current] *,
-    [role="navigation"] [aria-selected="true"],
-    [role="navigation"] [aria-selected="true"] *,
-    div[role="list"] [aria-current],
-    div[role="list"] [aria-current] *,
-    .hdtb-msel,
-    .hdtb-msel *,
-    .YmvwI {
-        color: #ffb340 !important;
-    }
-
-    [role="navigation"] [aria-current],
-    [role="navigation"] [aria-selected="true"],
-    div[role="list"] [aria-current],
-    .hdtb-msel {
-        border-bottom: 2px solid #ffb340 !important;
-    }
-
-    .hdtb-mitem:hover,
-    [role="navigation"] a:hover,
-    [role="navigation"] a:hover * {
-        color: #e6e9ed !important;
-    }
-
-    /* --- buttons ------------------------------------------------------- */
-    button,
-    .gb_Ic,
-    [role="button"],
-    input[type="submit"],
-    input[type="button"],
-    .Tg7LZd,
-    .M2vV3 {
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        border: 1px solid #3a404a !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    button:hover,
-    [role="button"]:hover {
-        background-color: #23272e !important;
-    }
-
-    /* The magnifier / mic / lens icon buttons inside the box stay bare. */
-    form[role="search"] button,
-    #searchform button,
-    .RNNXgb button,
-    .RNNXgb [role="button"],
-    form[role="search"] [role="button"] {
-        background: transparent !important;
-        background-color: transparent !important;
-        border: 0 !important;
-    }
-
-    /* --- pagination ---------------------------------------------------- */
-    #foot,
-    #xjs #foot,
-    table#nav,
-    .AaVjTc,
-    .SJajHc {
-        background: #16181d !important;
-        background-color: #16181d !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    .AaVjTc a,
-    .AaVjTc td,
-    table#nav a,
-    table#nav td,
-    #nav a,
-    .SJajHc a,
-    .fl {
-        background: transparent !important;
-        background-color: transparent !important;
-        border-radius: 0 !important;
-        color: #b7bec8 !important;
-        text-decoration: none !important;
-    }
-
-    .AaVjTc td.YyVfkd,
-    .AaVjTc .YyVfkd,
-    table#nav td.cur,
-    #nav .cur,
-    .YyVfkd {
-        color: #ffb340 !important;
-        font-weight: 600 !important;
-    }
-
-    .AaVjTc a:hover,
-    table#nav a:hover {
-        color: #e6e9ed !important;
-        text-decoration: underline !important;
-    }
-
-    /* --- everything else that still paints a light card ---------------- */
-    /* Any element carrying its own inline paint or a gradient fade. */
-    #main [style*="background"],
-    #main [style*="gradient"],
-    #cnt [style*="background"],
-    #rhs [style*="background"],
-    #search mark,
-    #main mark,
-    #main .fade,
-    #main [class*="fade"] {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        box-shadow: none !important;
-    }
-
-    /* Notice / promo cards that sit outside the result list (the pale-yellow
-       "results in English?" box and friends). Structural, not class-based. */
-    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search),
-    #main div[jsname]:not(#rso *):not(#search *),
-    #main aside,
-    #main [role="complementary"],
-    #topstuff,
-    #topstuff div,
-    #rhs .kp-blk,
-    #rhs .g,
-    #rhs [data-hveid] {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
-
-    /* Their contents inherit Google's dark-on-light text, so re-tier it. */
-    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search) > *,
-    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search) span,
-    #main div[data-ved]:not(#rso *):not(#search *):not(#rso):not(#search) div,
-    #topstuff * {
-        color: #e6e9ed !important;
-    }
-
-    #main div[data-ved]:not(#rso *):not(#search *) a,
-    #topstuff a {
-        color: #5b9dff !important;
-    }
-
-    /* Shimmer / skeleton placeholders load as bright pills — hide the paint. */
-    #main div:empty,
-    #main [class*="shimmer"],
-    #main [class*="skeleton"],
-    #main [class*="placeholder"] {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    /* Inline code chips inside AI overviews / snippets. */
-    #main code,
-    #main pre,
-    #main kbd,
-    #main samp {
-        background-color: #23272e !important;
-        border: 1px solid #3a404a !important;
-        border-radius: 0 !important;
-        color: #e6e9ed !important;
-        font-family: "InputMono Nerd Font", monospace !important;
-    }
-
-    #rhs .kp-blk,
-    #rhs > div > div {
-        border: 1px solid #3a404a !important;
-    }
-
-    /* --- links elsewhere on the page ----------------------------------- */
-    #search a,
-    #botstuff a {
-        color: #5b9dff !important;
-    }
-
-    #search a:visited {
-        color: #d67cff !important;
-    }
-
-    /* The query field must beat both Google and Firefox's UA field paint. */
-    header textarea[name="q"],
-    header input[name="q"],
-    form textarea[name="q"],
-    form input[name="q"],
-    textarea[name="q"],
-    input[name="q"],
-    form:has(textarea[name="q"]) textarea,
-    form:has(input[name="q"]) input {
-        appearance: none !important;
-        -moz-appearance: none !important;
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        background-image: none !important;
-        border: 1px solid #e6e9ed !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        caret-color: #ffb340 !important;
-        color: #e6e9ed !important;
-        font-family: "InputMono Nerd Font", monospace !important;
-        font-size: 13px !important;
-    }
-
-    /* --- scrollbars, per the rest of this file -------------------------- */
-    * {
-        scrollbar-width: thin !important;
-        scrollbar-color: #7b838f transparent !important;
-    }
-}
-
-/* ====================================================================== *
- * Google homepage — deliberately minimal.                                *
- * The results-page rules above frame the form and its wrappers; on the    *
- * homepage those same elements are full-width layout containers, so the   *
- * frames came out as two huge nested boxes. Here: canvas, text, links,    *
- * the search pill itself and the two buttons. No wrapper frames.          *
- * ====================================================================== */
-
-@-moz-document regexp("https?://www\\.google\\.[a-z.]+/?(\\?.*)?") {
-
-    /* --- canvas ------------------------------------------------------- */
-    html,
-    body {
-        background: #16181d !important;
-        background-color: #16181d !important;
-        color: #e6e9ed !important;
-        scrollbar-width: thin !important;
-        scrollbar-color: #7b838f transparent !important;
-    }
-
-    a {
-        color: #5b9dff !important;
-    }
-
-    /* --- the search pill: the field's direct parent, one level only ---- */
-    div:has(> textarea[name="q"]),
-    div:has(> input[name="q"]) {
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        border: 1px solid #e6e9ed !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    textarea[name="q"],
-    input[name="q"] {
-        appearance: none !important;
-        -moz-appearance: none !important;
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        background-image: none !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        caret-color: #ffb340 !important;
-        color: #e6e9ed !important;
-        font-family: "InputMono Nerd Font", monospace !important;
-        font-size: 13px !important;
-    }
-
-    textarea[name="q"]::placeholder,
-    input[name="q"]::placeholder {
-        color: #7b838f !important;
-    }
-
-    /* --- "Google Search" / "I'm Feeling Lucky" ------------------------- */
-    input[type="submit"],
-    input[name="btnK"],
-    input[name="btnI"] {
-        background: #1c1f25 !important;
-        background-color: #1c1f25 !important;
-        border: 1px solid #3a404a !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        color: #e6e9ed !important;
-    }
 }
