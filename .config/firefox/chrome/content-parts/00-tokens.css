@@ -327,7 +327,9 @@
 
     /* --- Buttons ---------------------------------------------------- */
 
-    :where(button, input[type="button"], input[type="submit"], .button) {
+    /* Toggle tracks have their own padding/size and translated knob. Applying
+     * ordinary button geometry pushes that knob outside the track. */
+    :where(button, input[type="button"], input[type="submit"], .button):not(.toggle-button) {
         appearance: none !important;
         background-color: var(--ph-bg1) !important;
         border: var(--ph-quiet) !important;
@@ -340,13 +342,13 @@
         padding: 3px 10px !important;
     }
 
-    :where(button, input[type="button"], input[type="submit"], .button):hover:not([disabled]) {
+    :where(button, input[type="button"], input[type="submit"], .button):not(.toggle-button):hover:not([disabled]) {
         background-color: var(--ph-bg2) !important;
         border-color: var(--ph-line1) !important;
         color: var(--ph-fg0) !important;
     }
 
-    :where(button, .button)[disabled] {
+    :where(button, .button):not(.toggle-button)[disabled] {
         color: var(--ph-fg2) !important;
         border-color: var(--ph-line0) !important;
         background-color: var(--ph-bg1) !important;
