@@ -5,7 +5,6 @@
 
 HOME_DOTFILES=(
     ".bashrc"
-    ".vimrc"
     ".xbindkeysrc"
     ".xinitrc"
     ".zshrc"
@@ -40,6 +39,7 @@ USER_SCRIPTS=(
     "bin/blip"
     "bin/blip-post-bash"
     "bin/rice-shot"
+    "bin/startpage-server"
     "bin/term"
     "bin/brightness-step"
     "bin/btop"
