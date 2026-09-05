@@ -94,3 +94,6 @@ user_pref("network.captive-portal-service.enabled", false);
 
 // Allow our unsigned local "Phosphor New Tab" extension (phosphor-newtab.xpi); Developer Edition honours this.
 user_pref("xpinstall.signatures.required", false);
+
+// Never auto-enter Troubleshoot Mode after crashes (it silently disables the rice + extensions).
+user_pref("toolkit.startup.max_resumed_crashes", -1);
