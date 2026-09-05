@@ -91,3 +91,6 @@ user_pref("browser.startup.homepage", "http://127.0.0.1:7777/index.html");
 // No proxy autodetection / captive-portal probe at startup (they delay the first page load).
 user_pref("network.proxy.type", 0);
 user_pref("network.captive-portal-service.enabled", false);
+
+// Allow our unsigned local "Phosphor New Tab" extension (phosphor-newtab.xpi); Developer Edition honours this.
+user_pref("xpinstall.signatures.required", false);

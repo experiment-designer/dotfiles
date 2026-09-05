@@ -3,7 +3,5 @@ set hintchars asdfghjkl
 bind d mode normal
 seturl .*youtube.com allowautofocus false
 autocmd DocStart .*youtube.com mode normal
-set newtab http://127.0.0.1:7777/index.html
 seturl 127.0.0.1 allowautofocus false
 set editorcmd alacritty -e nvim %f
-set newtabfocus urlbar

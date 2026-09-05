@@ -1,0 +1,10 @@
+{
+  "manifest_version": 2,
+  "name": "Phosphor New Tab",
+  "version": "1.0",
+  "description": "Replaces Firefox's new tab with the local Phosphor start page (index.html), leaving the address bar empty and focused.",
+  "chrome_url_overrides": { "newtab": "index.html" },
+  "browser_specific_settings": {
+    "gecko": { "id": "phosphor-newtab@guy.local", "strict_min_version": "128.0" }
+  }
+}
