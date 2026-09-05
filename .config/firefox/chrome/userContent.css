@@ -3,6 +3,7 @@
  * this file holds imports only — put real rules in the part files. */
 
 @import url("content-parts/00-tokens.css");
+@import url("content-parts/05-internal-defaults.css");
 @import url("content-parts/10-preferences.css");
 @import url("content-parts/20-addons.css");
 @import url("content-parts/30-config.css");

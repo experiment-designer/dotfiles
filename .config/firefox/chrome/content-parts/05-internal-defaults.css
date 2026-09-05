@@ -1,0 +1,120 @@
+/* Phosphor fallback for internal documents, including toolkit subdocuments.
+ * Keep this before the page-specific files: their existing layouts and more
+ * specific styling take precedence. Never match http(s), file or extensions.
+ * The palette and widget dimensions remain owned by 00-tokens.css.
+ */
+@-moz-document url-prefix("about:"), url-prefix("chrome://"),
+               url-prefix("resource://") {
+    /* Some older pages use XUL roots; newer ones use HTML and shadow trees. */
+    :where(:root, body) {
+        background-color: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+    }
+
+    :where(p, label, description, summary, legend, dt, dd, li, output,
+           code, pre, kbd, samp) {
+        font-family: var(--ph-font) !important;
+    }
+
+    /* Surface roles cover unfamiliar pages without changing their layout,
+     * visibility, illustrations with meaning, or warning/error text. */
+    :where(dialog, [role="dialog"], .panel, .panel-body, .section-card,
+           .info-box, .info-box-content, fieldset, details) {
+        background-color: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    :where(hr) {
+        border: 0 !important;
+        border-block-start: var(--ph-quiet) !important;
+    }
+
+    :where(progress, meter) {
+        accent-color: var(--ph-amber) !important;
+        background-color: var(--ph-bg2) !important;
+        border-radius: 0 !important;
+    }
+
+    /* moz-button now paints a span inside its shadow button. The generic
+     * button rule otherwise adds a second border/background/padding outside
+     * that span. User-origin selectors reach shadow trees directly; ::part
+     * is not needed. Match the structure so ordinary buttons stay unchanged. */
+    button:has(> .button-background),
+    button:has(> .button-background):is(:hover, :active, :disabled) {
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .button-background {
+        font-family: var(--ph-font) !important;
+        border-radius: 0 !important;
+    }
+
+    .button-background[type="primary"] {
+        background-color: transparent !important;
+        border-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    button:not(:disabled):hover > .button-background[type="primary"] {
+        background-color: var(--ph-bg2) !important;
+    }
+
+    button:disabled > .button-background {
+        color: var(--ph-fg2) !important;
+        border-color: var(--ph-line0) !important;
+    }
+}
+
+/* All network/certificate failures share this document family, including
+ * DNS, offline, refused connections and blocked ports. Match documentURI;
+ * Firefox still displays the failed website's URL in the address bar.
+ * Works with both the legacy document and the newer net-error-card shadow
+ * component. Keep security explanations, warning icons and actions intact.
+ */
+@-moz-document url-prefix("about:neterror"), url-prefix("about:certerror"),
+               url-prefix("about:httpsonlyerror"), url-prefix("about:blocked"),
+               url-prefix("about:tabcrashed") {
+    net-error-card {
+        min-width: 0 !important;
+        max-width: 720px !important;
+    }
+
+    /* Decorative artwork is separate from the warning icons and text. */
+    .felt-privacy-container > .img-container {
+        display: none !important;
+    }
+
+    .felt-privacy-container,
+    :where(.advanced-container, .advanced-panel, .advanced-panel-container,
+           .certificate-section, .neterror-card) {
+        background-color: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    #error-title {
+        margin-block-start: 0 !important;
+    }
+
+    :where(#error-intro, #whatCanYouDo, #errorShortDesc) {
+        color: var(--ph-fg1) !important;
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+    }
+
+    :where(#errorCode, .error-code) {
+        color: var(--ph-red) !important;
+        overflow-wrap: anywhere !important;
+    }
+}
