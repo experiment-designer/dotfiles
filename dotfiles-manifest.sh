@@ -43,6 +43,7 @@ USER_SCRIPTS=(
     "bin/term"
     "bin/brightness-step"
     "bin/btop"
+    "bin/build-newtab-xpi"
     "bin/htop"
 )
 
