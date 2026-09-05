@@ -195,13 +195,9 @@
         --toggle-dot-background-color-hover: var(--ph-fg0) !important;
         --toggle-dot-background-color-active: var(--ph-fg0) !important;
         --toggle-dot-background-color-on-pressed: var(--ph-amber) !important;
-        --toggle-border-width: 1px !important;
-        --toggle-dot-margin: 2px !important;
-        --toggle-dot-height: 8px !important;
-        --toggle-dot-width: 8px !important;
-        --toggle-dot-transform-x: 14px !important;
-        --toggle-height: 14px !important;
-        --toggle-width: 28px !important;
+        /* No geometry overrides: Firefox's own --toggle-width/height/dot/
+         * transform-x are a matched set; a partial override leaves the knob
+         * off the track (dot at the right edge, on-knob past the border). */
 
         /* --- Cards, panels, nav, tables, message bars --- */
         --card-background-color: var(--ph-bg1) !important;
