@@ -617,3 +617,130 @@
         font-family: var(--ph-font) !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Round 4: full notification-bar theming ----------------------- *
+     * FF154 renders infobars and doorhanger bars as `notification-message`
+     * custom elements derived from `moz-message-bar`, with an OPEN shadow
+     * root. Its internals (.container/.icon/.close/.content) expose NO
+     * ::part() (only support-link is a part), so they cannot be reached with
+     * `notification-message::part(...)`. They ARE reachable through the
+     * `--message-bar-*` / `--info-bar-*` custom properties, which inherit
+     * across the shadow boundary when set on the host. Buttons and the
+     * button container are light DOM, so they take normal selectors. */
+
+    notification-message,
+    .infobar,
+    .notificationbox-stack > notification-message {
+        /* moz-message-bar internals, via inherited custom properties */
+        --message-bar-background-color: var(--ph-bg1) !important;
+        --message-bar-background-color-critical: var(--ph-bg1) !important;
+        --message-bar-background-color-success: var(--ph-bg1) !important;
+        --message-bar-background-color-warning: var(--ph-bg1) !important;
+        --message-bar-icon-background-color: transparent !important;
+        --message-bar-icon-background-color-critical: transparent !important;
+        --message-bar-icon-background-color-success: transparent !important;
+        --message-bar-icon-background-color-warning: transparent !important;
+        --message-bar-text-color: var(--ph-fg0) !important;
+        --message-bar-icon-color: var(--ph-fg1) !important;
+        --message-bar-border-color: var(--ph-line0) !important;
+        --message-bar-border-width: 0 !important;
+        --message-bar-border-radius: 0 !important;
+        --message-bar-container-min-height: 0 !important;
+        --message-bar-container-padding-block: 3px !important;
+        --message-bar-container-padding-inline: 8px !important;
+        --message-bar-icon-container-margin-block-start: 0 !important;
+        --message-bar-icon-container-padding: 0 !important;
+        --message-bar-icon-container-border: none !important;
+        --message-bar-text-container-padding-block: 0 !important;
+        /* infobar wrapper vars */
+        --info-bar-background-color: var(--ph-bg1) !important;
+        --info-bar-background-color-configurable: var(--ph-bg1) !important;
+        --info-bar-text-color: var(--ph-fg0) !important;
+        --info-bar-box-shadow: none !important;
+        --info-bar-margin-inline: 0 !important;
+        --info-bar-margin-block-end: 0 !important;
+        --info-bar-margin-block-start: 0 !important;
+        /* the host itself (light DOM) */
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+        border: 0 !important;
+        border-top: var(--ph-hair) !important;
+        border-bottom: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+    }
+
+    /* Kill the coloured accent stripe (amber/pink/purple gradient ::before,
+     * and the nova top-border variant): the host hairline is the only frame. */
+    notification-message::before,
+    .infobar::before {
+        background: none !important;
+        background-image: none !important;
+        background-color: transparent !important;
+        display: none !important;
+        width: 0 !important;
+    }
+
+    /* Notification buttons (light DOM: span.notification-button-container). */
+    notification-message .notification-button,
+    .infobar .notification-button,
+    .notification-button-container .notification-button {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 1px solid var(--ph-line0) !important;
+        border-radius: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 2px 10px !important;
+        box-shadow: none !important;
+    }
+
+    notification-message .notification-button:hover,
+    .notification-button-container .notification-button:hover {
+        background: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    /* Primary / default action: amber text + amber edge, never an amber fill. */
+    notification-message .notification-button.primary,
+    .infobar .notification-button.primary,
+    .notification-button-container .notification-button.primary {
+        background: transparent !important;
+        border: 1px solid var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+    }
+
+    notification-message .notification-button.primary:hover,
+    .notification-button-container .notification-button.primary:hover {
+        background: var(--ph-bg2) !important;
+        border-color: var(--ph-amber-hi) !important;
+        color: var(--ph-amber-hi) !important;
+    }
+
+    /* Inline links inside a bar read as info/cyan. */
+    notification-message .notification-link,
+    .infobar .text-link,
+    notification-message .text-link {
+        color: var(--ph-cyan) !important;
+    }
+
+    /* The decks/stacks the bars sit in: fill so no native gap shows through. */
+    .notificationbox-stack,
+    #tab-notification-deck,
+    #appMenu-notification-popup,
+    #global-notificationbox,
+    #high-priority-global-notificationbox {
+        background: var(--ph-bg1) !important;
+    }
+}
