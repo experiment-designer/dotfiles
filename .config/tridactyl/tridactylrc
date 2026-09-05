@@ -1,5 +1,6 @@
 colourscheme phosphor
 set hintchars asdfghjkl
+set hintuppercase false
 bind d mode normal
 bind <C-d> scrollpage 0.5
 bind <C-u> scrollpage -0.5
