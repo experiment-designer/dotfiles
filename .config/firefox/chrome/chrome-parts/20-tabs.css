@@ -15,6 +15,31 @@
         font-family: var(--ph-font-dense) !important;
     }
 
+    /* Overflow reveals List All Tabs; extension/customization buttons can
+     * also join this row. Their native 41px height made the customization
+     * target taller than our 28px toolbar. Firefox bottom-aligns that target,
+     * moving the entire strip to y=-13 and clipping tab labels. Constrain
+     * the shared container and controls, not just the tab backgrounds.
+     */
+    #TabsToolbar-customization-target,
+    #TabsToolbar .toolbarbutton-1 {
+        box-sizing: border-box !important;
+        height: var(--ph-tab-row) !important;
+        min-height: 0 !important;
+        max-height: var(--ph-tab-row) !important;
+    }
+
+    #TabsToolbar .toolbarbutton-1 {
+        padding-block: 0 !important;
+        margin-block: 0 !important;
+    }
+
+    #TabsToolbar .toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+        box-sizing: border-box !important;
+        max-height: var(--ph-tab-row) !important;
+        padding-block: 4px !important;
+    }
+
     /*
      * Pin the tab box to the row height explicitly. Left to itself the
      * tab-background stretches past the toolbar and Firefox clips the top
