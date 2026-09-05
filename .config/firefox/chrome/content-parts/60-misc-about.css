@@ -466,3 +466,243 @@ textarea::selection {
     background-color: #2c313a !important;
     color: #e6e9ed !important;
 }
+
+/* ====================================================================== *
+ * about:sessionrestore / about:welcomeback — "trouble getting your pages  *
+ * back". Graphite page, hairline tab tree, amber "Restore Session".      *
+ * ====================================================================== */
+
+@-moz-document url-prefix("about:sessionrestore"), url-prefix("about:welcomeback") {
+    :root {
+        --link-color: #5b9dff !important;
+        --link-color-hover: #82b6ff !important;
+        --link-color-active: #5b9dff !important;
+        --link-color-visited: #5b9dff !important;
+        --in-content-link-color: #5b9dff !important;
+        --focus-outline-color: #ffb340 !important;
+        --focus-outline: 1px solid #ffb340 !important;
+    }
+
+    html,
+    body {
+        background-color: #16181d !important;
+        background-image: none !important;
+        color: #b7bec8 !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 12px !important;
+    }
+
+    body {
+        padding: 40px 48px !important;
+    }
+
+    .container {
+        max-width: 60em !important;
+    }
+
+    /* No info-icon gutter beside the title. */
+    .title {
+        background-image: none !important;
+        margin-inline-start: 0 !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .title-text {
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        margin: 0 !important;
+        padding: 0 0 8px !important;
+    }
+
+    .description p {
+        color: #b7bec8 !important;
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+        margin: 4px 0 !important;
+    }
+
+    /* "Show tabs" disclosure: a blue text link, not a button. */
+    #tabsToggle {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #5b9dff !important;
+        fill: #5b9dff !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 12px !important;
+        font-weight: 400 !important;
+        min-height: 0 !important;
+        margin: 8px 0 0 !important;
+        padding: 0 !important;
+        padding-inline-end: 22px !important;
+    }
+
+    #tabsToggle::after {
+        background-size: 14px !important;
+    }
+
+    #tabsToggle:hover {
+        background-color: transparent !important;
+        color: #82b6ff !important;
+        fill: #82b6ff !important;
+    }
+
+    #tabsToggle:focus-visible {
+        outline: 1px solid #ffb340 !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Tab tree: graphite surface, hairline rows, amber checks. */
+    #tabList {
+        appearance: none !important;
+        background-color: #1c1f25 !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+        margin-top: 12px !important;
+        min-height: 10em !important;
+    }
+
+    #tabList:focus-visible {
+        outline: 1px solid #ffb340 !important;
+        outline-offset: -1px !important;
+    }
+
+    treecols,
+    treecol {
+        appearance: none !important;
+        background-color: #1c1f25 !important;
+        border: 0 !important;
+        border-bottom: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #b7bec8 !important;
+        font-size: 10px !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        padding: 3px 6px !important;
+    }
+
+    treecol:not(:first-child) {
+        border-inline-start: 1px solid #3a404a !important;
+    }
+
+    treecol:hover {
+        background-color: #23272e !important;
+    }
+
+    .tree-splitter {
+        background-color: transparent !important;
+        border: 0 !important;
+    }
+
+    treechildren {
+        background-color: transparent !important;
+    }
+
+    treechildren::-moz-tree-row {
+        background-color: transparent !important;
+        border: 0 !important;
+        border-bottom: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        height: 22px !important;
+    }
+
+    treechildren::-moz-tree-row(multicol, odd) {
+        background-color: transparent !important;
+    }
+
+    treechildren::-moz-tree-row(hover) {
+        background-color: #23272e !important;
+    }
+
+    treechildren::-moz-tree-row(selected),
+    treechildren::-moz-tree-row(selected, focus) {
+        background-color: #2c313a !important;
+    }
+
+    treechildren::-moz-tree-cell-text {
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+    }
+
+    treechildren::-moz-tree-cell-text(selected),
+    treechildren::-moz-tree-cell-text(selected, focus) {
+        color: #ffb340 !important;
+    }
+
+    treechildren::-moz-tree-twisty,
+    treechildren::-moz-tree-image {
+        fill: #b7bec8 !important;
+    }
+
+    treechildren::-moz-tree-image(checked),
+    treechildren::-moz-tree-image(partial),
+    treechildren::-moz-tree-image(checked, selected),
+    treechildren::-moz-tree-image(partial, selected) {
+        fill: #ffb340 !important;
+        stroke: transparent !important;
+    }
+
+    /* Buttons: flat bg1 / quiet hairline; primary "Restore Session" is amber
+     * text inside an amber hairline, no fill, no pill. */
+    .button-container {
+        margin-top: 14px !important;
+        text-align: end !important;
+    }
+
+    .button-container button {
+        appearance: none !important;
+        background-color: #1c1f25 !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        min-height: 24px !important;
+        margin: 0 0 0 6px !important;
+        padding: 2px 12px !important;
+    }
+
+    .button-container button:hover {
+        background-color: #23272e !important;
+        border-color: #e6e9ed !important;
+        color: #e6e9ed !important;
+    }
+
+    .button-container button:hover:active {
+        background-color: #2c313a !important;
+    }
+
+    .button-container button.primary,
+    .button-container button[default] {
+        background-color: transparent !important;
+        border-color: #ffb340 !important;
+        color: #ffb340 !important;
+    }
+
+    .button-container button.primary:hover,
+    .button-container button[default]:hover {
+        background-color: #23272e !important;
+        border-color: #ffb340 !important;
+        color: #ffb340 !important;
+    }
+
+    button:focus-visible {
+        outline: 1px solid #ffb340 !important;
+        outline-offset: 1px !important;
+    }
+}
