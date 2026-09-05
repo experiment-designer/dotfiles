@@ -6,8 +6,7 @@ sock=${BTOP_SOCK:-btop}
 ensure_session() {
     tmux -L "$sock" has-session -t btop 2>/dev/null || {
         tmux -L "$sock" new-session -d -s btop -x 220 -y 60 "exec /usr/bin/btop"
-        tmux -L "$sock" set -g window-size manual
-        tmux -L "$sock" resize-window -t btop -x 220 -y 60
+        tmux -L "$sock" set -g window-size latest
         tmux -L "$sock" set -g detach-on-destroy on
         tmux -L "$sock" set -g status off
         tmux -L "$sock" set -g mouse on
