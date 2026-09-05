@@ -3,4 +3,4 @@ set hintchars asdfghjkl
 bind d mode normal
 seturl .*youtube.com allowautofocus false
 autocmd DocStart .*youtube.com mode normal
-set newtab file:///home/guy/dotfiles/.config/firefox/newtab/index.html
+set newtab http://127.0.0.1:7777/

@@ -1613,6 +1613,7 @@ end)
 -- {{{ Autostart
 awful.spawn.with_shell("xbindkeys")
 awful.spawn({"/home/guy/dotfiles/bin/htop", "--daemon"}, false)
+awful.spawn.with_shell("pgrep -f '[h]ttp.server 7777' >/dev/null || python3 -m http.server 7777 --bind 127.0.0.1 --directory /home/guy/dotfiles/.config/firefox/newtab >/dev/null 2>&1")
 apply_keyboard_layout()
 ensure_keyboard_layout()
 -- }}}
