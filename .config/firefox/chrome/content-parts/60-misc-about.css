@@ -120,6 +120,15 @@
  * Error pages                                                            *
  * ====================================================================== */
 
+/* NOTE: about:neterror and about:certerror are UNREACHABLE from userContent.css
+ * in Firefox 154 — the error pages run under a null/expanded principal that
+ * user stylesheets are not applied to. Verified 2026-09-05 with loud probes
+ * (magenta body / green outline) after a clean restart on a WM-backed display:
+ * the probes never appeared, while a view-source positive control confirmed
+ * userContent.css was loading. The rules below are kept for the still-reachable
+ * targets in this list (about:blocked, about:tabcrashed, about:mozilla) and in
+ * case a future Firefox loosens the principal; they are inert for neterror/
+ * certerror. Theming those two requires a chrome-level sheet, not userContent. */
 @-moz-document url-prefix("about:neterror"), url-prefix("about:certerror"),
                url-prefix("about:httpsonlyerror"), url-prefix("about:blocked"),
                url-prefix("about:tabcrashed"), url("about:mozilla") {
