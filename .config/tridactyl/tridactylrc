@@ -1,6 +1,8 @@
 colourscheme phosphor
 set hintchars asdfghjkl
 bind d mode normal
+bind <C-d> scrollpage 0.5
+bind <C-u> scrollpage -0.5
 seturl .*youtube.com allowautofocus false
 autocmd DocStart .*youtube.com mode normal
 seturl 127.0.0.1 allowautofocus false
