@@ -17,7 +17,7 @@
  * ====================================================================== */
 
 @-moz-document url-prefix("about:"), url-prefix("chrome://"),
-               url-prefix("resource://") {
+               url-prefix("resource://"), url-prefix("moz-extension://") {
     :root {
         --ph-bg0: #16181d;
         --ph-bg1: #1c1f25;
@@ -404,7 +404,7 @@
 
     /* --- Text fields, selects ---------------------------------------- */
 
-    :where(input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+    :where(input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="image"]):not([type="hidden"]),
            textarea, select, search-textbox, menulist, moz-input-search) {
         appearance: none !important;
         background-color: var(--ph-bg0) !important;

@@ -3,6 +3,7 @@
 /* Attribution and design notes live in chrome-parts/00-tokens.css.        */
 
 @import url("chrome-parts/00-tokens.css");
+@import url("chrome-parts/05-toolkit-defaults.css");
 @import url("chrome-parts/10-toolbars.css");
 @import url("chrome-parts/20-tabs.css");
 @import url("chrome-parts/25-bookmarks-bar.css");

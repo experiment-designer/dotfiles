@@ -1,0 +1,40 @@
+/* Shared extension UI fallback: independent of extension IDs and paths.
+ * Reuse 00-tokens for fields, buttons, typography and state. Preserve layout,
+ * visibility, icons, charts and semantic error/warning colors.
+ */
+@-moz-document url-prefix("moz-extension://") {
+    :root { color-scheme: dark !important; }
+    body { font-size: 12px !important; }
+
+    :where(main, article, section, header, footer, nav, aside, fieldset,
+           details, summary, dialog, [role="dialog"], [role="menu"],
+           [role="listbox"], [role="tabpanel"], .panel, .card, .modal,
+           .nav, .sidebar, .toolbar, nav label) {
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        color: var(--ph-fg0) !important;
+        border-color: var(--ph-line0) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-family: var(--ph-font) !important;
+    }
+    :where(label, legend, p, li, td, th, code, pre, kbd, samp) {
+        font-family: var(--ph-font) !important;
+    }
+    :where(summary, [role="menuitem"], [role="option"], [role="tab"], nav label):hover {
+        background-color: var(--ph-bg2) !important;
+    }
+    :where([aria-selected="true"], [aria-current="page"], nav label:has(input:checked)) {
+        background-color: var(--ph-bg3) !important;
+        color: var(--ph-amber) !important;
+    }
+    :where(a) { color: var(--ph-cyan) !important; }
+    :where(input, progress, meter) { accent-color: var(--ph-amber) !important; }
+    :where(input, textarea, select):user-invalid {
+        border-color: var(--ph-red) !important;
+    }
+    :where(dialog, [role="dialog"], [role="menu"], [role="listbox"]) {
+        border: var(--ph-hair) !important;
+    }
+    dialog::backdrop { background: rgb(22 24 29 / 65%) !important; }
+}

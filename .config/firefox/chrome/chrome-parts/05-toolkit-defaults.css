@@ -1,0 +1,75 @@
+/* General toolkit chrome, shared by userChrome and userContent because
+ * Firefox loads dialogs in either context. Page-specific rules load later.
+ * Covers alert/confirm/prompt/auth dialogs and unfamiliar toolkit windows.
+ */
+@-moz-document url-prefix("chrome://global/content/") {
+    :root {
+        color-scheme: dark !important;
+        --background-color-canvas: #16181d !important;
+        --background-color-box: #1c1f25 !important;
+        --background-color-overlay: #1c1f25 !important;
+        --text-color: #e6e9ed !important;
+        --text-color-deemphasized: #b7bec8 !important;
+        --button-background-color: #1c1f25 !important;
+        --button-background-color-hover: #23272e !important;
+        --button-background-color-primary: #1c1f25 !important;
+        --button-text-color-primary: #ffb340 !important;
+        --focus-outline-color: #ffb340 !important;
+    }
+    :where(window, dialog, body, menupopup, panel) {
+        background: #1c1f25 !important;
+        color: #e6e9ed !important;
+        font-family: "InputMono Nerd Font", monospace !important;
+        font-size: 12px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+    :where(dialog, menupopup, panel) { border: 1px solid #e6e9ed !important; }
+    :where(description, label, input, textarea, select, button) {
+        font-family: "InputMono Nerd Font", monospace !important;
+    }
+    :where(button), dialog::part(dialog-button) {
+        appearance: none !important;
+        background: #1c1f25 !important;
+        color: #e6e9ed !important;
+        border: 1px solid #3a404a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font: 12px "InputMono Nerd Font", monospace !important;
+        padding: 4px 12px !important;
+    }
+    :where(button:hover), dialog::part(dialog-button):hover {
+        background: #23272e !important;
+    }
+    :where(button[default="true"], button:focus), dialog::part(dialog-button):focus {
+        color: #ffb340 !important;
+        border-color: #ffb340 !important;
+        outline: 1px solid #ffb340 !important;
+        outline-offset: -1px !important;
+    }
+    :where(button:disabled), dialog::part(dialog-button):disabled {
+        color: #7b838f !important;
+        border-color: #3a404a !important;
+    }
+    :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+        background: #16181d !important;
+        color: #e6e9ed !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+    }
+    :where(input, textarea, select):focus-visible { outline: 1px solid #ffb340 !important; }
+    :where(menuitem, menu)[_moz-menuactive="true"] {
+        background: #2c313a !important;
+        color: #ffb340 !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    .dialogBox {
+        background: #1c1f25 !important;
+        border: 1px solid #e6e9ed !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+    .dialogOverlay { background: rgb(22 24 29 / 65%) !important; }
+}

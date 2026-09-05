@@ -19,6 +19,7 @@ CONFIG_DIRS=(
     "btop"
     "chromium-phosphor-theme"
     "fontconfig"
+    "gtk-3.0"
     "nvim"
     "tridactyl"
     "wezterm"

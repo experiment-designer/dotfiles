@@ -4,6 +4,8 @@
 
 @import url("content-parts/00-tokens.css");
 @import url("content-parts/05-internal-defaults.css");
+@import url("content-parts/06-extension-defaults.css");
+@import url("chrome-parts/05-toolkit-defaults.css");
 @import url("content-parts/10-preferences.css");
 @import url("content-parts/20-addons.css");
 @import url("content-parts/30-config.css");
