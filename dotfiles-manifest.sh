@@ -4,6 +4,7 @@
 # two directions cannot drift apart.
 
 HOME_DOTFILES=(
+    ".local/share/applications/firefox-developer-edition.desktop"
     ".bashrc"
     ".xbindkeysrc"
     ".xinitrc"
@@ -36,6 +37,8 @@ FIREFOX_PROFILE_FILES=(
 )
 
 USER_SCRIPTS=(
+    "bin/firefox"
+    "bin/firefox-developer-edition"
     "BMT.sh"
     "bin/blip"
     "bin/blip-post-bash"
