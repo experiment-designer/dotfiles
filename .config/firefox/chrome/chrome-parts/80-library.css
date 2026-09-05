@@ -54,7 +54,7 @@
         --border-radius-medium: 0 !important;
 
         appearance: none !important;
-        background: var(--ph-bg0) !important;
+        background: var(--ph-bg1) !important;
         color: var(--ph-fg0) !important;
         color-scheme: dark !important;
         font-family: var(--ph-font) !important;
@@ -63,7 +63,11 @@
         scrollbar-color: var(--ph-fg2) transparent !important;
     }
 
-    #places,
+    #places {
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
+    }
+
     #placesView,
     #placesViewsBox,
     #contentView,
@@ -96,32 +100,42 @@
     #placesToolbar > toolbarbutton {
         appearance: none !important;
         min-height: 0 !important;
-        margin: 0 !important;
+        margin: 0 2px !important;
         padding: 4px 8px !important;
-        border: 0 !important;
-        border-inline-end: var(--ph-quiet) !important;
+        border: var(--ph-quiet) !important;
         border-radius: 0 !important;
-        background: transparent !important;
-        color: var(--ph-fg1) !important;
+        background: var(--ph-bg1) !important;
+        color: var(--ph-fg0) !important;
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
+        box-shadow: none !important;
     }
 
     #placesMenu > menu:is(:hover, [open]),
-    #placesToolbar > toolbarbutton:hover {
+    #placesToolbar > toolbarbutton:hover:not([disabled]) {
         background: var(--ph-bg2) !important;
         color: var(--ph-fg0) !important;
     }
 
+    #placesToolbar > toolbarbutton[disabled="true"],
+    #placesToolbar > toolbarbutton:disabled {
+        opacity: 0.5 !important;
+        color: var(--ph-fg2) !important;
+    }
+
     #searchFilter {
+        appearance: none !important;
         flex: 0 1 300px !important;
         max-width: 300px !important;
         margin: 3px 4px !important;
+        border: 0 !important;
         border-radius: 0 !important;
+        background: transparent !important;
         color: var(--ph-fg0) !important;
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
         --icon-color: var(--ph-fg1) !important;
+        box-shadow: none !important;
     }
 
     #searchFilter:focus-within {
@@ -131,7 +145,7 @@
     #placesList {
         min-width: 190px !important;
         max-width: 320px !important;
-        background: var(--ph-bg1) !important;
+        background: var(--ph-bg0) !important;
         border: 0 !important;
         border-inline-end: var(--ph-quiet) !important;
         color: var(--ph-fg0) !important;
@@ -175,12 +189,24 @@
 
     treechildren::-moz-tree-row(selected),
     treechildren::-moz-tree-row(selected, focus) {
-        background: var(--ph-bg2) !important;
+        background: var(--ph-bg3) !important;
+    }
+
+    treechildren::-moz-tree-twisty {
+        color: var(--ph-fg1) !important;
+        fill: var(--ph-fg1) !important;
+    }
+
+    treechildren::-moz-tree-twisty(selected),
+    treechildren::-moz-tree-twisty(selected, focus) {
+        color: var(--ph-fg1) !important;
+        fill: var(--ph-fg1) !important;
     }
 
     treechildren::-moz-tree-cell-text {
         color: var(--ph-fg1) !important;
         font-family: var(--ph-font) !important;
+        font-size: 11px !important;
     }
 
     treechildren::-moz-tree-cell-text(primary) {
@@ -194,6 +220,14 @@
         color: var(--ph-amber) !important;
     }
 
+    tree,
+    #placesList,
+    #placeContent,
+    treechildren {
+        scrollbar-width: thin !important;
+        scrollbar-color: var(--ph-fg2) transparent !important;
+    }
+
     #detailsPane {
         min-height: 130px !important;
         padding: 8px !important;
@@ -205,7 +239,7 @@
     }
 
     #detailsPane :is(input[type="text"], textarea, menulist, button),
-    :is(input, textarea, menulist, button, search-textbox, moz-input-search) {
+    :is(input, textarea, menulist, button, search-textbox) {
         appearance: none !important;
         background: var(--ph-bg0) !important;
         border: var(--ph-hair) !important;
