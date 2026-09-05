@@ -83,3 +83,7 @@ user_pref("widget.gtk.native-context-menus", false);
 
 // Suppress the ETP panel's illustrated info hero (kept off-palette).
 user_pref("browser.protections_panel.infoMessage.seen", true);
+
+// Launch and Home button open the Phosphor start page (same one Tridactyl serves on new tabs).
+user_pref("browser.startup.page", 1);
+user_pref("browser.startup.homepage", "http://127.0.0.1:7777/");
