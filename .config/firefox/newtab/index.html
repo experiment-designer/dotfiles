@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>phosphor</title>
+<style>
+  :root{
+    --bg:#16181d; --fg0:#e6e9ed; --fg1:#b7bec8; --fg2:#7b838f;
+    --line0:#3a404a; --line1:#e6e9ed;
+    --amber:#ffb340; --blue:#5b9dff; --cyan:#5ed3f3; --sage:#98c379; --magenta:#d67cff;
+    --mono:"InputMono Nerd Font","InputMonoCondensed Nerd Font",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;border-radius:0!important}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--fg1);
+    font-family:var(--mono); font-size:15px; line-height:1.5;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    display:flex; flex-direction:column; min-height:100vh;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* watermark */
+  #wm{
+    position:fixed; right:-0.06em; bottom:-0.12em; z-index:0;
+    font-family:var(--mono); font-size:44vh; line-height:1; font-weight:700;
+    color:var(--line0); opacity:.28; pointer-events:none; user-select:none;
+    letter-spacing:-0.02em;
+  }
+
+  main{
+    position:relative; z-index:1;
+    flex:1 0 auto;
+    width:100%; max-width:980px; margin:0 auto;
+    padding:6vh 40px 40px;
+    display:flex; flex-direction:column;
+  }
+
+  /* header: clock */
+  header{margin-bottom:34px}
+  #clock{
+    font-size:104px; line-height:.92; font-weight:700; letter-spacing:-0.03em;
+    color:var(--amber); font-variant-numeric:tabular-nums;
+  }
+  #clock .sep{color:var(--fg2); font-weight:400}
+  #clock .sec{font-size:32px; color:var(--fg2); font-weight:400; letter-spacing:0; vertical-align:top}
+  #meta{margin-top:10px; display:flex; gap:22px; align-items:baseline; flex-wrap:wrap}
+  #date{color:var(--fg1); font-size:15px}
+  #date .k{color:var(--fg2)}
+  #greet{color:var(--fg1); font-size:15px}
+  #greet b{color:var(--amber); font-weight:400}
+
+  /* search */
+  #searchwrap{
+    display:flex; align-items:center; gap:12px;
+    border-bottom:1px solid var(--line0);
+    padding:9px 2px; margin:8px 0 40px; max-width:640px;
+    transition:border-color .12s;
+  }
+  #searchwrap:focus-within{border-bottom-color:var(--line1)}
+  #prompt{color:var(--amber); font-size:22px; font-weight:700; line-height:1}
+  #q{
+    flex:1; background:transparent; border:0; outline:0;
+    color:var(--fg0); font-family:var(--mono); font-size:19px; letter-spacing:-0.01em;
+    caret-color:var(--amber);
+  }
+  #q::placeholder{color:var(--fg2)}
+
+  /* link grid */
+  #grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:34px 40px;
+    border-top:1px solid var(--line0); padding-top:30px;
+  }
+  .group h2{
+    font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    margin-bottom:12px; padding-bottom:7px; border-bottom:1px solid var(--line0);
+    display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .group h2 .tick{color:var(--fg2); font-weight:400; letter-spacing:0}
+  .group.dev h2{color:var(--amber)}
+  .group.media h2{color:var(--magenta)}
+  .group.work h2{color:var(--cyan)}
+  .group.ref h2{color:var(--sage)}
+  .group ul{list-style:none}
+  .group li{margin:2px 0}
+  .group a{
+    display:flex; gap:9px; align-items:baseline;
+    color:var(--fg1); font-size:14px; padding:2px 3px; line-height:1.5;
+    border-left:2px solid transparent; margin-left:-5px;
+  }
+  .group a .idx{color:var(--fg2); font-size:12px; min-width:22px; font-variant-numeric:tabular-nums}
+  .group a:hover,.group a:focus{color:var(--amber); background:#1c1f25; border-left-color:var(--amber); outline:0}
+  .group a.kb{color:var(--amber)}
+
+  /* status line */
+  footer{
+    flex-shrink:0; position:relative; z-index:1;
+    border-top:1px solid var(--line0);
+    display:flex; justify-content:space-between; align-items:center;
+    padding:7px 40px; color:var(--fg2); font-size:12px; letter-spacing:.04em;
+  }
+  footer .host b{color:var(--fg1);font-weight:400}
+  footer .tag{color:var(--fg2)}
+  footer .tag::before{content:"● "; color:var(--sage)}
+  footer .hint{color:var(--fg2)}
+  footer .hint b{color:var(--fg1);font-weight:400}
+
+  @media (max-width:820px){
+    #grid{grid-template-columns:repeat(2,1fr)}
+    #clock{font-size:76px}
+  }
+</style>
+</head>
+<body>
+  <div id="wm" aria-hidden="true">❯_</div>
+
+  <main>
+    <header>
+      <div id="clock" aria-live="off">--<span class="sep">:</span>--</div>
+      <div id="meta">
+        <div id="date"><span class="k"></span> <span id="datetext"></span></div>
+        <div id="greet"></div>
+      </div>
+    </header>
+
+    <form id="searchwrap" autocomplete="off">
+      <span id="prompt">❯</span>
+      <input id="q" name="q" type="text" spellcheck="false" autofocus
+             placeholder="search the web, or type a url…" aria-label="search">
+    </form>
+
+    <nav id="grid"></nav>
+  </main>
+
+  <footer>
+    <span class="host">guy@<b>t14s</b></span>
+    <span class="hint">press <b>0-9</b> to jump · <b>/</b> to search</span>
+    <span class="tag">phosphor</span>
+  </footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- link data ---- */
+  var GROUPS = [
+    {cls:"dev",  name:"dev",   links:[
+      ["github",        "https://github.com"],
+      ["linear",        "https://linear.app"],
+      ["localhost:3000","http://localhost:3000"],
+      ["vercel",        "https://vercel.com/dashboard"]
+    ]},
+    {cls:"media", name:"media", links:[
+      ["youtube", "https://youtube.com"],
+      ["spotify", "https://open.spotify.com"],
+      ["netflix", "https://netflix.com"]
+    ]},
+    {cls:"work",  name:"work",  links:[
+      ["gmail",     "https://mail.google.com"],
+      ["calendar",  "https://calendar.google.com"],
+      ["honeylabs", "https://honeylabs.ai"]
+    ]},
+    {cls:"ref",   name:"ref",   links:[
+      ["arch wiki",       "https://wiki.archlinux.org"],
+      ["mdn",             "https://developer.mozilla.org"],
+      ["news.ycombinator","https://news.ycombinator.com"]
+    ]}
+  ];
+
+  /* ---- render grid, number every link ---- */
+  var grid = document.getElementById("grid");
+  var index = [];               // idx -> <a>
+  var n = 0;
+  GROUPS.forEach(function(g){
+    var sec = document.createElement("section");
+    sec.className = "group " + g.cls;
+    var h = document.createElement("h2");
+    h.innerHTML = g.name + '<span class="tick">'+ g.links.length +'</span>';
+    sec.appendChild(h);
+    var ul = document.createElement("ul");
+    g.links.forEach(function(l){
+      var i = n++;
+      index[i] = l[1];
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = l[1];
+      a.dataset.idx = i;
+      var pad = (i<10?"0":"") + i;
+      a.innerHTML = '<span class="idx">['+pad+']</span><span class="lbl">'+l[0]+'</span>';
+      li.appendChild(a); ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+    grid.appendChild(sec);
+  });
+
+  /* ---- clock ---- */
+  var clock = document.getElementById("clock");
+  var dateEl = document.getElementById("datetext");
+  var greet = document.getElementById("greet");
+  var DAYS = ["sun","mon","tue","wed","thu","fri","sat"];
+  var MON  = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+  function p2(x){return (x<10?"0":"")+x;}
+  function tick(){
+    var d = new Date();
+    var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+    clock.innerHTML = p2(h) + '<span class="sep">:</span>' + p2(m) +
+                      ' <span class="sec">'+ p2(s) +'</span>';
+    dateEl.textContent = DAYS[d.getDay()] + " " + p2(d.getDate()) + " " +
+                         MON[d.getMonth()] + " " + d.getFullYear();
+    var g = h<5?"good night":h<12?"good morning":h<18?"good afternoon":"good evening";
+    greet.innerHTML = g + ", <b>guy</b>";
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---- search ---- */
+  var form = document.getElementById("searchwrap");
+  var q = document.getElementById("q");
+  function looksLikeUrl(t){
+    if(/\s/.test(t)) return false;
+    if(/^https?:\/\//i.test(t)) return true;
+    if(/^localhost(:\d+)?(\/|$)/i.test(t)) return true;
+    // bare domain: has a dot, a plausible tld, no spaces
+    return /^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}(:\d+)?(\/.*)?$/i.test(t);
+  }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var t = q.value.trim();
+    if(!t) return;
+    var dest;
+    if(looksLikeUrl(t)){
+      if(/^https?:\/\//i.test(t)) dest = t;
+      else if(/^localhost/i.test(t)) dest = "http://" + t;
+      else dest = "https://" + t;
+    } else {
+      dest = "https://duckduckgo.com/?q=" + encodeURIComponent(t);
+    }
+    window.location.href = dest;
+  });
+
+  /* ---- keyboard nav (non-conflicting): digits jump when not typing ---- */
+  var buf = "", bufTimer = null;
+  function clearBuf(){ buf=""; document.querySelectorAll(".group a.kb").forEach(function(a){a.classList.remove("kb");}); }
+  document.addEventListener("keydown", function(e){
+    var typing = document.activeElement === q;
+    // '/' focuses search from anywhere
+    if(e.key === "/" && !typing){ e.preventDefault(); q.focus(); q.select(); return; }
+    if(e.key === "Escape"){ q.blur(); q.value=""; clearBuf(); return; }
+    if(typing) return;                       // never hijack typing in the box
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    if(/^[0-9]$/.test(e.key)){
+      buf += e.key;
+      clearTimeout(bufTimer);
+      var i = parseInt(buf,10);
+      // highlight candidate
+      document.querySelectorAll(".group a.kb").forEach(function(a){a.classList.remove("kb");});
+      var a = grid.querySelector('a[data-idx="'+i+'"]');
+      if(a) a.classList.add("kb");
+      // if no longer index could extend this buffer, commit now
+      var couldExtend = grid.querySelector('a[data-idx^="'+buf+'"]') || index[parseInt(buf+"0",10)]!==undefined;
+      if(index[i]!==undefined && !couldExtend){ window.location.href = index[i]; return; }
+      bufTimer = setTimeout(function(){
+        if(index[i]!==undefined) window.location.href = index[i];
+        else clearBuf();
+      }, 380);
+    }
+  });
+
+  /* keep focus on the search box */
+  window.addEventListener("load", function(){ q.focus(); });
+  q.focus();
+})();
+</script>
+</body>
+</html>
