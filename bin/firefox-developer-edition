@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source /home/guy/dotfiles/dotfiles-manifest.sh
+profile=$(find_firefox_developer_profile)
+args=()
+while (($#)); do
+    case "$1" in
+        -P|--profile|-profile) shift; (($#)) && shift ;;
+        --profile=*|-profile=*|--no-remote|-no-remote|--new-instance|-new-instance|--ProfileManager|-ProfileManager) shift ;;
+        *) args+=("$1"); shift ;;
+    esac
+done
+exec /usr/lib/firefox-developer-edition/firefox --profile "$profile" "${args[@]}"
