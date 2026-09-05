@@ -1,0 +1,90 @@
+/* Phosphor native GTK3 surfaces, including Firefox's file chooser.
+ * Palette and design rules: ~/dotfiles/palette.md.
+ * Adwaita supplies widget geometry and symbolic icons underneath this file.
+ */
+@define-color theme_bg_color #16181d;
+@define-color theme_fg_color #e6e9ed;
+@define-color theme_base_color #16181d;
+@define-color theme_text_color #e6e9ed;
+@define-color theme_selected_bg_color #2c313a;
+@define-color theme_selected_fg_color #ffb340;
+@define-color insensitive_fg_color #7b838f;
+@define-color borders #3a404a;
+@define-color theme_unfocused_bg_color #16181d;
+@define-color theme_unfocused_fg_color #b7bec8;
+@define-color theme_unfocused_base_color #16181d;
+@define-color theme_unfocused_text_color #b7bec8;
+@define-color theme_unfocused_selected_bg_color #2c313a;
+@define-color theme_unfocused_selected_fg_color #b7bec8;
+
+* {
+    border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+}
+
+window, dialog, .background, .view, treeview, textview text,
+filechooser, filechooser stack, filechooser viewport {
+    background-color: #16181d;
+    color: #e6e9ed;
+}
+
+headerbar, toolbar, .toolbar, .sidebar, placessidebar,
+placessidebar list, actionbar, .dialog-action-box {
+    background-image: none;
+    background-color: #1c1f25;
+    color: #e6e9ed;
+    border-color: #3a404a;
+}
+
+entry, spinbutton, button, combobox button {
+    background-image: none;
+    background-color: #1c1f25;
+    color: #e6e9ed;
+    border: 1px solid #3a404a;
+    min-height: 24px;
+}
+entry { border-color: #e6e9ed; padding: 3px 8px; caret-color: #ffb340; }
+button { padding: 3px 10px; }
+button:hover, .sidebar row:hover { background-color: #23272e; }
+button:active, button:checked { background-color: #2c313a; color: #ffb340; }
+entry:focus, button:focus { border-color: #ffb340; }
+button.suggested-action { color: #ffb340; border-color: #ffb340; }
+button.suggested-action:hover { background-color: #23272e; color: #ffc966; }
+button:disabled, entry:disabled { color: #7b838f; border-color: #3a404a; }
+label:disabled, image:disabled { color: #7b838f; }
+
+row:selected, .view:selected, treeview:selected, selection {
+    background-color: #2c313a;
+    color: #ffb340;
+}
+placessidebar row { border-left: 2px solid transparent; }
+placessidebar row:selected { border-left-color: #ffb340; }
+separator { background-color: #3a404a; min-width: 1px; min-height: 1px; }
+treeview header button { background-color: #1c1f25; color: #b7bec8; }
+
+check, radio {
+    background-image: none;
+    background-color: #16181d;
+    border: 1px solid #7b838f;
+    color: #ffb340;
+}
+check:checked, radio:checked {
+    background-image: none;
+    background-color: #2c313a;
+    border-color: #ffb340;
+    color: #ffb340;
+}
+
+menu, .menu, popover, tooltip {
+    background-color: #23272e;
+    color: #e6e9ed;
+    border: 1px solid #e6e9ed;
+}
+menuitem:hover { background-color: #2c313a; color: #ffb340; }
+scrollbar { background-color: #1c1f25; }
+scrollbar slider { background-color: #3a404a; min-width: 6px; min-height: 6px; }
+scrollbar slider:hover, scrollbar slider:active { background-color: #ffb340; }
+progressbar progress, scale highlight { background-color: #ffb340; background-image: none; }
+*:link { color: #5ed3f3; }
