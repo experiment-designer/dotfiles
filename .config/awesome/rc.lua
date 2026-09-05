@@ -118,7 +118,7 @@ beautiful.taglist_squares_unsel_empty = nil
 
 -- This is used later as the default terminal and editor to run.
 terminal = "term"   -- bin/term: reuses the running alacritty, cold-starts if none
-editor = os.getenv("EDITOR") or "vim"
+editor = os.getenv("EDITOR") or "nvim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -1613,7 +1613,7 @@ end)
 -- {{{ Autostart
 awful.spawn.with_shell("xbindkeys")
 awful.spawn({"/home/guy/dotfiles/bin/htop", "--daemon"}, false)
-awful.spawn.with_shell("pgrep -f '[h]ttp.server 7777' >/dev/null || python3 -m http.server 7777 --bind 127.0.0.1 --directory /home/guy/dotfiles/.config/firefox/newtab >/dev/null 2>&1")
+awful.spawn.with_shell("pgrep -f '[s]tartpage-server' >/dev/null || /home/guy/dotfiles/bin/startpage-server >/dev/null 2>&1")
 apply_keyboard_layout()
 ensure_keyboard_layout()
 -- }}}
