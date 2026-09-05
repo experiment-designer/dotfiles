@@ -16,8 +16,8 @@
  * Every toolkit "about:" page and extension-manager document.            *
  * ====================================================================== */
 
-@-moz-document url-prefix("about:"), url-prefix("chrome://mozapps/content/"),
-               url-prefix("chrome://browser/content/") {
+@-moz-document url-prefix("about:"), url-prefix("chrome://"),
+               url-prefix("resource://") {
     :root {
         --ph-bg0: #16181d;
         --ph-bg1: #1c1f25;
@@ -39,6 +39,10 @@
         --ph-hair: 1px solid var(--ph-line1);
         --ph-quiet: 1px solid var(--ph-line0);
         --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+
+        /* Shared typography consumed by newer Firefox components. */
+        --font-family: var(--ph-font) !important;
+        --font-family-monospace: var(--ph-font) !important;
 
         /* --- Firefox 154 semantic colour system --- */
         --background-color-canvas: var(--ph-bg0) !important;
