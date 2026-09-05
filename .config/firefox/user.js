@@ -84,7 +84,7 @@ user_pref("widget.gtk.native-context-menus", false);
 // Suppress the ETP panel's illustrated info hero (kept off-palette).
 user_pref("browser.protections_panel.infoMessage.seen", true);
 
-// Launch and Home button open the Phosphor start page (same one Tridactyl serves on new tabs).
+// Launch and Home use the same HTTP start page as the Phosphor New Tab extension.
 user_pref("browser.startup.page", 1);
 user_pref("browser.startup.homepage", "http://127.0.0.1:7777/index.html");
 
@@ -94,6 +94,8 @@ user_pref("network.captive-portal-service.enabled", false);
 
 // Allow our unsigned local "Phosphor New Tab" extension (phosphor-newtab.xpi); Developer Edition honours this.
 user_pref("xpinstall.signatures.required", false);
+// Let Phosphor set Firefox's native new-tab URL to the HTTP start page.
+user_pref("extensions.experiments.enabled", true);
 
 // Never auto-enter Troubleshoot Mode after crashes (it silently disables the rice + extensions).
 user_pref("toolkit.startup.max_resumed_crashes", -1);

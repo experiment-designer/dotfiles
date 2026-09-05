@@ -1,9 +1,19 @@
 {
   "manifest_version": 2,
   "name": "Phosphor New Tab",
-  "version": "1.0",
-  "description": "Replaces Firefox's new tab with the local Phosphor start page (index.html), leaving the address bar empty and focused.",
-  "chrome_url_overrides": { "newtab": "index.html" },
+  "version": "1.1",
+  "description": "Opens the local HTTP Phosphor start page on new tabs so Tridactyl works, preserving address-bar focus.",
+  "background": { "scripts": ["background.js"] },
+  "experiment_apis": {
+    "phosphorNewTab": {
+      "schema": "api.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "paths": [["phosphorNewTab"]],
+        "script": "api.js"
+      }
+    }
+  },
   "browser_specific_settings": {
     "gecko": { "id": "phosphor-newtab@guy.local", "strict_min_version": "128.0" }
   }

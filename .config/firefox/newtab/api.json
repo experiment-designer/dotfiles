@@ -1,0 +1,8 @@
+[
+  {
+    "namespace": "phosphorNewTab",
+    "functions": [
+      { "name": "setURL", "type": "function", "parameters": [] }
+    ]
+  }
+]

@@ -1,0 +1,1 @@
+browser.phosphorNewTab.setURL();
