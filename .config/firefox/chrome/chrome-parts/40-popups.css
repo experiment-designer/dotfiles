@@ -744,3 +744,424 @@
         background: var(--ph-bg1) !important;
     }
 }
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* ---- Round 5: doorhangers (.popup-notification-panel) ----------------- *
+     * "Your new tab has changed." (ext-url-overrides), camera/location/
+     * notification permission prompts etc. are `popupnotification` elements
+     * inside an arrow panel with class .popup-notification-panel:
+     * #notification-popup (permissions) and #extension-notification-panel
+     * (ext-url-overrides). popupnotification sets `font: caption` (sans) and
+     * the footer is html:moz-button-group > html:moz-button (shadow DOM, part
+     * "button", themed via --button-* vars). Their body painted the FF
+     * dark-theme --arrowpanel-background (#42414d) and the footer buttons
+     * are moz-button/footer-button style buttons that take their fill from
+     * --color-accent-primary (amber) via --button-*-primary vars. Frame the
+     * panel with one line1 hairline, fill every surface bg1, monospace text,
+     * amber TEXT (never fill) on the primary action. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel)::part(content),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .panel-arrowcontent,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) > .panel-arrowcontent {
+        appearance: none !important;
+        -moz-default-appearance: none !important;
+        --panel-background: var(--ph-bg1) !important;
+        --panel-color: var(--ph-fg0) !important;
+        --panel-border-color: var(--ph-line1) !important;
+        --panel-border-radius: 0 !important;
+        --panel-shadow: none !important;
+        --panel-shadow-margin: 0 !important;
+        --panel-padding: 0 !important;
+        --arrowpanel-background: var(--ph-bg1) !important;
+        --arrowpanel-color: var(--ph-fg0) !important;
+        --arrowpanel-border-color: var(--ph-line1) !important;
+        --arrowpanel-border-radius: 0 !important;
+        --arrowpanel-dimmed: var(--ph-bg1) !important;
+        --arrowpanel-dimmed-further: var(--ph-bg2) !important;
+        --arrowpanel-dimmed-even-further: var(--ph-bg3) !important;
+        --arrowpanel-padding: 8px !important;
+        --panel-arrow-size: 0 !important;
+        --panel-arrow-margin: 0 !important;
+        --panel-arrow-offset: 0 !important;
+        /* button vars (footer-button + moz-button, inherit into shadow DOM) */
+        --button-bgcolor: var(--ph-bg1) !important;
+        --button-hover-bgcolor: var(--ph-bg2) !important;
+        --button-active-bgcolor: var(--ph-bg3) !important;
+        --button-color: var(--ph-fg0) !important;
+        --button-border-radius: 0 !important;
+        --button-primary-bgcolor: transparent !important;
+        --button-primary-hover-bgcolor: var(--ph-bg2) !important;
+        --button-primary-active-bgcolor: var(--ph-bg3) !important;
+        --button-primary-color: var(--ph-amber) !important;
+        --button-background-color: var(--ph-bg1) !important;
+        --button-background-color-hover: var(--ph-bg2) !important;
+        --button-background-color-active: var(--ph-bg3) !important;
+        --button-background-color-primary: transparent !important;
+        --button-background-color-primary-hover: var(--ph-bg2) !important;
+        --button-background-color-primary-active: var(--ph-bg3) !important;
+        --button-text-color: var(--ph-fg0) !important;
+        --button-text-color-primary: var(--ph-amber) !important;
+        --button-text-color-primary-hover: var(--ph-amber-hi) !important;
+        --button-text-color-primary-active: var(--ph-amber-hi) !important;
+        --button-text-color-hover: var(--ph-fg0) !important;
+        --button-text-color-active: var(--ph-fg0) !important;
+        --button-border-color-hover: var(--ph-line0) !important;
+        --button-border-color-active: var(--ph-line0) !important;
+        --button-border-color-primary-hover: var(--ph-amber-hi) !important;
+        --button-border-color-primary-active: var(--ph-amber-hi) !important;
+        --button-border: 1px solid var(--ph-line0) !important;
+        --button-padding: 3px 10px !important;
+        --button-outer-padding-block: 0 !important;
+        --button-outer-padding-inline: 0 !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --focus-outline-offset: -1px !important;
+        --button-border-color: var(--ph-line0) !important;
+        --button-border-color-primary: var(--ph-amber) !important;
+        --button-font-size: 11px !important;
+        --button-font-weight: 400 !important;
+        --button-min-height: 0 !important;
+        --button-size-icon: 0 !important;
+        --link-color: var(--ph-amber) !important;
+        --link-color-hover: var(--ph-amber-hi) !important;
+        --link-color-active: var(--ph-amber-hi) !important;
+        --link-color-visited: var(--ph-amber) !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        -moz-window-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        color-scheme: dark !important;
+    }
+
+    /* Only the outer panel frame carries the line1 edge; the content part
+     * must not add a second one. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel)::part(content),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .panel-arrowcontent {
+        border: 0 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel)::part(arrow),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel)::part(arrowbox),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .panel-arrow,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .panel-arrowbox {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Body surfaces. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotification,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-header-container,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-body-container,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-body,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-footer-container,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent > *,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-description,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-warning,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-origin,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-learnmore-link {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotification {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-body-container {
+        padding: 8px !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-description,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-description > *,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-warning,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent description,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent label {
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-origin,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-description > b,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-description-bold,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-description .header {
+        font-weight: 700 !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-warning {
+        color: var(--ph-fg1) !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-learnmore-link,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .text-link,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) a,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) label.text-link,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) label[is="text-link"],
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent .text-link {
+        color: var(--ph-amber) !important;
+        text-decoration: underline !important;
+        text-decoration-color: var(--ph-amber) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-learnmore-link:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .text-link:hover {
+        color: var(--ph-amber-hi) !important;
+    }
+
+    /* Icons in the body read as secondary text (the extension's own favicon
+     * inline image is a raster and is left alone). */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-icon,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-closebutton,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-closebutton > .toolbarbutton-icon {
+        -moz-context-properties: fill, fill-opacity !important;
+        fill: var(--ph-fg1) !important;
+        fill-opacity: 1 !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-closebutton:hover {
+        background: var(--ph-bg2) !important;
+    }
+
+    /* Checkboxes ("Remember this decision") in permission prompts. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) checkbox,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) checkbox > .checkbox-label-box,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .checkbox-label {
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        background: transparent !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .checkbox-check {
+        appearance: none !important;
+        background: var(--ph-bg0) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) checkbox[checked="true"] > .checkbox-check {
+        background: var(--ph-amber) !important;
+        border-color: var(--ph-amber) !important;
+    }
+
+    /* Footer / button row: bg1 with a quiet top hairline. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button-container,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .panel-footer,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button-container.panel-footer {
+        appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-top: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 6px 8px !important;
+        gap: 6px !important;
+        color: var(--ph-fg0) !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button-container > toolbarseparator {
+        display: none !important;
+    }
+
+    /* Buttons: flat bg1, quiet border, fg0 text. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .footer-button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-secondary-button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-dropmarker,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button::part(button),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent button {
+        appearance: none !important;
+        -moz-default-appearance: none !important;
+        background: var(--ph-bg1) !important;
+        background-color: var(--ph-bg1) !important;
+        background-image: none !important;
+        border: 1px solid var(--ph-line0) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        font-weight: 400 !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 3px 10px !important;
+        text-shadow: none !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button {
+        border: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-dropmarker {
+        padding: 3px 4px !important;
+        border-inline-start: 0 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-dropmarker > .button-box > .button-menu-dropmarker,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-dropmarker .button-menu-dropmarker {
+        -moz-context-properties: fill, fill-opacity !important;
+        fill: var(--ph-fg0) !important;
+        fill-opacity: 1 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .footer-button:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-secondary-button:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-dropmarker:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button:hover::part(button),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) popupnotificationcontent button:hover {
+        background: var(--ph-bg2) !important;
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+        border-color: var(--ph-line0) !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button:active,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button:hover:active,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .footer-button:hover:active,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button:hover:active,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button:active::part(button) {
+        background: var(--ph-bg3) !important;
+        background-color: var(--ph-bg3) !important;
+    }
+
+    /* Primary / default action: amber TEXT and amber 1px edge, never a fill. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button.primary,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button[default],
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button[default="true"],
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .footer-button.primary,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-primary-button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button.primary,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button-container > button.primary,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button-container > .popup-notification-primary-button,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-primary-button:not(:hover),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-primary-button:not([disabled]),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button[type="primary"],
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button[type="primary"]::part(button),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button.primary::part(button),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button[default]::part(button) {
+        appearance: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: 1px solid var(--ph-amber) !important;
+        border-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+        box-shadow: none !important;
+        font-weight: 400 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button[type="primary"] {
+        border: 0 !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button.primary:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button[default]:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .footer-button.primary:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-primary-button:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-button-container > .popup-notification-primary-button:hover,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button[type="primary"]:hover::part(button) {
+        background: var(--ph-bg2) !important;
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-amber-hi) !important;
+        color: var(--ph-amber-hi) !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button.primary:hover:active,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-primary-button:hover:active,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button[type="primary"]:active::part(button) {
+        background: var(--ph-bg3) !important;
+        background-color: var(--ph-bg3) !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button:focus-visible,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) moz-button:focus-visible::part(button),
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-learnmore-link:focus-visible {
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: -1px !important;
+        box-shadow: none !important;
+    }
+
+    /* Access-key underline stays but never bold/coloured differently. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button .button-text,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button .button-box,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) button > .button-box > .button-text {
+        color: inherit !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        font-weight: inherit !important;
+    }
+
+    /* Anything else in the popup stack that could expose a native fill. */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel)-box,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) > *,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) vbox,
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) hbox {
+        background-image: none !important;
+        border-radius: 0 !important;
+    }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+    /* Round 5b: with `font: caption` gone, the doorhanger's leading
+     * .popup-notification-icon rendered at its intrinsic (64px) size and spilt
+     * outside the frame. Pin it to a 16px glyph; the extension-controlled
+     * notice already shows the extension favicon inline in its description,
+     * so drop the big leading one there (stock hides it too). */
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) {
+        --icon-size: 16px !important;
+    }
+
+    :is(#notification-popup, #extension-notification-panel, .popup-notification-panel) .popup-notification-icon {
+        width: 16px !important;
+        height: 16px !important;
+        max-width: 16px !important;
+        max-height: 16px !important;
+        margin: 0 6px 0 0 !important;
+        padding: 0 !important;
+    }
+
+    #extension-notification-panel .popup-notification-icon,
+    #extension-notification-panel popupnotification > .popup-notification-body-container > .popup-notification-icon {
+        display: none !important;
+    }
+
+    /* Doorhanger side icon (e.g. the 64px extension logo) overflows the panel; hide it. */
+    #notification-popup .popup-notification-icon { display: none !important; }
+}
