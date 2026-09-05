@@ -187,6 +187,27 @@
         background-image: none !important;
     }
 
+    /* Menulist popups: menuitems are light DOM (menu.js builds them with
+     * appendChild), so the icon/label overlap can be fixed here — give the
+     * icon slot its width back and a gap before the label. */
+    menupopup > menuitem > .menu-iconic-left,
+    menupopup > menuitem .menu-iconic-icon {
+        min-width: 16px !important;
+        width: 16px !important;
+        height: 16px !important;
+        margin-inline-end: 6px !important;
+    }
+
+    menupopup > menuitem {
+        padding-inline: 6px !important;
+        min-height: 22px !important;
+    }
+
+    menupopup > menuitem:is([_moz-menuactive], :hover) {
+        background-color: var(--ph-bg2) !important;
+        color: var(--ph-fg0) !important;
+    }
+
     /* Sub-dialogs: bg1 body inside a line1 frame, no scrim blur. */
     dialog::backdrop,
     .dialogOverlay {
@@ -213,5 +234,55 @@
         font-size: 11px !important;
         letter-spacing: 0.08em !important;
         text-transform: uppercase !important;
+    }
+}
+
+/* Sub-dialog documents (Manage Data, Fonts, Languages…) load from
+ * chrome://browser/content/preferences/dialogs/ in an iframe; 00-tokens covers
+ * chrome://browser/content/ so widgets are already themed. Only the XUL
+ * search-textbox host needs stripping: its shadow <input> draws the hairline
+ * itself, so the host frame from 00-tokens' :where(search-textbox) doubles it. */
+@-moz-document url-prefix("chrome://browser/content/preferences/") {
+    search-textbox,
+    search-textbox.in-menulist,
+    #searchBox {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        min-height: 24px !important;
+    }
+
+    tree,
+    treechildren {
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-quiet) !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+    }
+
+    treecol {
+        appearance: none !important;
+        background-color: var(--ph-bg1) !important;
+        border: 0 !important;
+        border-inline-end: var(--ph-quiet) !important;
+        border-bottom: var(--ph-quiet) !important;
+        color: var(--ph-fg1) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        padding: 2px 6px !important;
+    }
+
+    treechildren::-moz-tree-row(selected) {
+        background-color: var(--ph-bg3) !important;
+    }
+
+    treechildren::-moz-tree-cell-text(selected) {
+        color: var(--ph-amber) !important;
     }
 }
