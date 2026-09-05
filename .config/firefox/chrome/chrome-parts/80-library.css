@@ -316,3 +316,131 @@
         border-top: var(--ph-quiet) !important;
     }
 }
+
+/* ---------------------------------------------------------------------- *
+ * Startup safe-mode / troubleshoot-mode dialog (safeMode.xhtml) — the     *
+ * "closed unexpectedly while starting" box. Its buttons live in <dialog>'s *
+ * shadow root and are only reachable through ::part(dialog-button); no    *
+ * attribute selector may follow ::part, so the default "Open" button is   *
+ * picked out by :focus (dialog.js focuses the default button on load).    *
+ *                                                                          *
+ * INERT in Firefox Developer Edition 154 (verified 2026-09-05 on a temp    *
+ * profile with recent_crashes > max_resumed_crashes): the dialog opens     *
+ * before the profile's user sheets are loaded, so neither this block nor a *
+ * top-level loud probe reached it. Kept for a build that loads             *
+ * userChrome.css earlier.                                                  *
+ * ---------------------------------------------------------------------- */
+
+@-moz-document url("chrome://browser/content/safeMode.xhtml") {
+    :root {
+        --ph-bg0: #16181d;
+        --ph-bg1: #1c1f25;
+        --ph-bg2: #23272e;
+        --ph-bg3: #2c313a;
+        --ph-line0: #3a404a;
+        --ph-line1: #e6e9ed;
+        --ph-fg0: #e6e9ed;
+        --ph-fg1: #b7bec8;
+        --ph-fg2: #7b838f;
+        --ph-amber: #ffb340;
+        --ph-hair: 1px solid var(--ph-line1);
+        --ph-quiet: 1px solid var(--ph-line0);
+        --ph-font: "InputMono Nerd Font", "InputMonoCondensed Nerd Font", monospace;
+
+        --focus-outline-color: var(--ph-amber) !important;
+        --focus-outline: 1px solid var(--ph-amber) !important;
+        --button-border-radius: 0 !important;
+
+        appearance: none !important;
+        background-color: var(--ph-bg0) !important;
+        color: var(--ph-fg0) !important;
+        color-scheme: dark !important;
+        font-family: var(--ph-font) !important;
+        font-size: 12px !important;
+        padding: 6px !important;
+    }
+
+    /* The dialog is the frame: one hard hairline, no radius, tight padding. */
+    #safeModeDialog {
+        appearance: none !important;
+        background-color: var(--ph-bg0) !important;
+        border: var(--ph-hair) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 10px 12px !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 12px !important;
+    }
+
+    #safeModeDialog::part(content-box) {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    label,
+    description {
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 12px !important;
+        line-height: 1.45 !important;
+        margin: 0 !important;
+    }
+
+    /* Secondary copy: the crash explanation and the "you can also…" hints. */
+    #autoSafeMode description,
+    #resetProfileInstead,
+    #resetProfile label {
+        color: var(--ph-fg1) !important;
+    }
+
+    #resetProfileFooter {
+        font-weight: 500 !important;
+    }
+
+    separator.thin {
+        height: 8px !important;
+    }
+
+    /* Buttons: flat bg1 slabs inside a quiet hairline. */
+    #safeModeDialog::part(dialog-button) {
+        appearance: none !important;
+        margin: 8px 0 0 6px !important;
+        min-width: 0 !important;
+        min-height: 24px !important;
+        padding: 2px 10px !important;
+        background-color: var(--ph-bg1) !important;
+        border: var(--ph-quiet) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        color: var(--ph-fg0) !important;
+        font-family: var(--ph-font) !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        outline: none !important;
+    }
+
+    #safeModeDialog::part(dialog-button):hover {
+        background-color: var(--ph-bg2) !important;
+        border-color: var(--ph-line1) !important;
+    }
+
+    #safeModeDialog::part(dialog-button):hover:active {
+        background-color: var(--ph-bg3) !important;
+    }
+
+    /* Default / focused button ("Open"): amber text in an amber hairline,
+     * amber outline instead of the blue system focus ring, no fill. */
+    #safeModeDialog::part(dialog-button):focus {
+        background-color: transparent !important;
+        border-color: var(--ph-amber) !important;
+        color: var(--ph-amber) !important;
+        outline: 1px solid var(--ph-amber) !important;
+        outline-offset: 1px !important;
+    }
+
+    #safeModeDialog::part(dialog-button):focus:hover {
+        background-color: var(--ph-bg2) !important;
+    }
+}
+
