@@ -5,8 +5,10 @@
  */
 @-moz-document url-prefix("about:"), url-prefix("chrome://"),
                url-prefix("resource://") {
-    /* Some older pages use XUL roots; newer ones use HTML and shadow trees. */
-    :where(:root, body) {
+    /* HTML roots are already painted by 00-tokens.css (html, body). Any
+     * :root rule here, even one that never matches, breaks pdf.js toolbar
+     * icons (mask images render as solid squares), so target body only. */
+    body {
         background-color: var(--ph-bg0) !important;
         color: var(--ph-fg0) !important;
         font-family: var(--ph-font) !important;
