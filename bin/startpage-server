@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+"""Serve the Firefox start page with no-cache headers on 127.0.0.1:7777."""
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+DIR = "/home/guy/dotfiles/.config/firefox/newtab"
+
+
+class Handler(SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        super().end_headers()
+
+    def log_message(self, *args):
+        pass
+
+
+ThreadingHTTPServer(("127.0.0.1", 7777), partial(Handler, directory=DIR)).serve_forever()
