@@ -104,17 +104,36 @@
         text-transform: uppercase !important;
     }
 
+    /* moz-input-search host: the shadow <input> already draws the line1
+     * hairline via --input-text-border, so the host itself must carry no
+     * frame — otherwise a double box (overrides 00-tokens' :where(moz-input-search)). */
     #searchInput,
-    #searchInput::part(input) {
+    moz-input-search#searchInput {
         appearance: none !important;
-        background-color: var(--ph-bg0) !important;
-        border: var(--ph-hair) !important;
+        background-color: transparent !important;
+        border: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        padding: 0 !important;
         color: var(--ph-fg0) !important;
         font-family: var(--ph-font) !important;
         font-size: 11px !important;
         min-height: 24px !important;
+    }
+
+    /* moz-button hosts: the shadow <button> draws its own border from the
+     * --button-border-color-* tokens; 00-tokens also frames the primary host
+     * (moz-button[type="primary"]) — that gives a second grey frame around
+     * "Got it" etc. Strip the host frame here (higher specificity). */
+    #mainPrefPane moz-button,
+    #mainPrefPane moz-button[type="primary"],
+    .main-content moz-button[type="primary"] {
+        appearance: none !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
     }
 
     #search-container {
