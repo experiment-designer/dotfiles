@@ -508,32 +508,21 @@
      * DECLARES --toggle-* on :host, and a declared value beats an inherited
      * one whatever the origin, so setting them on :root is not enough: they
      * must be declared on the element itself. User-origin !important here wins
-     * over the author :host declaration. Track 28x14 bg2 in a line0 hairline
-     * (amber edge when on); 8x8 knob fg1 -> amber, travelling 14px. */
+     * over the author :host declaration. Recolour only — do NOT override the
+     * track/knob geometry: Firefox's own default sizing keeps the knob-translate
+     * math consistent so the knob sits right (left=off, right=on). bg2 track in a
+     * line0 hairline (amber edge when on), fg1 knob -> amber when on. */
     moz-toggle {
-        --toggle-width: 28px !important;
-        --toggle-height: 14px !important;
         --toggle-border-radius: 0 !important;
-        --toggle-border-width: 1px !important;
         --toggle-background-color: var(--ph-bg2) !important;
-        --toggle-background-color-hover: var(--ph-bg2) !important;
-        --toggle-background-color-active: var(--ph-bg3) !important;
+        --toggle-background-color-hover: var(--ph-bg3) !important;
         --toggle-background-color-pressed: var(--ph-bg2) !important;
-        --toggle-background-color-pressed-hover: var(--ph-bg2) !important;
-        --toggle-background-color-pressed-active: var(--ph-bg3) !important;
+        --toggle-background-color-pressed-hover: var(--ph-bg3) !important;
         --toggle-border-color: var(--ph-line0) !important;
-        --toggle-border-color-hover: var(--ph-line1) !important;
-        --toggle-border-color-active: var(--ph-amber) !important;
         --toggle-border-color-pressed: var(--ph-amber) !important;
-        --toggle-track-border-color: var(--ph-line0) !important;
         --toggle-dot-background-color: var(--ph-fg1) !important;
         --toggle-dot-background-color-hover: var(--ph-fg0) !important;
-        --toggle-dot-background-color-active: var(--ph-fg0) !important;
         --toggle-dot-background-color-on-pressed: var(--ph-amber) !important;
-        --toggle-dot-margin: 2px !important;
-        --toggle-dot-height: 8px !important;
-        --toggle-dot-width: 8px !important;
-        --toggle-dot-transform-x: 14px !important;
     }
 
     input[type="range"] {
