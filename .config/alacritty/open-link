@@ -1,0 +1,15 @@
+#!/bin/sh
+# Acknowledge link activation immediately, then use the usual desktop handler.
+[ "$#" -eq 1 ] && [ -n "$1" ] || exit 2
+
+/home/guy/dotfiles/bin/blip tick >/dev/null 2>&1 &
+notify-send --app-name=Alacritty --icon=web-browser --expire-time=1500 \
+    'Opening link…' >/dev/null 2>&1 &
+
+xdg-open "$1"
+status=$?
+if [ "$status" -ne 0 ]; then
+    notify-send --app-name=Alacritty --urgency=normal --expire-time=4000 \
+        'Could not open link' 'The desktop link handler returned an error.' >/dev/null 2>&1 &
+fi
+exit "$status"
