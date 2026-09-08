@@ -63,7 +63,7 @@ SOUND="$SOUND_DIR/$FILE_NAME"
 # Kill switch.
 [ "$BLIP" = "0" ] && exit 0
 
-# Claude Code hooks inherit the terminal's window ID. An explicit ID lets
+# Terminal applications inherit the terminal's window ID. An explicit ID lets
 # Awesome associate urgency sounds with their originating window too.
 # Check before starting playback, so even future, very short cues stay muted.
 BLIP_WINDOW_ID="${2:-${ALACRITTY_WINDOW_ID:-${WINDOWID:-}}}"
