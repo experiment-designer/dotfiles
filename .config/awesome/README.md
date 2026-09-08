@@ -5,7 +5,7 @@ playback streams. Press again to unmute. The notification names the affected
 audio and reports whether matching used the window or the application.
 
 For Alacritty terminals, Mod+A instead toggles a remembered mute for that
-window's notification sounds, including Claude Code hooks, terminal bells,
+window's notification sounds, including application hooks, terminal bells,
 and Awesome urgency cues. This works even when no sound is playing. `blip`
 checks the originating `ALACRITTY_WINDOW_ID`/`WINDOWID` (or an explicit second
 argument) using `xprop` before playing. Other terminal windows stay audible.

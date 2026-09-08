@@ -1351,8 +1351,8 @@ local function toggle_window_audio(c)
         c:set_xproperty("_DOTFILES_AUDIO_MUTED", muted and 1 or 0)
         naughty.notify({
             title = "Window audio: " .. gears.string.xml_escape(c.name or "Alacritty"),
-            text = muted and "Muted this terminal's notification sounds (including Claude Code)."
-                or "Unmuted this terminal's notification sounds (including Claude Code).",
+            text = muted and "Muted this terminal's notification sounds."
+                or "Unmuted this terminal's notification sounds.",
         })
         return
     end
