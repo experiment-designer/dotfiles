@@ -1341,8 +1341,21 @@ globalkeys = gears.table.join(
               {description = "show the menubar", group = "launcher"})
 )
 
+-- Store notification mute on the X window: survives Awesome reloads and is
+-- automatically removed when the window closes.
+awesome.register_xproperty("_DOTFILES_AUDIO_MUTED", "number")
 local window_audio_busy = false
 local function toggle_window_audio(c)
+    if (c.class or ""):lower() == "alacritty" then
+        local muted = c:get_xproperty("_DOTFILES_AUDIO_MUTED") ~= 1
+        c:set_xproperty("_DOTFILES_AUDIO_MUTED", muted and 1 or 0)
+        naughty.notify({
+            title = "Window audio: " .. gears.string.xml_escape(c.name or "Alacritty"),
+            text = muted and "Muted this terminal's notification sounds (including Claude Code)."
+                or "Unmuted this terminal's notification sounds (including Claude Code).",
+        })
+        return
+    end
     if window_audio_busy then return end
     window_audio_busy = true
     local window_label = c.name or c.class or "Unknown window"
@@ -1611,7 +1624,7 @@ client.connect_signal("unfocus", function(c)
 end)
 client.connect_signal("property::urgent", function(c)
     if c.urgent then
-        awful.spawn({"/home/guy/dotfiles/bin/blip", "attn"}, false)
+        awful.spawn({"/home/guy/dotfiles/bin/blip", "attn", tostring(c.window)}, false)
     end
 end)
 -- One cue per tag switch: the deselect of the old tag is ignored, and blip's
