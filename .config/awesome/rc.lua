@@ -1345,13 +1345,14 @@ local window_audio_busy = false
 local function toggle_window_audio(c)
     if window_audio_busy then return end
     window_audio_busy = true
+    local window_label = c.name or c.class or "Unknown window"
     awful.spawn.easy_async({
         "python3", gears.filesystem.get_configuration_dir() .. "window-audio.py",
         tostring(c.window), tostring(c.pid or 0), c.name or "",
     }, function(stdout, stderr, _, exit_code)
         window_audio_busy = false
         naughty.notify({
-            title = "Window audio",
+            title = "Window audio: " .. gears.string.xml_escape(window_label),
             text = gears.string.xml_escape((exit_code == 0 and stdout or stderr):gsub("%s+$", "")),
             preset = exit_code ~= 0 and naughty.config.presets.critical or nil,
         })
