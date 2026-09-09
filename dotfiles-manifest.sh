@@ -11,6 +11,7 @@ HOME_DOTFILES=(
     ".zshrc"
     ".zprofile"
     ".Xresources"
+    ".tmux.conf"
     ".gitconfig"
 )
 
@@ -45,6 +46,7 @@ USER_SCRIPTS=(
     "bin/rice-shot"
     "bin/startpage-server"
     "bin/term"
+    "bin/open-link"
     "bin/brightness-step"
     "bin/btop"
     "bin/build-newtab-xpi"
