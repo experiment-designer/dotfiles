@@ -72,6 +72,7 @@ SYSTEM_SLEEP_SCRIPTS=(
 
 SYSTEMD_LOGIND_CONFIGS=(
     "60-power-button.conf"
+    "61-lid-lock.conf"
 )
 
 find_firefox_developer_profile() {
