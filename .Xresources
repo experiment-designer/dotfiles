@@ -5,8 +5,9 @@ URxvt.lineSpace: 0
 URxvt*internalBorder: 8
 URxvt.letterSpace: 0
 URxvt.perl-ext-common: default,matcher
-URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.url-launcher: /home/guy/dotfiles/bin/open-link
 URxvt.matcher.button: 1
+URxvt.matcher.rend.0: Uline fg4
 URxvt.cursorBlink: false
 URxvt.cursorColor: #ffb340
 URxvt.cursorColor2: #16181d
@@ -44,3 +45,7 @@ Xft.rgba: rgb
 *color13: #e3a0ff
 *color14: #8ee3fa
 *color15: #f4f6f8
+
+! XTerm has no URL hover detection: select a link, then Ctrl+Shift+O.
+XTerm*VT100.translations: #override \n\
+    Ctrl Shift <Key>O: exec-formatted("/home/guy/dotfiles/bin/open-link --selection", PRIMARY)

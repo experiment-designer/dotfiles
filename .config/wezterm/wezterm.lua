@@ -69,4 +69,41 @@ config.keys = {
   },
 }
 
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+table.insert(config.hyperlink_rules, {
+  regex = [[(?:~?/)[^\s<>"`\\\[\]()]+]],
+  format = '$0',
+})
+
+wezterm.on('open-uri', function(window, pane, uri)
+  wezterm.background_child_process { '/home/guy/dotfiles/bin/open-link', uri }
+  return false
+end)
+
+-- Ctrl+Shift+click works even when a terminal application captures the mouse.
+config.mouse_bindings = {
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CTRL',
+    action = wezterm.action.OpenLinkAtMouseCursor,
+  },
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.OpenLinkAtMouseCursor,
+  },
+}
+config.keys[#config.keys + 1] = {
+  key = 'O',
+  mods = 'CTRL|SHIFT',
+  action = wezterm.action.QuickSelectArgs {
+    patterns = { [[(?:https?://|file://|~/|/)[^\s<>"`\\\[\]()]+]] },
+    action = wezterm.action_callback(function(window, pane)
+      wezterm.background_child_process {
+        '/home/guy/dotfiles/bin/open-link', window:get_selection_text_for_pane(pane),
+      }
+    end),
+  },
+}
+
 return config

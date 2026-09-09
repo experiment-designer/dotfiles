@@ -1,0 +1,31 @@
+#!/bin/sh
+# Read selections as data; never interpolate terminal text into a shell command.
+if [ "${1:-}" = --selection ]; then
+    set -- "$(xclip -o -selection primary)"
+fi
+[ "$#" -eq 1 ] && [ -n "$1" ] || exit 2
+
+case "$1" in
+    "~/"*) set -- "$HOME/${1#\~/}" ;;
+esac
+
+case "$1" in
+    /*)
+        if [ ! -e "$1" ]; then
+            path=$(printf '%s' "$1" | sed -E 's/:[0-9]+(:[0-9]+)?$//')
+            [ ! -e "$path" ] || set -- "$path"
+        fi
+        ;;
+esac
+
+/home/guy/dotfiles/bin/blip tick >/dev/null 2>&1 &
+notify-send --app-name=Terminal --icon=web-browser --expire-time=1500 \
+    'Opening link…' >/dev/null 2>&1 &
+
+xdg-open "$1"
+status=$?
+if [ "$status" -ne 0 ]; then
+    notify-send --app-name=Terminal --urgency=normal --expire-time=4000 \
+        'Could not open link' 'The desktop link handler returned an error.' >/dev/null 2>&1 &
+fi
+exit "$status"

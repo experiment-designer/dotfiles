@@ -97,12 +97,12 @@ y = 8
 duration = 0
 command = { program = "/home/guy/dotfiles/bin/blip", args = ["bell"] }
 
-# Preserve default URL detection and hover underlining, with click feedback.
+# Shift bypasses application mouse capture; Ctrl+Shift+O selects a link by keyboard.
 [[hints.enabled]]
-command = "/home/guy/dotfiles/.config/alacritty/open-link"
+command = "/home/guy/dotfiles/bin/open-link"
 hyperlinks = true
 post_processing = true
 persist = false
 mouse.enabled = true
 binding = { key = "O", mods = "Control|Shift" }
-regex = '(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>"\s{-}\^⟨⟩`\\]+'
+regex = '(~/|/|ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>"\s{-}\^⟨⟩`\\]+'
