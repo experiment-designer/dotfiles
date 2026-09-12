@@ -1646,7 +1646,7 @@ end)
 -- {{{ Autostart
 awful.spawn.with_shell("xbindkeys")
 awful.spawn({"/home/guy/dotfiles/bin/htop", "--daemon"}, false)
-awful.spawn.with_shell("pgrep -f '[s]tartpage-server' >/dev/null || /home/guy/dotfiles/bin/startpage-server >/dev/null 2>&1")
+awful.spawn({"/home/guy/dotfiles/bin/startpage-server"}, false)
 apply_keyboard_layout()
 ensure_keyboard_layout()
 -- }}}
