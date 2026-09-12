@@ -18,4 +18,8 @@ class Handler(SimpleHTTPRequestHandler):
         pass
 
 
-ThreadingHTTPServer(("127.0.0.1", 7777), partial(Handler, directory=DIR)).serve_forever()
+try:
+    server = ThreadingHTTPServer(("127.0.0.1", 7777), partial(Handler, directory=DIR))
+except OSError:
+    raise SystemExit(0)  # ponytail: port taken = already running (awesome restart re-spawns us)
+server.serve_forever()
