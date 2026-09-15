@@ -983,6 +983,9 @@ local function tag_tooltip_text(t, clients)
     return table.concat(lines, "\n")
 end
 
+local firefox_icon_path = gears.filesystem.get_configuration_dir() .. "icons/firefox-symbolic.svg"
+local firefox_icon_colors = {}
+
 local function update_tag_widget(self, t, index)
     local summary, clients = tag_client_summary(t)
     local number = self:get_children_by_id("number_role")[1]
@@ -1017,10 +1020,12 @@ local function update_tag_widget(self, t, index)
     local firefox_marker = self:get_children_by_id("firefox_role")[1]
     if firefox_marker then
         firefox_marker.visible = has_firefox
-        firefox_marker:set_markup(string.format(
-            "<span foreground='%s'>󰈹</span>",
-            number_color
-        ))
+        if has_firefox then
+            if not firefox_icon_colors[number_color] then
+                firefox_icon_colors[number_color] = gears.color.recolor_image(firefox_icon_path, number_color)
+            end
+            firefox_marker.image = firefox_icon_colors[number_color]
+        end
     end
 
     if self._tag_tooltip then
@@ -1035,28 +1040,41 @@ local tag_widget_template = {
                 {
                     id = "number_role",
                     font = "InputMono Nerd Font Bold 9",
+                    align = "center",
                     widget = wibox.widget.textbox,
                 },
-                {
-                    id = "firefox_role",
-                    font = "InputMono Nerd Font 9",
-                    visible = false,
-                    widget = wibox.widget.textbox,
-                },
-                -- Reserve the same icon space on every workspace.
-                forced_width = 22,
-                spacing = 5,
-                layout = wibox.layout.fixed.horizontal,
+                id = "underline_role",
+                bottom = 2,
+                color = palette.bar,
+                widget = wibox.container.margin,
             },
-            id = "underline_role",
-            bottom = 2,
-            color = palette.bar,
+            left = 9,
+            right = 9,
+            top = 2,
             widget = wibox.container.margin,
         },
-        left = 9,
-        right = 9,
-        top = 2,
-        widget = wibox.container.margin,
+        {
+            {
+                {
+                    id = "firefox_role",
+                    forced_width = 12,
+                    forced_height = 12,
+                    resize = true,
+                    visible = false,
+                    widget = wibox.widget.imagebox,
+                },
+                halign = "right",
+                valign = "center",
+                widget = wibox.container.place,
+            },
+            right = 1,
+            top = 2,
+            bottom = 2,
+            widget = wibox.container.margin,
+        },
+        -- Center every number independently of its optional icon.
+        forced_width = 40,
+        layout = wibox.layout.stack,
     },
     id = "background_role",
     shape = gears.shape.rectangle,
