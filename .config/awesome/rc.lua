@@ -1004,6 +1004,25 @@ local function update_tag_widget(self, t, index)
         gears.string.xml_escape(t.name or tostring(index))
     ))
 
+    local has_firefox = false
+    for _, c in ipairs(clients) do
+        local class = (c.class or ""):lower()
+        local instance = (c.instance or ""):lower()
+        if class:find("firefox", 1, true) or instance:find("firefox", 1, true) then
+            has_firefox = true
+            break
+        end
+    end
+
+    local firefox_marker = self:get_children_by_id("firefox_role")[1]
+    if firefox_marker then
+        firefox_marker.visible = has_firefox
+        firefox_marker:set_markup(string.format(
+            "<span foreground='%s'>󰈹</span>",
+            number_color
+        ))
+    end
+
     if self._tag_tooltip then
         self._tag_tooltip:set_text(tag_tooltip_text(t, clients))
     end
@@ -1018,6 +1037,14 @@ local tag_widget_template = {
                     font = "InputMono Nerd Font Bold 9",
                     widget = wibox.widget.textbox,
                 },
+                {
+                    id = "firefox_role",
+                    font = "InputMono Nerd Font 9",
+                    visible = false,
+                    widget = wibox.widget.textbox,
+                },
+                -- Reserve the same icon space on every workspace.
+                forced_width = 22,
                 spacing = 5,
                 layout = wibox.layout.fixed.horizontal,
             },
@@ -1047,6 +1074,16 @@ local tag_widget_template = {
     end,
     update_callback = update_tag_widget,
 }
+
+-- Taglists already refresh on tagging and unmanage; WM_CLASS can arrive later.
+local function refresh_client_taglist(c)
+    local taglist = c.screen and c.screen.mytaglist
+    if taglist then
+        taglist._do_taglist_update()
+    end
+end
+client.connect_signal("property::class", refresh_client_taglist)
+client.connect_signal("property::instance", refresh_client_taglist)
 
 local function set_wallpaper(s)
     -- Wallpaper
