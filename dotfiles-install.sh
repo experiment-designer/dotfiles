@@ -128,6 +128,17 @@ if $install_system; then
             echo "Installed /etc/systemd/logind.conf.d/$file"
         fi
     done
+    for file in "${UPOWER_CONFIGS[@]}"; do
+        sudo install -D -m 0644 "$DOTFILES_DIR/upower/$file" "/etc/UPower/$file"
+        echo "Installed /etc/UPower/$file"
+    done
+    if command -v upower >/dev/null 2>&1; then
+        sudo systemctl enable upower.service
+        sudo systemctl restart upower.service
+    else
+        echo "Battery protection requires the upower package: sudo pacman -S upower"
+        echo "Then rerun this installer to enable the service."
+    fi
 else
     echo "Skipped system configuration (--user-only)."
 fi
