@@ -70,6 +70,8 @@ if $check_only; then
     for file in "${SYSTEM_SLEEP_SCRIPTS[@]}"; do report_system "$DOTFILES_DIR/system-sleep/$file" "/usr/lib/systemd/system-sleep/$file"; done
     for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/systemd/logind.conf.d/$file" "/etc/systemd/logind.conf.d/$file"; done
 
+    for file in "${UPOWER_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/upower/$file" "/etc/UPower/$file"; done
+
     echo ""
     echo "Unmanaged candidates (add to dotfiles-manifest.sh if wanted):"
     for dir in "$HOME/.config"/*/; do
@@ -181,6 +183,11 @@ done
 
 for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do
     sync_file "/etc/systemd/logind.conf.d/$file" "$DOTFILES_DIR/systemd/logind.conf.d/$file"
+done
+
+mkdir -p "$DOTFILES_DIR/upower"
+for file in "${UPOWER_CONFIGS[@]}"; do
+    sync_file "/etc/UPower/$file" "$DOTFILES_DIR/upower/$file"
 done
 
 # Never rewrite the live shell config behind a symlink. Refuse to continue if

@@ -13,7 +13,7 @@ live instantly. Never copy files between `~` and the repo by hand.
 Managed paths are declared in `dotfiles-manifest.sh` (arrays:
 `HOME_DOTFILES`, `CONFIG_DIRS`, `FIREFOX_PROFILE_FILES`, `USER_SCRIPTS`,
 `XORG_CONFIGS`, `UDEV_RULES`, `PAM_CONFIGS`, `SYSTEM_SLEEP_SCRIPTS`,
-`SYSTEMD_LOGIND_CONFIGS`). Read it
+`SYSTEMD_LOGIND_CONFIGS`, `UPOWER_CONFIGS`). Read it
 before deciding where a change goes.
 
 | Change to…                        | Edit…                                   | Takes effect |
@@ -65,6 +65,16 @@ Commit only the files related to the change; leave unrelated dirty files alone.
 - `./dotfiles-setup.sh --check` — audit: reports managed paths that are
   missing/unlinked/diverged, and lists unmanaged `~/.config` dirs and
   `~/.local/bin` scripts as candidates. Run this when unsure of the state.
+
+## Low-battery protection
+
+`upower/UPower.conf` is installed as a system copy in `/etc/UPower`.
+Install the `upower` package, then run `./dotfiles-install.sh` to deploy the
+policy and enable/restart its service. On battery power, UPower hibernates
+at 10%, with low/critical levels of 20%/15%. This operates independently
+of Awesome's notification widget. Working hibernation and resume are required.
+Verify with `systemctl is-enabled upower`, `upower -d` (critical-action:
+Hibernate), and `./dotfiles-setup.sh --check`.
 
 ## Hard rules
 

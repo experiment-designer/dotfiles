@@ -75,6 +75,10 @@ SYSTEMD_LOGIND_CONFIGS=(
     "61-lid-lock.conf"
 )
 
+UPOWER_CONFIGS=(
+    "UPower.conf"
+)
+
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
     local result
