@@ -57,6 +57,9 @@ xbindkeys
 # complete before the session is safely locked.
 xset s 2700 0
 xset dpms 0 0 0
+# The idle password prompt closes quickly after fingerprint fallback so a new
+# keypress starts a fresh fingerprint attempt rather than remaining password-only.
+XSECURELOCK_AUTH_TIMEOUT=15 \
 XSECURELOCK_PAM_SERVICE=xsecurelock \
 XSECURELOCK_BLANK_TIMEOUT=10 \
 XSECURELOCK_BLANK_DPMS_STATE=off \
