@@ -866,6 +866,26 @@ local function make_system_widgets()
     return cpu.container, memory.container
 end
 
+-- ThinkPad platform profile: red TrackPoint dot + profile + firmware hotkeys.
+-- ponytail: sysfs is root-only to write, so the widget just shows the Fn keys.
+local profile_names = { ["low-power"] = "low", balanced = "bal", performance = "perf" }
+local function make_profile_widget()
+    local text = wibox.widget { font = "InputMono Nerd Font 9", widget = wibox.widget.textbox }
+    gears.timer {
+        timeout = 2,
+        autostart = true,
+        call_now = true,
+        callback = function()
+            local p = read_first_line("/sys/firmware/acpi/platform_profile") or "?"
+            text:set_markup(string.format(
+                "<span foreground='%s'>●</span> %s <span foreground='%s'>Fn+L/M/H</span>",
+                palette.red, profile_names[p] or p, palette.muted
+            ))
+        end,
+    }
+    return make_module(text, palette.surface, 9, 9)
+end
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -1222,6 +1242,7 @@ awful.screen.connect_for_each_screen(function(s)
         8,
         8
     )
+    s.myprofilewidget = make_profile_widget()
     s.mycpuwidget, s.mymemorywidget = make_system_widgets()
     s.myweatherwidget = make_weather_widget()
     s.mybatterywidget = make_battery_widget()
@@ -1266,6 +1287,7 @@ awful.screen.connect_for_each_screen(function(s)
                 spacing = 1,
                 spacing_widget = hairline(),
                 keyboard,
+                s.myprofilewidget,
                 s.mycpuwidget,
                 s.mymemorywidget,
                 clock,
