@@ -776,14 +776,14 @@ local function update_system_stats()
 
     for _, view in ipairs(system_views) do
         view.cpu_icon:set_markup(string.format(
-            "<span foreground='%s'></span>",
+            "<span foreground='%s'>󱌧</span>",
             cpu_icon_color
         ))
         view.cpu_value:set_markup(string.format("%d%%", cpu_usage))
         view.cpu_tooltip:set_text(cpu_details)
 
         view.mem_icon:set_markup(string.format(
-            "<span foreground='%s'>󰍛</span>",
+            "<span foreground='%s'>󰟆</span>",
             mem_icon_color
         ))
         view.mem_value:set_markup(string.format("%d%%", mem_usage))
