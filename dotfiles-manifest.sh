@@ -55,6 +55,7 @@ USER_SCRIPTS=(
 
 XORG_CONFIGS=(
     "30-touchpad.conf"
+    "30-g305.conf"
 )
 
 UDEV_RULES=(
