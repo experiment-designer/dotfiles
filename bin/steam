@@ -1,0 +1,3 @@
+#!/bin/sh
+# Real executable (not a shell alias) so awesome's run prompt finds it too.
+exec flatpak run com.valvesoftware.Steam "$@"

@@ -51,6 +51,7 @@ USER_SCRIPTS=(
     "bin/btop"
     "bin/build-newtab-xpi"
     "bin/htop"
+    "bin/steam"
 )
 
 XORG_CONFIGS=(
