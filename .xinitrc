@@ -55,7 +55,10 @@ xbindkeys
 # and powers off the display; it does not suspend or pause running processes.
 # xss-lock also acquires systemd's delay inhibitor so manual/lid suspend cannot
 # complete before the session is safely locked.
-xset s 2700 0
+# Steam's client zeroes this timeout on start (XSetScreenSaver) and never
+# restores it, so re-assert it periodically; doing so does not reset idle time.
+# The loop exits with the X server once xset fails.
+(while xset s 2700 0; do sleep 300; done) &
 xset dpms 0 0 0
 # The idle password prompt closes quickly after fingerprint fallback so a new
 # keypress starts a fresh fingerprint attempt rather than remaining password-only.
