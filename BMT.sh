@@ -377,13 +377,22 @@ case "$1" in
         exit 0
         ;;
     --help|-h)
-        echo "Usage: $0 [--hfp] [--status]"
+        echo "Usage: $0 [--hfp] [--status] [MAC]"
         echo "  --hfp     Use HFP profile (with mic, lower quality)"
         echo "  --status  Show current state"
+        echo "  MAC       Connect to this set only (full address, see --status)"
         echo "  (no args) Toggle between speakers and headset (A2DP)"
         exit 0
         ;;
 esac
+
+# Full MAC as last arg forces that set
+DEV=
+if [[ "${!#}" =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]]; then
+    DEV="${!#}"
+    BT_MACS=("$DEV")
+    use_mac "$DEV"
+fi
 
 # Check for expect
 if ! command -v expect &>/dev/null; then
@@ -392,7 +401,7 @@ if ! command -v expect &>/dev/null; then
 fi
 
 # Toggle logic
-if on_bluetooth; then
+if [[ -z "$DEV" ]] && on_bluetooth; then
     switch_to_speakers
 else
     require_adapter || exit 1
