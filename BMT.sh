@@ -299,6 +299,8 @@ wait_for_audio_card() {
 bt_reconnect() {
     echo "Reconnecting..."
     btcmd "disconnect $BT_MAC" &>/dev/null
+    # Wait for the old card to go, or wait_for_audio_card would see it again
+    for ((i=0; i<10; i++)); do has_bt_card || break; sleep 0.5; done
     sleep 1
     bt_connect_simple
 }
@@ -312,15 +314,24 @@ switch_to_speakers() {
     echo "Switched to Speakers"
 }
 
+# Retry: on a fresh connect the profiles show up a moment after the card
+set_profile() {
+    for ((i=0; i<10; i++)); do
+        pactl set-card-profile "$BT_CARD" "$1" 2>/dev/null && return 0
+        sleep 0.5
+    done
+    return 1
+}
+
 switch_to_bluetooth() {
     local want="$1" sink source
 
     # Just try the profile; pactl fails if it isn't available
     if [[ "$want" == "hfp" ]]; then
-        pactl set-card-profile "$BT_CARD" headset-head-unit 2>/dev/null ||
+        set_profile headset-head-unit ||
             { echo "Error: HFP profile not available"; return 1; }
     else
-        pactl set-card-profile "$BT_CARD" a2dp-sink 2>/dev/null ||
+        set_profile a2dp-sink ||
             pactl set-card-profile "$BT_CARD" headset-head-unit 2>/dev/null ||
             { echo "Error: No audio profile available"; return 1; }
     fi
@@ -406,24 +417,18 @@ if [[ -z "$DEV" ]] && on_bluetooth; then
 else
     require_adapter || exit 1
 
-    # Need bluetooth connection
-    if ! find_active_card; then
-        if ! connect_any; then
-            exit 1
-        fi
-        if ! wait_for_audio_card; then
-            # Audio card didn't appear - try reconnecting to fix half-connected state
-            if bt_connected; then
-                bt_reconnect
-                if ! wait_for_audio_card; then
-                    echo "Error: Audio card not available"
-                    exit 1
-                fi
-            else
-                echo "Error: Audio card not available"
-                exit 1
-            fi
-        fi
+    # Always start from a fresh link. Reusing an existing one (e.g. earbuds
+    # last used by the phone) can leave the A2DP transport wedged: bluez
+    # refuses Acquire, the sink still exists, and we "switch" to silence.
+    if find_active_card; then
+        bt_reconnect || connect_any || exit 1
+    else
+        connect_any || exit 1
+    fi
+    if ! wait_for_audio_card; then
+        # Half-connected, or the earbuds dropped us mid-setup - one more go
+        bt_reconnect && wait_for_audio_card ||
+            { echo "Error: Audio card not available"; exit 1; }
     fi
 
     if [[ "$1" == "--hfp" ]]; then
