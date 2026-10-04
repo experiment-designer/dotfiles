@@ -51,14 +51,23 @@ fi
 
 xbindkeys
 
-# Lock after the X server's existing 45-minute idle timeout.  This only locks
+# Lock after one hour of inactivity.  This only locks
 # and powers off the display; it does not suspend or pause running processes.
 # xss-lock also acquires systemd's delay inhibitor so manual/lid suspend cannot
 # complete before the session is safely locked.
 # Steam's client zeroes this timeout on start (XSetScreenSaver) and never
-# restores it, so re-assert it periodically; doing so does not reset idle time.
+# restores it, so check periodically and repair changed settings. Setting even
+# unchanged values rearms Xorg's saver countdown, which would prevent locking.
 # The loop exits with the X server once xset fails.
-(while xset s 2700 0; do sleep 300; done) &
+(
+    while saver_settings=$(LC_ALL=C xset q); do
+        if [ "$(printf '%s\n' "$saver_settings" |
+            awk '$1 == "timeout:" && $3 == "cycle:" { print $2, $4 }')" != "3600 0" ]; then
+            xset s 3600 0 || break
+        fi
+        sleep 300
+    done
+) &
 xset dpms 0 0 0
 # The idle password prompt closes quickly after fingerprint fallback so a new
 # keypress starts a fresh fingerprint attempt rather than remaining password-only.
