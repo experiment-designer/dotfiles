@@ -99,3 +99,8 @@ user_pref("extensions.experiments.enabled", true);
 
 // Never auto-enter Troubleshoot Mode after crashes (it silently disables the rice + extensions).
 user_pref("toolkit.startup.max_resumed_crashes", -1);
+
+// Typing in the urlbar shows live search-engine (Google) suggestions, above history.
+user_pref("browser.search.suggest.enabled", true);
+user_pref("browser.urlbar.suggest.searches", true);
+user_pref("browser.urlbar.showSearchSuggestionsFirst", true);
