@@ -12,3 +12,19 @@
 @import url("content-parts/40-newtab.css");
 @import url("content-parts/50-downloads-library.css");
 @import url("content-parts/60-misc-about.css");
+
+/* Website fixes are the one exception to "imports only". For ordinary web
+ * pages the content sandbox lets Firefox read this file (through its profile
+ * symlink) but none of the parts it imports, so a site rule in a part file
+ * would never apply. */
+
+/* Google search: the Stylus "Google Catppuccin" userstyle paints the
+ * suggestions wrapper (.UUbT9). For long queries Google shrinks the visible
+ * dropdown (.aajZCb) to a small box under the end of the query, leaving the
+ * full-width wrapper showing as a slab behind it. Google keeps the wrapper
+ * transparent; user-origin !important outranks the Stylus rule. */
+@-moz-document regexp("https?://(www\\.|images\\.)?google\\..*") {
+    .UUbT9 {
+        background-color: transparent !important;
+    }
+}
