@@ -68,36 +68,7 @@ bt_known() { [[ "$(btcmd devices)" == *"$BT_MAC"* ]]; }
 
 bt_scan_and_find() {
     echo "Scanning for $BT_MAC..."
-
-    # Watch bluetoothctl output stream for [NEW] Device with our MAC
-    # (polling 'devices' in separate sessions doesn't work reliably)
-    if expect -c "
-        log_user 0
-        set timeout $SCAN_TIMEOUT
-        spawn bluetoothctl
-        expect -re \".+\"
-        send \"scan on\r\"
-        expect {
-            \"$BT_MAC\" {
-                send \"scan off\r\"
-                expect -re \".+\"
-                send \"quit\r\"
-                expect eof
-                exit 0
-            }
-            timeout {
-                send \"scan off\r\"
-                expect -re \".+\"
-                send \"quit\r\"
-                expect eof
-                exit 1
-            }
-        }
-    " &>/dev/null; then
-        echo "Found!"
-        return 0
-    fi
-    return 1
+    [[ "$(scan_visible)" == *"$BT_MAC"* ]] && echo "Found!"
 }
 
 bt_pair_interactive() {
@@ -340,6 +311,7 @@ switch_to_bluetooth() {
     sink=$(bt_sink)
     [[ -n "$sink" ]] || { echo "Error: Bluetooth sink not available"; return 1; }
     pactl set-default-sink "$sink" 2>/dev/null
+    pactl set-sink-mute "$sink" 0 2>/dev/null   # WirePlumber restores a stale mute per device
 
     source=$(bt_source)
     if [[ "$want" == "hfp" && -n "$source" ]]; then
