@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "dotfiles-provider-key"
+description = "Literal AI provider key in shell configuration"
+regex = '''(?m)^[ \t]*#?[ \t]*(?:export[ \t]+)?(?:ANTHROPIC_API_KEY|GEMINI_API_KEY|XAI_API_KEY|OPENAI_API_KEY)[ \t]*=[ \t]*["']?([a-zA-Z0-9_./+:=-]+)'''
+secretGroup = 1
+
+[[rules.allowlists]]
+regexes = ['''^YOUR_KEY_HERE$''']
