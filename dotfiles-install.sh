@@ -84,6 +84,10 @@ for file in "${USER_SCRIPTS[@]}"; do
 done
 
 if $install_system; then
+    if command -v pacman >/dev/null && ! pacman -Q ttf-input-nerd >/dev/null 2>&1; then
+        sudo pacman -S --needed --noconfirm ttf-input-nerd
+    fi
+
     for file in "${XORG_CONFIGS[@]}"; do
         if [ -f "$DOTFILES_DIR/$file" ]; then
             sudo install -D -m 0644 \

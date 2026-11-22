@@ -12,7 +12,12 @@ URxvt.cursorBlink: false
 URxvt.cursorColor: #ffb340
 URxvt.cursorColor2: #16181d
 URxvt.highlightColor: #2c313a
+! Match physical text size across the T14s and the denser X1 Nano panel.
+#if defined(SRVR_nano) && WIDTH == 2160 && HEIGHT == 1350
+Xft.dpi: 117
+#else
 Xft.dpi: 96
+#endif
 Xft.antialias: true
 Xft.hinting: true
 Xft.hintstyle: hintslight

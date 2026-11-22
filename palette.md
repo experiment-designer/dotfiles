@@ -43,6 +43,8 @@ selection bg `#2c313a`.
 
 `InputMono Nerd Font` for everything (terminal 11pt, WM bar 9pt, browser UI 11px).
 `InputMonoCondensed Nerd Font` where density matters (browser tabs, htop header).
+The full Arch installer installs both families from `ttf-input-nerd`.
+On the built-in displays, Xft uses 117 DPI on the X1 Nano and 96 DPI on the T14s to match physical text size.
 
 ## Rules
 
