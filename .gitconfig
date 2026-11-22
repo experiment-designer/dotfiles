@@ -1,4 +1,5 @@
 [user]
+	name = experiment-designer
 	email = guydbg@gmail.com
 [init]
 	defaultBranch = master

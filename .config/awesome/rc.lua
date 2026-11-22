@@ -1723,6 +1723,9 @@ end)
 -- {{{ Autostart
 awful.spawn({"/home/guy/dotfiles/bin/htop", "--daemon"}, false)
 awful.spawn({"/home/guy/dotfiles/bin/startpage-server"}, false)
+if gears.filesystem.file_executable("/usr/bin/input-remapper-control") then
+    awful.spawn({"input-remapper-control", "--command", "autoload"}, false)
+end
 apply_keyboard_layout()
 ensure_keyboard_layout()
 -- }}}

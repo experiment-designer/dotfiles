@@ -1,0 +1,19 @@
+[Default Applications]
+text/html=firefox-developer-edition.desktop
+x-scheme-handler/http=firefox-developer-edition.desktop
+x-scheme-handler/https=firefox-developer-edition.desktop
+x-scheme-handler/about=firefox-developer-edition.desktop
+x-scheme-handler/unknown=firefox-developer-edition.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/claude=com.anthropic.Claude.desktop
+text/plain=nvim.desktop
+application/x-shellscript=nvim.desktop
+text/x-python=nvim.desktop
+text/markdown=nvim.desktop
+text/x-c=nvim.desktop
+text/x-lua=nvim.desktop
+text/css=nvim.desktop
+application/xhtml+xml=firefox-developer-edition.desktop
+x-scheme-handler/codex=chatgpt.desktop
+
+[Added Associations]

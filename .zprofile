@@ -1,4 +1,6 @@
-export SSH_AUTH_SOCK=/run/user/1000/ssh-agent.socket
+if [[ -z ${SSH_AUTH_SOCK:-} && -S "$XDG_RUNTIME_DIR/ssh-agent.socket" ]]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+fi
 
 
 # Added by Antigravity CLI installer

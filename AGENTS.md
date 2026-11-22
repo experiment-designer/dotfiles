@@ -13,7 +13,7 @@ live instantly. Never copy files between `~` and the repo by hand.
 Managed paths are declared in `dotfiles-manifest.sh` (arrays:
 `HOME_DOTFILES`, `CONFIG_DIRS`, `FIREFOX_PROFILE_FILES`, `USER_SCRIPTS`,
 `XORG_CONFIGS`, `UDEV_RULES`, `PAM_CONFIGS`, `SYSTEM_SLEEP_SCRIPTS`,
-`SYSTEMD_LOGIND_CONFIGS`, `UPOWER_CONFIGS`). Read it
+`SYSTEMD_LOGIND_CONFIGS`, `UPOWER_CONFIGS`, `TLP_CONFIGS`). Read it
 before deciding where a change goes.
 
 | Change to…                        | Edit…                                   | Takes effect |
@@ -75,6 +75,10 @@ at 10%, with low/critical levels of 20%/15%. This operates independently
 of Awesome's notification widget. Working hibernation and resume are required.
 Verify with `systemctl is-enabled upower`, `upower -d` (critical-action:
 Hibernate), and `./dotfiles-setup.sh --check`.
+
+The ThinkPads start charging below 75% and stop at 80%. The udev rule sets
+the firmware thresholds. On machines running TLP, the installer also deploys
+`tlp.d/60-dotfiles-charge.conf` and applies it with `tlp setcharge`.
 
 ## Hard rules
 

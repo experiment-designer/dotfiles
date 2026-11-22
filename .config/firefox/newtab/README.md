@@ -25,6 +25,11 @@ Run `~/dotfiles/bin/build-newtab-xpi` after editing the extension, then install
 `../phosphor-newtab.xpi` through about:addons → Install Add-on From File.
 Editing the served HTML/JS only requires reloading the page.
 
+On a new profile, also install the Tridactyl extension and run its
+`:nativeinstall` command to set up the native messenger. Use `:native` to
+check that Tridactyl can reach it. After restarting Firefox,
+`./dotfiles-setup.sh --check` in the repository checks both extensions.
+
 Verify after installing and again after restarting Firefox:
 
 - Open a new tab: the address bar is empty and focused; typing replaces it.

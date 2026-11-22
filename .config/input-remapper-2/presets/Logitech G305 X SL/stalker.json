@@ -1,0 +1,4 @@
+[
+  {"input_combination": [{"type": 1, "code": 276, "origin_hash": "7398b4c5753f30e918b175138c769a22"}], "target_uinput": "keyboard", "output_symbol": "KEY_LEFTCTRL", "mapping_type": "key_macro"},
+  {"input_combination": [{"type": 1, "code": 275, "origin_hash": "7398b4c5753f30e918b175138c769a22"}], "target_uinput": "keyboard", "output_symbol": "KEY_LEFTCTRL + KEY_LEFTSHIFT", "mapping_type": "key_macro"}
+]

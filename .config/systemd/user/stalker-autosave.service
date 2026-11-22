@@ -1,0 +1,10 @@
+[Unit]
+Description=STALKER SoC timed quicksave (F6 every 10 min while focused)
+
+[Service]
+# ponytail: blind keypress; can't tell menu/cutscene from gameplay (F6 there is a harmless no-op)
+ExecStart=/bin/sh -c 'while sleep 600; do [ "$(xdotool getactivewindow getwindowclassname 2>/dev/null)" = steam_app_4500 ] && xdotool key F6; done'
+Restart=always
+
+[Install]
+WantedBy=default.target

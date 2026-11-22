@@ -47,6 +47,7 @@ link_path() {
         echo "Backed up $destination to $backup"
     fi
 
+    mkdir -p -- "$(dirname -- "$destination")"
     ln -s -- "$source" "$destination"
     echo "Linked $destination"
 }
@@ -83,9 +84,13 @@ for file in "${USER_SCRIPTS[@]}"; do
     fi
 done
 
+if systemctl --user cat ssh-agent.socket >/dev/null 2>&1; then
+    systemctl --user enable --now ssh-agent.socket
+fi
+
 if $install_system; then
-    if command -v pacman >/dev/null && ! pacman -Q ttf-input-nerd >/dev/null 2>&1; then
-        sudo pacman -S --needed --noconfirm ttf-input-nerd
+    if command -v pacman >/dev/null && ! pacman -Q ttf-input-nerd rtkit wireless-regdb >/dev/null 2>&1; then
+        sudo pacman -S --needed --noconfirm ttf-input-nerd rtkit wireless-regdb
     fi
 
     for file in "${XORG_CONFIGS[@]}"; do
@@ -136,6 +141,14 @@ if $install_system; then
         sudo install -D -m 0644 "$DOTFILES_DIR/upower/$file" "/etc/UPower/$file"
         echo "Installed /etc/UPower/$file"
     done
+    if command -v tlp >/dev/null; then
+        for file in "${TLP_CONFIGS[@]}"; do
+            sudo install -D -m 0644 "$DOTFILES_DIR/tlp.d/$file" "/etc/tlp.d/$file"
+        done
+        if systemctl is-active --quiet tlp.service && [ -e /sys/class/power_supply/BAT0/charge_control_start_threshold ]; then
+            sudo tlp setcharge
+        fi
+    fi
     if command -v upower >/dev/null 2>&1; then
         sudo systemctl enable upower.service
         sudo systemctl restart upower.service

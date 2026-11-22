@@ -32,7 +32,7 @@ if $check_only; then
         live_real="$(readlink -f -- "$2" 2>/dev/null || true)"
         if [ ! -e "$1" ]; then
             echo "missing in repo:  $1"
-        elif [ -z "$live_real" ]; then
+        elif [ ! -e "$2" ]; then
             echo "missing in home:  $2"
         elif [ "$repo_real" = "$live_real" ]; then
             return 0
@@ -50,6 +50,29 @@ if $check_only; then
         for file in "${FIREFOX_PROFILE_FILES[@]}"; do
             report "$DOTFILES_DIR/.config/firefox/$file" "$firefox_profile_dir/$file"
         done
+        if ! python3 - "$firefox_profile_dir/extensions.json" <<'PY'
+import json
+import sys
+
+try:
+    with open(sys.argv[1]) as registry:
+        active = {addon["id"] for addon in json.load(registry)["addons"] if addon.get("active")}
+except (OSError, ValueError, KeyError) as error:
+    sys.exit(f"Cannot check Firefox add-ons: {error}")
+missing = {"phosphor-newtab@guy.local", "tridactyl.vim@cmcaine.co.uk"} - active
+if missing:
+    sys.exit("Missing or inactive Firefox add-ons: " + ", ".join(sorted(missing)))
+PY
+        then
+            issues=$((issues + 1))
+        fi
+        if [ ! -x "$HOME/.local/share/tridactyl/native_main" ]; then
+            echo "missing Tridactyl native messenger: use :nativeinstall in Tridactyl"
+            issues=$((issues + 1))
+        fi
+    elif [ -x /usr/bin/firefox-developer-edition ]; then
+        echo "missing Firefox Developer Edition profile (start Firefox and rerun dotfiles-install.sh --user-only)"
+        issues=$((issues + 1))
     fi
     for file in "${USER_SCRIPTS[@]}"; do report "$DOTFILES_DIR/$file" "$HOME/.local/bin/${file##*/}"; done
 
@@ -71,12 +94,30 @@ if $check_only; then
     for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/systemd/logind.conf.d/$file" "/etc/systemd/logind.conf.d/$file"; done
 
     for file in "${UPOWER_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/upower/$file" "/etc/UPower/$file"; done
+    if command -v tlp >/dev/null; then
+        for file in "${TLP_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/tlp.d/$file" "/etc/tlp.d/$file"; done
+    fi
+    battery=/sys/class/power_supply/BAT0
+    if [[ -r "$battery/charge_control_start_threshold" && -r "$battery/charge_control_end_threshold" ]]; then
+        source "$DOTFILES_DIR/tlp.d/60-dotfiles-charge.conf"
+        read -r start < "$battery/charge_control_start_threshold"
+        read -r stop < "$battery/charge_control_end_threshold"
+        if [[ "$start/$stop" != "$START_CHARGE_THRESH_BAT0/$STOP_CHARGE_THRESH_BAT0" ]]; then
+            echo "BAT0 charge thresholds: $start/$stop (configured $START_CHARGE_THRESH_BAT0/$STOP_CHARGE_THRESH_BAT0)"
+            issues=$((issues + 1))
+        fi
+    fi
+    if systemctl --user cat ssh-agent.socket >/dev/null 2>&1 && ! systemctl --user is-active --quiet ssh-agent.socket; then
+        echo "inactive SSH agent socket: run dotfiles-install.sh --user-only"
+        issues=$((issues + 1))
+    fi
 
     echo ""
     echo "Unmanaged candidates (add to dotfiles-manifest.sh if wanted):"
     for dir in "$HOME/.config"/*/; do
         name="$(basename "$dir")"
         case " ${CONFIG_DIRS[*]} " in *" $name "*) continue ;; esac
+        case " ${HOME_DOTFILES[*]} " in *" .config/$name/"*) continue ;; esac
         echo "  ~/.config/$name"
     done
     for script in "$HOME/.local/bin"/*; do
@@ -90,7 +131,8 @@ if $check_only; then
     done
 
     echo ""
-    echo "$issues managed path(s) need attention."
+    echo "$issues managed item(s) need attention."
+    if ((issues > 0)); then exit 1; fi
     exit 0
 fi
 
@@ -129,6 +171,7 @@ sync_file() {
         fi
 
         echo "Copying $src to $dest"
+        mkdir -p -- "$(dirname -- "$dest")"
         # Dereference source symlinks and preserve useful file metadata, but
         # never copy system ownership/group into the user-owned repository.
         # --delete keeps the repo a true mirror; git history guards against loss.
@@ -189,6 +232,12 @@ mkdir -p "$DOTFILES_DIR/upower"
 for file in "${UPOWER_CONFIGS[@]}"; do
     sync_file "/etc/UPower/$file" "$DOTFILES_DIR/upower/$file"
 done
+
+if command -v tlp >/dev/null; then
+    for file in "${TLP_CONFIGS[@]}"; do
+        sync_file "/etc/tlp.d/$file" "$DOTFILES_DIR/tlp.d/$file"
+    done
+fi
 
 # Never rewrite the live shell config behind a symlink. Refuse to continue if
 # a real key was placed in the tracked copy.

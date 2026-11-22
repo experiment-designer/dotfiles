@@ -4,7 +4,17 @@
 # two directions cannot drift apart.
 
 HOME_DOTFILES=(
+    ".config/autostart/remmina-applet.desktop"
+    ".config/chromium-flags.conf"
+    ".config/gamma-launcher/config.ini"
+    ".config/git/ignore"
+    ".config/input-remapper-2/config.json"
+    ".config/input-remapper-2/presets/Logitech G305 X SL/stalker.json"
+    ".config/input-remapper-2/presets/Logitech USB Receiver/stalker.json"
+    ".config/mimeapps.list"
+    ".config/systemd/user/stalker-autosave.service"
     ".local/share/applications/firefox-developer-edition.desktop"
+    ".mozilla/native-messaging-hosts/tridactyl.json"
     ".bashrc"
     ".xbindkeysrc"
     ".xinitrc"
@@ -80,6 +90,8 @@ SYSTEMD_LOGIND_CONFIGS=(
 UPOWER_CONFIGS=(
     "UPower.conf"
 )
+
+TLP_CONFIGS=("60-dotfiles-charge.conf")
 
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"

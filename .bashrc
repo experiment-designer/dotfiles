@@ -14,3 +14,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
