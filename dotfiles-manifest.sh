@@ -93,6 +93,12 @@ UPOWER_CONFIGS=(
 
 TLP_CONFIGS=("60-dotfiles-charge.conf")
 
+# The T14s already sets this policy in /etc/sudoers. Manage the drop-in on nano.
+SUDOERS_CONFIGS=()
+if [[ "$(uname -n)" == nano ]]; then
+    SUDOERS_CONFIGS=("90-dotfiles-guy")
+fi
+
 find_firefox_developer_profile() {
     local firefox_root="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
     local result

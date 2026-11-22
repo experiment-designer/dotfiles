@@ -94,6 +94,13 @@ PY
     for file in "${SYSTEMD_LOGIND_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/systemd/logind.conf.d/$file" "/etc/systemd/logind.conf.d/$file"; done
 
     for file in "${UPOWER_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/upower/$file" "/etc/UPower/$file"; done
+    for file in "${SUDOERS_CONFIGS[@]}"; do
+        if ! sudo -kn cmp -s "$DOTFILES_DIR/sudoers.d/$file" "/etc/sudoers.d/$file" ||
+           [[ "$(sudo -n stat -c '%u:%g:%a' "/etc/sudoers.d/$file" 2>/dev/null)" != 0:0:440 ]]; then
+            echo "check passwordless sudo and the installed /etc/sudoers.d/$file"
+            issues=$((issues + 1))
+        fi
+    done
     if command -v tlp >/dev/null; then
         for file in "${TLP_CONFIGS[@]}"; do report_system "$DOTFILES_DIR/tlp.d/$file" "/etc/tlp.d/$file"; done
     fi
@@ -238,6 +245,16 @@ if command -v tlp >/dev/null; then
         sync_file "/etc/tlp.d/$file" "$DOTFILES_DIR/tlp.d/$file"
     done
 fi
+
+for file in "${SUDOERS_CONFIGS[@]}"; do
+    (
+        copy="$(mktemp)"
+        trap 'unlink "$copy"' EXIT
+        sudo cat "/etc/sudoers.d/$file" > "$copy"
+        visudo -cf "$copy"
+        install -D -m 0644 "$copy" "$DOTFILES_DIR/sudoers.d/$file"
+    )
+done
 
 # Never rewrite the live shell config behind a symlink. Refuse to continue if
 # a real key was placed in the tracked copy.

@@ -13,7 +13,7 @@ live instantly. Never copy files between `~` and the repo by hand.
 Managed paths are declared in `dotfiles-manifest.sh` (arrays:
 `HOME_DOTFILES`, `CONFIG_DIRS`, `FIREFOX_PROFILE_FILES`, `USER_SCRIPTS`,
 `XORG_CONFIGS`, `UDEV_RULES`, `PAM_CONFIGS`, `SYSTEM_SLEEP_SCRIPTS`,
-`SYSTEMD_LOGIND_CONFIGS`, `UPOWER_CONFIGS`, `TLP_CONFIGS`). Read it
+`SYSTEMD_LOGIND_CONFIGS`, `UPOWER_CONFIGS`, `TLP_CONFIGS`, `SUDOERS_CONFIGS`). Read it
 before deciding where a change goes.
 
 | Change to…                        | Edit…                                   | Takes effect |
@@ -24,6 +24,7 @@ before deciding where a change goes.
 | user scripts                      | `~/dotfiles/BMT.sh`, `bin/…`             | immediately |
 | X11 / udev system config          | repo file, then rerun `./dotfiles-install.sh` (copies to `/etc`, needs sudo) | after install + device replug/X restart |
 | PAM service config                | `~/dotfiles/pam.d/…`, then rerun `./dotfiles-install.sh` (copies to `/etc`, needs sudo) | after install |
+| Nano passwordless sudo for `guy` | `~/dotfiles/sudoers.d/90-dotfiles-guy`, validated with `visudo` and installed as a root-owned 0440 copy | after install |
 | system sleep hooks                | `~/dotfiles/system-sleep/…`, then rerun `./dotfiles-install.sh` (copies to `/usr/lib/systemd/system-sleep`, needs sudo) | after install |
 | systemd-logind config             | `~/dotfiles/systemd/logind.conf.d/…`, then rerun `./dotfiles-install.sh` (copies to `/etc/systemd/logind.conf.d`, needs sudo) | after install + logind reload/restart |
 

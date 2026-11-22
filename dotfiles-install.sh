@@ -89,6 +89,11 @@ if systemctl --user cat ssh-agent.socket >/dev/null 2>&1; then
 fi
 
 if $install_system; then
+    for file in "${SUDOERS_CONFIGS[@]}"; do
+        visudo -cf "$DOTFILES_DIR/sudoers.d/$file"
+        sudo install -D -o root -g root -m 0440 "$DOTFILES_DIR/sudoers.d/$file" "/etc/sudoers.d/$file"
+        sudo visudo -c
+    done
     if command -v pacman >/dev/null && ! pacman -Q ttf-input-nerd rtkit wireless-regdb >/dev/null 2>&1; then
         sudo pacman -S --needed --noconfirm ttf-input-nerd rtkit wireless-regdb
     fi
