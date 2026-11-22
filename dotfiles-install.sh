@@ -94,8 +94,8 @@ if $install_system; then
         sudo install -D -o root -g root -m 0440 "$DOTFILES_DIR/sudoers.d/$file" "/etc/sudoers.d/$file"
         sudo visudo -c
     done
-    if command -v pacman >/dev/null && ! pacman -Q ttf-input-nerd rtkit wireless-regdb >/dev/null 2>&1; then
-        sudo pacman -S --needed --noconfirm ttf-input-nerd rtkit wireless-regdb
+    if command -v pacman >/dev/null && ! pacman -Q ttf-input-nerd rtkit wireless-regdb gitleaks >/dev/null 2>&1; then
+        sudo pacman -S --needed --noconfirm ttf-input-nerd rtkit wireless-regdb gitleaks
     fi
 
     for file in "${XORG_CONFIGS[@]}"; do
@@ -165,4 +165,14 @@ else
     echo "Skipped system configuration (--user-only)."
 fi
 
-echo "Done! You may need to fill in API keys in ~/.zshrc"
+if [[ "$(git -C "$DOTFILES_DIR" rev-parse --show-toplevel 2>/dev/null)" == "$DOTFILES_DIR" ]]; then
+    hooks="$(git -C "$DOTFILES_DIR" config --get core.hooksPath || true)"
+    if [[ -z "$hooks" || "$hooks" == .githooks ]]; then
+        git -C "$DOTFILES_DIR" config --local core.hooksPath .githooks
+    else
+        echo "Custom Git hooks in $hooks: include the dotfiles pre-commit and pre-push checks there."
+    fi
+    command -v gitleaks >/dev/null || echo "Install gitleaks before committing or pushing dotfiles."
+fi
+
+echo "Done. Personal API keys belong in ~/.config/zsh/secrets.zsh (mode 0600)."

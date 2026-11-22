@@ -151,6 +151,14 @@ if ! $force && [ -n "$(git -C "$DOTFILES_DIR" status --porcelain)" ]; then
     exit 1
 fi
 
+scan_secrets() {
+    gitleaks dir --config="$DOTFILES_DIR/.gitleaks.toml" --redact=100 --no-banner \
+        --log-level=error --max-archive-depth=2 --follow-symlinks "$1"
+}
+
+# Check linked files and fail before copying anything into the repository.
+scan_secrets "$DOTFILES_DIR"
+
 # Create necessary directories
 mkdir -p \
     "$DOTFILES_DIR/.config" \
@@ -177,6 +185,7 @@ sync_file() {
             return 0
         fi
 
+        scan_secrets "$src_real"
         echo "Copying $src to $dest"
         mkdir -p -- "$(dirname -- "$dest")"
         # Dereference source symlinks and preserve useful file metadata, but
@@ -256,25 +265,7 @@ for file in "${SUDOERS_CONFIGS[@]}"; do
     )
 done
 
-# Never rewrite the live shell config behind a symlink. Refuse to continue if
-# a real key was placed in the tracked copy.
-for key in ANTHROPIC_API_KEY GEMINI_API_KEY XAI_API_KEY OPENAI_API_KEY; do
-    assignment="$(grep -E "^export ${key}=" "$DOTFILES_DIR/.zshrc" | tail -n 1 || true)"
-    [ -z "$assignment" ] && continue
-
-    value="${assignment#*=}"
-    value="${value#\"}"
-    value="${value%\"}"
-    value="${value#\'}"
-    value="${value%\'}"
-    if [ -n "$value" ] && [ "$value" != "YOUR_KEY_HERE" ]; then
-        echo "Error: $key contains a non-placeholder value in tracked .zshrc." >&2
-        echo "Move secrets to an untracked file before collecting dotfiles." >&2
-        exit 1
-    fi
-done
-unset assignment value key
-echo "Tracked API key placeholders verified."
+scan_secrets "$DOTFILES_DIR"
 
 echo "Dotfiles sync completed!"
 echo ""

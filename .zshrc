@@ -36,12 +36,14 @@ unset _zcompdump
 # Fix shell bugs
 export TERMINFO=/usr/share/terminfo 
 
-# AI
-#export ANTHROPIC_API_KEY=YOUR_KEY_HERE
-#export ANTHROPIC_API_KEY=YOUR_KEY_HERE
-export GEMINI_API_KEY=YOUR_KEY_HERE
-export XAI_API_KEY=YOUR_KEY_HERE
-export OPENAI_API_KEY=YOUR_KEY_HERE
+# Store personal credentials in ~/.config/zsh/secrets.zsh (mode 0600).
+# export ANTHROPIC_API_KEY=YOUR_KEY_HERE
+# export GEMINI_API_KEY=YOUR_KEY_HERE
+# export XAI_API_KEY=YOUR_KEY_HERE
+# export OPENAI_API_KEY=YOUR_KEY_HERE
+if [[ -r "$HOME/.config/zsh/secrets.zsh" ]]; then
+    source "$HOME/.config/zsh/secrets.zsh"
+fi
 
 # Prompt: native zsh, single line, no plugins and no external commands per
 # prompt beyond vcs_info's own git calls.

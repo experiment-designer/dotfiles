@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+"""Check staged changes or the commits about to be pushed. Never print secret values."""
+import shutil
+import subprocess
+import sys
+
+revisions = sys.argv[1:]
+if revisions:
+    paths = ["log", "--format=", "--name-only", "-z", "--diff-filter=ACMRT",
+             "--root", "-m", *revisions, "--"]
+    scan = ["--log-opts=" + " ".join(["--root", "-m", *revisions])]
+else:
+    paths = ["diff", "--cached", "--name-only", "-z", "--diff-filter=ACMRT", "--"]
+    scan = ["--pre-commit", "--staged"]
+
+changed = subprocess.check_output(["git", *paths])
+if changed:
+    ignored = subprocess.run(["git", "check-ignore", "--no-index", "-z", "--stdin"],
+                             input=changed, stdout=subprocess.DEVNULL)
+    if ignored.returncode == 0:
+        sys.exit("Blocked a path covered by Git ignore rules. Review the changed filenames.")
+    if ignored.returncode != 1:
+        sys.exit("Could not verify changed paths against Git ignore rules.")
+
+if not shutil.which("gitleaks"):
+    sys.exit("Install gitleaks to scan changes before publishing these dotfiles.")
+sys.exit(subprocess.call(["gitleaks", "git", "--config=.gitleaks.toml", "--redact=100",
+                          "--max-archive-depth=2", "--no-banner", *scan]))

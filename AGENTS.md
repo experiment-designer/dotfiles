@@ -83,9 +83,11 @@ the firmware thresholds. On machines running TLP, the installer also deploys
 
 ## Hard rules
 
-- **Never commit secrets.** API keys in `.zshrc` stay as `YOUR_KEY_HERE`
-  placeholders; real keys live in an untracked file. `dotfiles-setup.sh`
-  enforces this for known keys, but check anything new you track.
+- **Never commit secrets.** Put personal API keys in
+  `~/.config/zsh/secrets.zsh` with mode 0600. The installer enables
+  repository-local hooks that scan staged changes and outgoing commits with
+  Gitleaks and reject ignored private paths. Collection also scans unlinked
+  sources before copying. Track only the Firefox files named in the manifest.
 - Never edit through the home-path symlink target confusion: `~/.config/awesome/rc.lua`
   and `~/dotfiles/.config/awesome/rc.lua` are the same file — fine — but if
   `--check` reports "copy, DIFFERS", reconcile before editing (diff both, keep
